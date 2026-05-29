@@ -1,0 +1,433 @@
+{
+  "quiz_title": "Treino de gramática normativa",
+  "quizzes": [
+    {
+      "id": "q01",
+      "lesson_slug": "aula-inicial-conhecimentos-previos-e-apresentacao-do-material-de-pesquisa",
+      "question": "Qual divisão da gramática estuda a estrutura, a formação, a classificação e a flexão das palavras?",
+      "options": [
+        "Sintaxe",
+        "Morfologia",
+        "Fonética",
+        "Semântica"
+      ],
+      "answer_index": 1,
+      "explanation": "No início do material, a morfologia aparece como a parte da gramática voltada para a palavra em si: sua forma, classe e flexão."
+    },
+    {
+      "id": "q02",
+      "lesson_slug": "aula-inicial-conhecimentos-previos-e-apresentacao-do-material-de-pesquisa",
+      "question": "A gramática normativa é apresentada no PDF como:",
+      "options": [
+        "Um estudo apenas histórico da língua",
+        "Uma descrição do registro culto escrito com finalidade didática",
+        "Uma lista de gírias populares",
+        "Um estudo exclusivo da fala informal"
+      ],
+      "answer_index": 1,
+      "explanation": "O material explica que a gramática normativa se apoia no uso culto escrito e é usada com intenção didática."
+    },
+    {
+      "id": "q03",
+      "lesson_slug": "aula-1-morfologia-e-substantivo",
+      "question": "O substantivo é, em regra, a classe que:",
+      "options": [
+        "Liga palavras e orações",
+        "Nomeia seres, coisas, ideias ou sentimentos",
+        "Indica ação no tempo",
+        "Modifica o verbo"
+      ],
+      "answer_index": 1,
+      "explanation": "Na morfologia, o substantivo é tratado como a palavra que nomeia seres, objetos, lugares, estados e noções."
+    },
+    {
+      "id": "q04",
+      "lesson_slug": "aula-2-adjetivo",
+      "question": "A principal função do adjetivo é:",
+      "options": [
+        "Caracterizar ou qualificar um substantivo",
+        "Substituir sempre um substantivo",
+        "Unir duas orações",
+        "Expressar emoção súbita"
+      ],
+      "answer_index": 0,
+      "explanation": "O adjetivo atribui qualidade, estado, aspecto ou característica ao substantivo."
+    },
+    {
+      "id": "q05",
+      "lesson_slug": "aula-3-artigo",
+      "question": "O artigo definido costuma indicar:",
+      "options": [
+        "Um ser conhecido ou já determinado no contexto",
+        "Uma quantidade fracionária",
+        "Uma emoção do falante",
+        "Uma ideia de lugar"
+      ],
+      "answer_index": 0,
+      "explanation": "O artigo definido particulariza e determina o substantivo, apontando algo já conhecido ou especificado."
+    },
+    {
+      "id": "q06",
+      "lesson_slug": "aula-4-numeral",
+      "question": "Qual opção traz um numeral ordinal?",
+      "options": [
+        "Dobro",
+        "Terço",
+        "Segundo",
+        "Dois"
+      ],
+      "answer_index": 2,
+      "explanation": "Numerais ordinais indicam ordem: primeiro, segundo, terceiro etc."
+    },
+    {
+      "id": "q07",
+      "lesson_slug": "aula-5-pronome",
+      "question": "Os pronomes são palavras que podem denotar os seres ou:",
+      "options": [
+        "Ligá-los a verbos auxiliares",
+        "Substituí-los dentro ou fora do discurso",
+        "Transformá-los em advérbios",
+        "Criar tempos verbais"
+      ],
+      "answer_index": 1,
+      "explanation": "O material destaca o valor dêitico do pronome: ele aponta, retoma ou substitui os seres no discurso."
+    },
+    {
+      "id": "q08",
+      "lesson_slug": "aula-5-pronome",
+      "question": "No uso culto, após preposição, o mais esperado é o pronome:",
+      "options": [
+        "Oblíquo átono",
+        "Reto",
+        "Oblíquo tônico",
+        "Demonstrativo"
+      ],
+      "answer_index": 2,
+      "explanation": "Depois de preposição, o padrão é usar pronome oblíquo tônico: para mim, entre ti, sem ele."
+    },
+    {
+      "id": "q09",
+      "lesson_slug": "aula-6-verbo",
+      "question": "Verbo é a classe gramatical mais ligada à ideia de:",
+      "options": [
+        "Ação, estado, processo ou fenômeno",
+        "Qualidade estática",
+        "Número puro",
+        "Ligação sem sentido"
+      ],
+      "answer_index": 0,
+      "explanation": "O verbo organiza predicação, tempo, modo, voz, pessoa e número."
+    },
+    {
+      "id": "q10",
+      "lesson_slug": "aula-6-verbo",
+      "question": "Qual item é um modo verbal?",
+      "options": [
+        "Singular",
+        "Futuro",
+        "Subjuntivo",
+        "Passiva"
+      ],
+      "answer_index": 2,
+      "explanation": "Os modos verbais mais usuais são indicativo, subjuntivo e imperativo."
+    },
+    {
+      "id": "q11",
+      "lesson_slug": "aula-7-adverbio",
+      "question": "O advérbio costuma modificar principalmente:",
+      "options": [
+        "Substantivos apenas",
+        "Verbos, adjetivos ou outros advérbios",
+        "Pronomes pessoais retos apenas",
+        "Numerais ordinais"
+      ],
+      "answer_index": 1,
+      "explanation": "Advérbios expressam circunstâncias como tempo, modo, intensidade, lugar e negação."
+    },
+    {
+      "id": "q12",
+      "lesson_slug": "aula-8-preposicao",
+      "question": "A preposição tem como função central:",
+      "options": [
+        "Estabelecer relação entre termos",
+        "Nomear seres",
+        "Indicar emoção instantânea",
+        "Criar concordância nominal"
+      ],
+      "answer_index": 0,
+      "explanation": "Preposições ligam termos e marcam relações como origem, destino, causa, meio e companhia."
+    },
+    {
+      "id": "q13",
+      "lesson_slug": "aula-9-conjuncao",
+      "question": "A conjunção é usada para:",
+      "options": [
+        "Modificar o substantivo",
+        "Ligar palavras ou orações",
+        "Indicar ordem numérica",
+        "Substituir o sujeito"
+      ],
+      "answer_index": 1,
+      "explanation": "Conjunções conectam elementos equivalentes ou subordinados dentro da frase e do período."
+    },
+    {
+      "id": "q14",
+      "lesson_slug": "aula-10-interjeicao",
+      "question": "Interjeições servem principalmente para expressar:",
+      "options": [
+        "Tempo verbal",
+        "Relação lógica",
+        "Emoção, apelo ou reação imediata",
+        "Quantidade exata"
+      ],
+      "answer_index": 2,
+      "explanation": "Ah!, nossa!, cuidado!, socorro! são exemplos de expressões emotivas ou apelativas."
+    },
+    {
+      "id": "q15",
+      "lesson_slug": "aula-11-os-porques",
+      "question": "Em pergunta direta, o uso mais comum é:",
+      "options": [
+        "porque",
+        "por que",
+        "porquê",
+        "por quê no meio da frase"
+      ],
+      "answer_index": 1,
+      "explanation": "Nas perguntas diretas, costuma-se usar por que separado: Por que você saiu cedo?"
+    },
+    {
+      "id": "q16",
+      "lesson_slug": "aula-11-os-porques",
+      "question": "A forma 'porquê' com acento e sem separação funciona como:",
+      "options": [
+        "Verbo",
+        "Substantivo",
+        "Conjunção",
+        "Preposição"
+      ],
+      "answer_index": 1,
+      "explanation": "Quando equivale a motivo ou razão, usa-se porquê, normalmente acompanhado de artigo: o porquê da dúvida."
+    },
+    {
+      "id": "q17",
+      "lesson_slug": "aula-12-senao-ou-se-nao",
+      "question": "A expressão 'se não' transmite, em geral, a ideia de:",
+      "options": [
+        "Adição",
+        "Condição negativa",
+        "Explicação nominal",
+        "Conclusão"
+      ],
+      "answer_index": 1,
+      "explanation": "Se não equivale a caso não: Se não chover, sairemos."
+    },
+    {
+      "id": "q18",
+      "lesson_slug": "aula-12-senao-ou-se-nao",
+      "question": "Em muitos contextos, 'senão' pode equivaler a:",
+      "options": [
+        "do contrário",
+        "porque",
+        "embora",
+        "além de"
+      ],
+      "answer_index": 0,
+      "explanation": "Senão pode significar do contrário, mas, exceto, entre outros valores, conforme o contexto."
+    },
+    {
+      "id": "q19",
+      "lesson_slug": "aula-13-sintaxe",
+      "question": "A sintaxe estuda principalmente:",
+      "options": [
+        "A pronúncia correta das palavras",
+        "O valor monetário das expressões",
+        "As funções das palavras e as relações que mantêm entre si",
+        "A origem histórica de todos os radicais"
+      ],
+      "answer_index": 2,
+      "explanation": "Na divisão tradicional, sintaxe trata das funções sintáticas e das relações como regência, concordância e colocação."
+    },
+    {
+      "id": "q20",
+      "lesson_slug": "aula-13-sintaxe",
+      "question": "Sujeito e predicado pertencem ao campo de estudo de:",
+      "options": [
+        "Sintaxe",
+        "Ortografia",
+        "Fonética",
+        "Numeral"
+      ],
+      "answer_index": 0,
+      "explanation": "São termos estruturais da oração, portanto aparecem na sintaxe."
+    },
+    {
+      "id": "q21",
+      "lesson_slug": "aula-13b-exercicios-pronome-apassivador-e-indice-de-indeterminacao",
+      "question": "Na análise de construções com 'se', uma dúvida recorrente do material é diferenciar:",
+      "options": [
+        "Artigo e numeral",
+        "Índice de indeterminação do sujeito e pronome apassivador",
+        "Adjetivo e advérbio",
+        "Conjunção e interjeição"
+      ],
+      "answer_index": 1,
+      "explanation": "O PDF reserva exercícios específicos para essa distinção sintática."
+    },
+    {
+      "id": "q22",
+      "lesson_slug": "aula-14-estudo-das-oracoes",
+      "question": "Orações coordenadas se caracterizam por:",
+      "options": [
+        "Dependência sintática obrigatória",
+        "Autonomia sintática entre si",
+        "Ausência de verbo",
+        "Uso exclusivo de sujeito oculto"
+      ],
+      "answer_index": 1,
+      "explanation": "As coordenadas não dependem sintaticamente umas das outras, embora possam ser ligadas por conjunções."
+    },
+    {
+      "id": "q23",
+      "lesson_slug": "aula-14-estudo-das-oracoes",
+      "question": "Qual conjunção costuma introduzir ideia de causa?",
+      "options": [
+        "porque",
+        "ou",
+        "mas",
+        "logo"
+      ],
+      "answer_index": 0,
+      "explanation": "Porque é um conectivo clássico de valor causal, muito explorado no estudo das orações."
+    },
+    {
+      "id": "q24",
+      "lesson_slug": "aula-14-estudo-das-oracoes",
+      "question": "Em 'Os ônibus estavam lotados, por isso me atrasei', a segunda oração expressa ideia de:",
+      "options": [
+        "Alternância",
+        "Conclusão",
+        "Oposição",
+        "Condição"
+      ],
+      "answer_index": 1,
+      "explanation": "A locução 'por isso' marca conclusão a partir do fato anterior."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f01",
+      "lesson_slug": "aula-inicial-conhecimentos-previos-e-apresentacao-do-material-de-pesquisa",
+      "front": "O que é gramática normativa?",
+      "back": "É a descrição do registro culto escrito usada com intenção didática. No material, ela aparece ligada ao uso culto, à clareza e à disciplina mental."
+    },
+    {
+      "id": "f02",
+      "lesson_slug": "aula-inicial-conhecimentos-previos-e-apresentacao-do-material-de-pesquisa",
+      "front": "Por que estudar gramática segundo o PDF?",
+      "back": "Porque escrever bem não depende só de decorar regras: envolve lógica, retórica, clareza, leitura melhor e organização do pensamento."
+    },
+    {
+      "id": "f03",
+      "lesson_slug": "aula-1-morfologia-e-substantivo",
+      "front": "Substantivo em uma frase curta",
+      "back": "É a palavra que nomeia seres, coisas, sentimentos, lugares ou ideias."
+    },
+    {
+      "id": "f04",
+      "lesson_slug": "aula-2-adjetivo",
+      "front": "Função do adjetivo",
+      "back": "Caracterizar, qualificar ou atribuir estado ao substantivo."
+    },
+    {
+      "id": "f05",
+      "lesson_slug": "aula-3-artigo",
+      "front": "Artigo definido x indefinido",
+      "back": "O definido determina e particulariza; o indefinido introduz algo de modo mais genérico."
+    },
+    {
+      "id": "f06",
+      "lesson_slug": "aula-4-numeral",
+      "front": "Quatro tipos frequentes de numeral",
+      "back": "Cardinal, ordinal, multiplicativo e fracionário."
+    },
+    {
+      "id": "f07",
+      "lesson_slug": "aula-5-pronome",
+      "front": "Valor dêitico do pronome",
+      "back": "O pronome aponta, retoma ou substitui seres no discurso em vez de nomeá-los diretamente."
+    },
+    {
+      "id": "f08",
+      "lesson_slug": "aula-5-pronome",
+      "front": "Depois de preposição: mim ou eu?",
+      "back": "Em geral, usa-se mim, ti, ele, nós, vós, eles. Ex.: entre mim e você."
+    },
+    {
+      "id": "f09",
+      "lesson_slug": "aula-6-verbo",
+      "front": "O que o verbo costuma indicar?",
+      "back": "Ação, estado, processo, fenômeno e também flexões de tempo, modo, pessoa e número."
+    },
+    {
+      "id": "f10",
+      "lesson_slug": "aula-7-adverbio",
+      "front": "Onde o advérbio atua?",
+      "back": "Principalmente sobre verbos, adjetivos e outros advérbios, marcando circunstâncias."
+    },
+    {
+      "id": "f11",
+      "lesson_slug": "aula-8-preposicao",
+      "front": "Qual o papel da preposição?",
+      "back": "Ligar termos e indicar relações como causa, meio, origem, destino e companhia."
+    },
+    {
+      "id": "f12",
+      "lesson_slug": "aula-9-conjuncao",
+      "front": "Conjunção em uma linha",
+      "back": "É a palavra ou locução que conecta palavras, termos ou orações."
+    },
+    {
+      "id": "f13",
+      "lesson_slug": "aula-10-interjeicao",
+      "front": "Quando usar interjeição?",
+      "back": "Quando a linguagem expressa reação espontânea, apelo, surpresa, dor, alívio ou chamamento."
+    },
+    {
+      "id": "f14",
+      "lesson_slug": "aula-11-os-porques",
+      "front": "Como lembrar os porquês?",
+      "back": "por que: pergunta; porque: resposta/explicação; porquê: substantivo; por quê: fim de frase ou pausa forte."
+    },
+    {
+      "id": "f15",
+      "lesson_slug": "aula-12-senao-ou-se-nao",
+      "front": "Senão x se não",
+      "back": "Senão pode valer por do contrário, mas, exceto; se não costuma equivaler a caso não."
+    },
+    {
+      "id": "f16",
+      "lesson_slug": "aula-13-sintaxe",
+      "front": "O que a sintaxe observa?",
+      "back": "A função das palavras na oração e as relações que elas mantêm entre si."
+    },
+    {
+      "id": "f17",
+      "lesson_slug": "aula-13b-exercicios-pronome-apassivador-e-indice-de-indeterminacao",
+      "front": "Construções com 'se' exigem atenção a quê?",
+      "back": "À diferença entre pronome apassivador e índice de indeterminação do sujeito."
+    },
+    {
+      "id": "f18",
+      "lesson_slug": "aula-14-estudo-das-oracoes",
+      "front": "O que são orações coordenadas?",
+      "back": "Orações com autonomia sintática que podem aparecer lado a lado, com ou sem conectivo."
+    },
+    {
+      "id": "f19",
+      "lesson_slug": "aula-14-estudo-das-oracoes",
+      "front": "O que observar no estudo das orações?",
+      "back": "Valor semântico da conjunção, relação lógica entre as orações e função sintática de cada parte."
+    }
+  ]
+}

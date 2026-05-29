@@ -1,0 +1,37 @@
+{% extends "ingles/base.html" %}
+{% block title %}Plano de estudo{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Plano de estudo</p>
+    <h1>Rotina de 7 dias para não se perder</h1>
+    <p class="lead">Você pode repetir esse ciclo toda semana, mudando o módulo foco.</p>
+  </div>
+</section>
+
+<section class="timeline reveal">
+  {% for item in plan %}
+  <article class="timeline-item panel">
+    <span class="timeline-index">{{ loop.index }}</span>
+    <div>
+      <h3>{{ item.day }} · {{ item.focus }}</h3>
+      <ul class="practice-list">
+        {% for task in item.tasks %}
+        <li>{{ task }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="panel reveal">
+  <p class="eyebrow">Sugestão</p>
+  <h2>Escolha 1 módulo principal e 1 módulo de revisão</h2>
+  <div class="chip-row">
+    {% for module in modules %}
+    <a class="chip link-chip" href="{{ url_for('ingles_module_detail', slug=module.slug) }}">{{ module.number }} · {{ module.title }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

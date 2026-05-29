@@ -1,0 +1,501 @@
+{
+  "quizzes": [
+    {
+      "module_slug": "foundation",
+      "question": "Complete: ___ am from Brazil.",
+      "options": [
+        "He",
+        "I",
+        "She",
+        "They"
+      ],
+      "answer": 1,
+      "explanation": "Com \"am\" usamos \"I\"."
+    },
+    {
+      "module_slug": "foundation",
+      "question": "Choose the correct sentence.",
+      "options": [
+        "I am at home.",
+        "I am in home.",
+        "I at home.",
+        "I is at home."
+      ],
+      "answer": 0,
+      "explanation": "A forma natural é \"at home\"."
+    },
+    {
+      "module_slug": "present-routine",
+      "question": "She ___ coffee every morning.",
+      "options": [
+        "drink",
+        "drinks",
+        "is drink",
+        "drinking"
+      ],
+      "answer": 1,
+      "explanation": "Na terceira pessoa do simple present, geralmente entra -s."
+    },
+    {
+      "module_slug": "present-routine",
+      "question": "Right now, they ___ for the test.",
+      "options": [
+        "study",
+        "studies",
+        "are studying",
+        "studied"
+      ],
+      "answer": 2,
+      "explanation": "A expressão \"right now\" pede present continuous."
+    },
+    {
+      "module_slug": "present-routine",
+      "question": "How ___ money do you need?",
+      "options": [
+        "many",
+        "much",
+        "long",
+        "old"
+      ],
+      "answer": 1,
+      "explanation": "Money é incontável: how much."
+    },
+    {
+      "module_slug": "past-story",
+      "question": "Yesterday we ___ at home.",
+      "options": [
+        "was",
+        "were",
+        "are",
+        "be"
+      ],
+      "answer": 1,
+      "explanation": "Com \"we\" no passado do verbo be usamos \"were\"."
+    },
+    {
+      "module_slug": "past-story",
+      "question": "I was sleeping when she ___.",
+      "options": [
+        "calls",
+        "called",
+        "is calling",
+        "call"
+      ],
+      "answer": 1,
+      "explanation": "A interrupção pontual vai no simple past."
+    },
+    {
+      "module_slug": "past-story",
+      "question": "Choose the best option: I ___ play soccer every day.",
+      "options": [
+        "use to",
+        "used to",
+        "was use to",
+        "am used"
+      ],
+      "answer": 1,
+      "explanation": "O padrão correto é \"used to\"."
+    },
+    {
+      "module_slug": "travel-survival",
+      "question": "At a hotel, you say:",
+      "options": [
+        "I have a reservation under Silva.",
+        "I am reservation Silva.",
+        "Give me bedroom.",
+        "Where menu?"
+      ],
+      "answer": 0,
+      "explanation": "Essa é a forma natural e educada."
+    },
+    {
+      "module_slug": "travel-survival",
+      "question": "To ask for the check in a restaurant:",
+      "options": [
+        "Give account.",
+        "Could we have the bill, please?",
+        "Where the money?",
+        "I want close now."
+      ],
+      "answer": 1,
+      "explanation": "É a forma natural para pedir a conta."
+    },
+    {
+      "module_slug": "future-and-modals",
+      "question": "Which sentence gives advice?",
+      "options": [
+        "You should rest.",
+        "You rested.",
+        "You are resting.",
+        "You rest yesterday."
+      ],
+      "answer": 0,
+      "explanation": "Should é usado para conselho."
+    },
+    {
+      "module_slug": "future-and-modals",
+      "question": "Choose the best future plan sentence.",
+      "options": [
+        "I going travel next week.",
+        "I am going to travel next week.",
+        "I will to travel next week.",
+        "I travel next week yesterday."
+      ],
+      "answer": 1,
+      "explanation": "Plano: am going to + base verb."
+    },
+    {
+      "module_slug": "perfect-and-comparison",
+      "question": "I have lived here ___ 2020.",
+      "options": [
+        "for",
+        "since",
+        "ago",
+        "during"
+      ],
+      "answer": 1,
+      "explanation": "Since marca ponto de início."
+    },
+    {
+      "module_slug": "perfect-and-comparison",
+      "question": "The cheetah is ___ animal in the world.",
+      "options": [
+        "faster",
+        "fast",
+        "the fastest",
+        "more fastest"
+      ],
+      "answer": 2,
+      "explanation": "Superlativo: the fastest."
+    },
+    {
+      "module_slug": "city-culture",
+      "question": "Indirect question: Do you know ___?",
+      "options": [
+        "where is the station",
+        "where the station is",
+        "where does the station is",
+        "where station is it"
+      ],
+      "answer": 1,
+      "explanation": "Na indirect question a ordem vira de afirmação."
+    },
+    {
+      "module_slug": "home-and-life",
+      "question": "Which sentence is correct?",
+      "options": [
+        "The shower is leaking.",
+        "The shower leaking is.",
+        "The shower leak now.",
+        "Shower is a leak."
+      ],
+      "answer": 0,
+      "explanation": "Estrutura correta: be + verb-ing/adjective depending on context."
+    },
+    {
+      "module_slug": "conversation-power",
+      "question": "Find out means:",
+      "options": [
+        "desistir",
+        "descobrir",
+        "guardar",
+        "ligar"
+      ],
+      "answer": 1,
+      "explanation": "Find out = descobrir."
+    },
+    {
+      "module_slug": "conversation-power",
+      "question": "Passive voice: They finished the report. →",
+      "options": [
+        "The report finished.",
+        "The report was finished.",
+        "The report is finish.",
+        "The report had finish."
+      ],
+      "answer": 1,
+      "explanation": "Passiva: object + be + past participle."
+    },
+    {
+      "module_slug": "integration-mission",
+      "question": "Best self-assessment sentence:",
+      "options": [
+        "I strong English very much.",
+        "My strongest area is vocabulary.",
+        "I have strongest vocabulary is.",
+        "Area vocabulary strong me."
+      ],
+      "answer": 1,
+      "explanation": "A segunda está natural e correta."
+    }
+  ],
+  "flashcards": [
+    {
+      "module_slug": "foundation",
+      "front": "I am / You are / He is",
+      "back": "formas básicas do verbo to be"
+    },
+    {
+      "module_slug": "present-routine",
+      "front": "How much x How many",
+      "back": "much = incontável / many = contável"
+    },
+    {
+      "module_slug": "present-routine",
+      "front": "There is x There are",
+      "back": "singular x plural"
+    },
+    {
+      "module_slug": "past-story",
+      "front": "when x while",
+      "back": "when = evento pontual / while = ação em andamento"
+    },
+    {
+      "module_slug": "past-story",
+      "front": "remember x remind",
+      "back": "remember = lembrar / remind = lembrar alguém de algo"
+    },
+    {
+      "module_slug": "travel-survival",
+      "front": "boarding gate",
+      "back": "portão de embarque"
+    },
+    {
+      "module_slug": "travel-survival",
+      "front": "reservation",
+      "back": "reserva"
+    },
+    {
+      "module_slug": "future-and-modals",
+      "front": "should",
+      "back": "conselho"
+    },
+    {
+      "module_slug": "future-and-modals",
+      "front": "might",
+      "back": "possibilidade"
+    },
+    {
+      "module_slug": "perfect-and-comparison",
+      "front": "for x since",
+      "back": "duração x ponto inicial"
+    },
+    {
+      "module_slug": "perfect-and-comparison",
+      "front": "the fastest",
+      "back": "superlativo de fast"
+    },
+    {
+      "module_slug": "city-culture",
+      "front": "Could you tell me where...?",
+      "back": "pergunta indireta educada"
+    },
+    {
+      "module_slug": "home-and-life",
+      "front": "schedule an appointment",
+      "back": "marcar um horário/compromisso"
+    },
+    {
+      "module_slug": "conversation-power",
+      "front": "give up",
+      "back": "desistir"
+    },
+    {
+      "module_slug": "conversation-power",
+      "front": "put away",
+      "back": "guardar"
+    },
+    {
+      "module_slug": "conversation-power",
+      "front": "rarely",
+      "back": "raramente"
+    },
+    {
+      "module_slug": "integration-mission",
+      "front": "My next goal is...",
+      "back": "frase útil de autoavaliação"
+    }
+  ],
+  "final_exam": [
+    {
+      "skill": "grammar",
+      "question": "She ___ to the gym every day.",
+      "options": [
+        "go",
+        "goes",
+        "is go",
+        "gone"
+      ],
+      "answer": 1,
+      "explanation": "Simple present, terceira pessoa."
+    },
+    {
+      "skill": "grammar",
+      "question": "I ___ English right now.",
+      "options": [
+        "study",
+        "studies",
+        "am studying",
+        "studied"
+      ],
+      "answer": 2,
+      "explanation": "Ação do momento: present continuous."
+    },
+    {
+      "skill": "grammar",
+      "question": "There ___ two chairs in the room.",
+      "options": [
+        "is",
+        "are",
+        "am",
+        "be"
+      ],
+      "answer": 1,
+      "explanation": "Plural pede are."
+    },
+    {
+      "skill": "grammar",
+      "question": "We ___ at home last night.",
+      "options": [
+        "was",
+        "were",
+        "are",
+        "be"
+      ],
+      "answer": 1,
+      "explanation": "Passado de be com we = were."
+    },
+    {
+      "skill": "grammar",
+      "question": "I was driving when it ___.",
+      "options": [
+        "rain",
+        "rains",
+        "rained",
+        "is raining"
+      ],
+      "answer": 2,
+      "explanation": "Interrupção pontual: simple past."
+    },
+    {
+      "skill": "travel",
+      "question": "Best sentence for hotel check-in:",
+      "options": [
+        "I have a reservation under Costa.",
+        "I am hotel reservation.",
+        "Give me room now.",
+        "Where bed?"
+      ],
+      "answer": 0,
+      "explanation": "Forma educada e padrão."
+    },
+    {
+      "skill": "travel",
+      "question": "Best sentence to ask directions:",
+      "options": [
+        "How get station?",
+        "Could you tell me how to get to the station?",
+        "Where station is go?",
+        "Tell me station now."
+      ],
+      "answer": 1,
+      "explanation": "Pergunta indireta mais natural."
+    },
+    {
+      "skill": "modals",
+      "question": "You ___ wear a seat belt.",
+      "options": [
+        "should maybe",
+        "must",
+        "are",
+        "be"
+      ],
+      "answer": 1,
+      "explanation": "Obrigação forte/regra."
+    },
+    {
+      "skill": "future",
+      "question": "I ___ visit my girlfriend next weekend.",
+      "options": [
+        "am going to",
+        "go to",
+        "going",
+        "visited"
+      ],
+      "answer": 0,
+      "explanation": "Plano futuro: am going to."
+    },
+    {
+      "skill": "perfect",
+      "question": "I have lived here ___ five years.",
+      "options": [
+        "since",
+        "for",
+        "ago",
+        "from"
+      ],
+      "answer": 1,
+      "explanation": "For = duração."
+    },
+    {
+      "skill": "perfect",
+      "question": "Have you ever ___ to Rio?",
+      "options": [
+        "went",
+        "go",
+        "been",
+        "being"
+      ],
+      "answer": 2,
+      "explanation": "Present perfect com experience: been."
+    },
+    {
+      "skill": "comparison",
+      "question": "This car is ___ than that one.",
+      "options": [
+        "more cheap",
+        "cheaper",
+        "cheap",
+        "the cheaper"
+      ],
+      "answer": 1,
+      "explanation": "Comparativo curto: cheaper."
+    },
+    {
+      "skill": "phrasal_verbs",
+      "question": "Find out means:",
+      "options": [
+        "discover",
+        "give up",
+        "clean",
+        "return"
+      ],
+      "answer": 0,
+      "explanation": "Find out = discover."
+    },
+    {
+      "skill": "passive",
+      "question": "English is spoken worldwide. This is:",
+      "options": [
+        "future",
+        "passive voice",
+        "simple past",
+        "question form"
+      ],
+      "answer": 1,
+      "explanation": "Be + past participle."
+    },
+    {
+      "skill": "advanced",
+      "question": "Indirect question: Do you know ___?",
+      "options": [
+        "where does he live",
+        "where he lives",
+        "where live he",
+        "where is he live"
+      ],
+      "answer": 1,
+      "explanation": "Ordem afirmativa na subordinada."
+    }
+  ]
+}

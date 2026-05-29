@@ -1,0 +1,3 @@
+# O deploy deve usar o requirements.txt da raiz.
+# Mantido apenas para compatibilidade com ferramentas antigas.
+-r ../requirements.txt

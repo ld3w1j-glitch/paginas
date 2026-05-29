@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Área interna</span>
+        <h1>Bem-vindo, {{ current_user.name }}</h1>
+        <p class="lead">Seu cargo atual é <strong>{{ current_user.role.name }}</strong>. Estude os conteúdos liberados e avance conforme as provas aprovadas.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container card-grid three dashboard-counters">
+        <article class="card stat-card">
+            <span class="stat-label">Cargo atual</span>
+            <strong>{{ current_user.role.name }}</strong>
+            <p>{{ current_user.role.description }}</p>
+        </article>
+        <article class="card stat-card">
+            <span class="stat-label">Módulos liberados</span>
+            <strong>{{ available_modules|length }}</strong>
+            <p>Conteúdos visíveis conforme o nível do seu acesso.</p>
+        </article>
+        <article class="card stat-card">
+            <span class="stat-label">Tentativas recentes</span>
+            <strong>{{ recent_attempts|length }}</strong>
+            <p>Histórico resumido das últimas provas realizadas.</p>
+        </article>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Curso interno</span>
+            <h2>Cursos internos</h2>
+        </div>
+        <article class="card course-entry-card">
+            <div>
+                <span class="meta-pill gold">Exclusivo para membros logados</span>
+                <h3>Entrar no curso de português</h3>
+                <p>O curso agora tem visual reorganizado, leitura em etapas e bloqueio por cargo. Você vê apenas o que já está liberado para seu nível atual.</p>
+                <div class="hero-actions compact-actions">
+                    <span class="meta-pill">Lições liberadas: {{ portuguese_data.site_meta.accessible_lessons }}</span>
+                    {% if portuguese_data.next_unlock %}
+                    <span class="meta-pill gold">Próxima etapa: {{ portuguese_data.next_unlock.required_role_name }}</span>
+                    {% else %}
+                    <span class="meta-pill gold">Curso completo liberado</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-actions compact-actions">
+                <a class="btn btn-primary" href="{{ url_for('portugues_home') }}">Abrir curso interno</a>
+            </div>
+        </article>
+
+        <article class="card course-entry-card">
+            <div>
+                <span class="meta-pill gold">Exclusivo para membros logados</span>
+                <h3>Entrar no curso de inglês</h3>
+                <p>Adicionei também o curso de inglês dentro da área interna, com a estrutura do zip integrada ao portal e desbloqueio por cargo.</p>
+                <div class="hero-actions compact-actions">
+                    <span class="meta-pill">Módulos liberados: {{ english_data.site_meta.accessible_modules }}</span>
+                    {% if english_data.next_unlock %}
+                    <span class="meta-pill gold">Próxima etapa: {{ english_data.next_unlock.required_role_name }}</span>
+                    {% else %}
+                    <span class="meta-pill gold">Curso completo liberado</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hero-actions compact-actions">
+                <a class="btn btn-primary" href="{{ url_for('ingles_home') }}">Abrir curso de inglês</a>
+            </div>
+        </article>
+
+        <article class="card course-entry-card">
+            <div>
+                <span class="meta-pill gold">Assistente contextual</span>
+                <h3>Chat Agente do Portal</h3>
+                <p>Converse com um agente orientado ao contexto do portal. Ele ajuda a entender páginas, permissões, cursos, configurações, IA e próximas alterações.</p>
+                <div class="hero-actions compact-actions">
+                    <span class="meta-pill">Usa contexto da tela</span>
+                    <span class="meta-pill gold">Conecta com API do Admin</span>
+                </div>
+            </div>
+            <div class="hero-actions compact-actions">
+                <a class="btn btn-primary" href="{{ url_for('agent_chat_page') }}">Abrir Chat Agente</a>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Conteúdos exclusivos</span>
+            <h2>Trilha liberada para seu cargo</h2>
+        </div>
+        <div class="card-grid three">
+            {% for module in available_modules %}
+            {% set latest = attempts_map.get(module.id) %}
+            <article class="card module-card">
+                <div class="module-head">
+                    <span class="meta-pill">Acesso mínimo: {{ all_roles[module.min_role_level - 1].name if all_roles|length >= module.min_role_level else module.min_role_level }}</span>
+                    <span class="meta-pill gold">Meta: {{ all_roles[module.target_role_level - 1].name if all_roles|length >= module.target_role_level else module.target_role_level }}</span>
+                </div>
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.summary }}</p>
+                {% if latest %}
+                <div class="attempt-box {{ 'success' if latest.passed else 'danger' }}">
+                    Última prova: {{ latest.score }}% · {{ 'Aprovado' if latest.passed else 'Reprovado' }}
+                </div>
+                {% else %}
+                <div class="attempt-box neutral">Você ainda não fez a prova deste módulo.</div>
+                {% endif %}
+                <div class="hero-actions compact-actions">
+                    <a class="btn btn-secondary" href="{{ url_for('module_detail', slug=module.slug) }}">Ler conteúdo</a>
+                    <a class="btn btn-primary" href="{{ url_for('take_exam', slug=module.slug) }}">Fazer prova</a>
+                </div>
+            </article>
+            {% else %}
+            <article class="card">
+                <h3>Nenhum conteúdo liberado ainda</h3>
+                <p>O administrador ainda não publicou módulos compatíveis com seu cargo.</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Histórico</span>
+            <h2>Últimas tentativas</h2>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Módulo</th>
+                        <th>Nota</th>
+                        <th>Resultado</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in recent_attempts %}
+                    <tr>
+                        <td>{{ attempt.module.title }}</td>
+                        <td>{{ attempt.score }}%</td>
+                        <td>{{ 'Aprovado' if attempt.passed else 'Reprovado' }}</td>
+                        <td>{{ attempt.created_at|datetime_br }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">Você ainda não fez nenhuma prova.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "portugues/base.html" %}
+{% block title %}{{ lesson.label }} - {{ site_overview.course_title }}{% endblock %}
+
+{% block page_data %}
+<script>
+  window.__LESSON_PAGE__ = {
+    slug: {{ lesson.slug | tojson }},
+    label: {{ lesson.label | tojson }},
+    quizItems: {{ related_quiz | tojson }}
+  };
+</script>
+{% endblock %}
+
+{% block content %}
+<main class="lesson-layout">
+  <aside class="lesson-sidebar reveal">
+    <div class="sidebar-card">
+      <span class="eyebrow">{{ lesson.stage_title }}</span>
+      <h1>{{ lesson.label }}</h1>
+      <p>{{ lesson.summary }}</p>
+      <div class="lesson-meta stacked">
+        <span>Páginas {{ lesson.page_start }} a {{ lesson.page_end }}</span>
+        <span>Leitura estimada: {{ lesson.reading_minutes }} min</span>
+        <span>Cargo mínimo: {{ lesson.required_role_name }}</span>
+      </div>
+      <div class="lesson-tools">
+        <button class="btn btn-primary btn-small" id="toggleStudyButton" data-lesson-toggle="{{ lesson.slug }}">Marcar como estudada</button>
+        <a class="btn btn-ghost btn-small" href="{{ url_for('portugues_practice') }}">Praticar este assunto</a>
+      </div>
+    </div>
+
+    {% if lesson.assets.checklist %}
+    <div class="sidebar-card">
+      <h2>Checklist da lição</h2>
+      <div class="checklist">
+        {% for item in lesson.assets.checklist %}
+        <label class="check-item">
+          <input type="checkbox" class="lesson-check" data-lesson-check="{{ lesson.slug }}::{{ loop.index }}">
+          <span>{{ item }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if lesson.headings %}
+    <div class="sidebar-card toc-card">
+      <h2>Nesta lição</h2>
+      <nav class="toc">
+        {% for heading in lesson.headings %}
+        <a href="#{{ heading.anchor }}">{{ heading.title }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+    {% endif %}
+  </aside>
+
+  <section class="lesson-content">
+    <article class="content-shell reveal">
+      <div class="lesson-banner">
+        <div>
+          <span class="eyebrow">Leitura guiada</span>
+          <h2>Resumo e conteúdo extraído</h2>
+        </div>
+        <span class="study-status-pill" id="lessonStatusPill">Ainda não marcada</span>
+      </div>
+
+      {% if lesson.assets.quick_points %}
+      <div class="quick-points">
+        {% for point in lesson.assets.quick_points %}
+        <div class="quick-point">{{ point }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% for block in lesson.blocks %}
+        {% if block.startswith('## ') %}
+          {% set heading = block[3:] %}
+          <h2 id="{{ heading|slugify }}">{{ heading }}</h2>
+        {% elif block.startswith('○ ') %}
+          <div class="bullet-line">{{ block[2:] }}</div>
+        {% else %}
+          <p>{{ block }}</p>
+        {% endif %}
+      {% endfor %}
+    </article>
+
+    {% if related_quiz %}
+    <section class="revision-card reveal">
+      <div class="panel-heading compact">
+        <div>
+          <span class="eyebrow">Exercícios da lição</span>
+          <h2>Treinar agora mesmo</h2>
+        </div>
+      </div>
+      <div id="lessonExerciseApp" class="lesson-exercise-app">
+        <div class="quiz-empty">Carregando exercício desta lição...</div>
+      </div>
+    </section>
+    {% endif %}
+
+    <section class="notes-card reveal">
+      <div class="panel-heading compact">
+        <div>
+          <span class="eyebrow">Suas anotações</span>
+          <h2>Guardar dúvidas e observações</h2>
+        </div>
+      </div>
+      <textarea id="lessonNotes" data-lesson-notes="{{ lesson.slug }}" placeholder="Escreva aqui o que você entendeu, exemplos próprios, dúvidas e lembretes..."></textarea>
+      <div class="notes-status" id="notesStatus">Nada salvo ainda.</div>
+    </section>
+
+    {% if related_flashcards %}
+    <section class="revision-card reveal">
+      <div class="panel-heading compact">
+        <div>
+          <span class="eyebrow">Revisão rápida</span>
+          <h2>Flashcards deste tema</h2>
+        </div>
+      </div>
+      <div class="mini-flashcards">
+        {% for card in related_flashcards %}
+        <article class="mini-flashcard">
+          <strong>{{ card.front }}</strong>
+          <p>{{ card.back }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <nav class="lesson-pagination reveal">
+      {% if prev_lesson %}
+      <a class="page-nav" href="{{ url_for('portugues_lesson_detail', slug=prev_lesson.slug) }}">
+        <small>Lição anterior</small>
+        <strong>{{ prev_lesson.label }}</strong>
+      </a>
+      {% else %}
+      <span></span>
+      {% endif %}
+
+      {% if next_lesson %}
+      <a class="page-nav align-right" href="{{ url_for('portugues_lesson_detail', slug=next_lesson.slug) }}">
+        <small>Próxima lição</small>
+        <strong>{{ next_lesson.label }}</strong>
+      </a>
+      {% endif %}
+    </nav>
+  </section>
+</main>
+{% endblock %}

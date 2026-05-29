@@ -1,0 +1,27 @@
+{% extends "ingles/base.html" %}
+{% block title %}Frasebook{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Frasebook</p>
+    <h1>Frases prontas para destravar</h1>
+    <p class="lead">Use estas estruturas como base, depois troque palavras e adapte para sua vida real.</p>
+  </div>
+</section>
+<section class="phrasebook-grid reveal">
+  {% for section in sections %}
+  <article class="panel">
+    <p class="eyebrow">{{ section.context }}</p>
+    <h2>{{ section.title }}</h2>
+    <div class="phrase-lines">
+      {% for line in section.lines %}
+      <div class="phrase-line">
+        <strong>{{ line.en }}</strong>
+        <span>{{ line.pt }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

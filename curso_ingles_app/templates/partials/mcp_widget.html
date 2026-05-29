@@ -1,0 +1,31 @@
+<div class="portal-mcp" data-portal-mcp data-mcp-endpoint="{{ url_for('portal_mcp_chat') }}">
+  <button class="portal-mcp-button" type="button" data-mcp-toggle aria-label="Abrir MCP contextual">
+    <img src="{{ url_for('static', filename='img/lobo.png') }}" alt="MCP Lobo">
+    <span>MCP</span>
+  </button>
+
+  <section class="portal-mcp-panel" data-mcp-panel aria-hidden="true">
+    <header class="portal-mcp-header">
+      <div class="portal-mcp-avatar">
+        <img src="{{ url_for('static', filename='img/lobo.png') }}" alt="Lobo MCP">
+      </div>
+      <div>
+        <strong>MCP do Portal</strong>
+        <small>Contexto lógico da página atual</small>
+      </div>
+      <button type="button" class="portal-mcp-close" data-mcp-close aria-label="Fechar MCP">×</button>
+    </header>
+
+    <div class="portal-mcp-body" data-mcp-messages>
+      <div class="portal-mcp-message bot">
+        <strong>Como posso ajudar?</strong>
+        <p>Faça uma pergunta específica sobre esta página. Vou usar o contexto da interface para responder com lógica.</p>
+      </div>
+    </div>
+
+    <form class="portal-mcp-form" data-mcp-form>
+      <textarea data-mcp-input rows="3" placeholder="Ex: o que esta tela faz? Como liberar esse módulo? Onde altero este card?"></textarea>
+      <button type="submit">Perguntar</button>
+    </form>
+  </section>
+</div>

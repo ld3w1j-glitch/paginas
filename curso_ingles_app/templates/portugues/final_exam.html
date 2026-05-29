@@ -1,0 +1,49 @@
+{% extends "portugues/base.html" %}
+{% block title %}Prova final - {{ site_overview.course_title }}{% endblock %}
+
+{% block page_data %}
+<script>
+  window.__FINAL_EXAM__ = {
+    questions: {{ exam_items | tojson }}
+  };
+</script>
+{% endblock %}
+
+{% block content %}
+<main class="final-exam-page">
+  <section class="practice-hero reveal">
+    <div>
+      <span class="eyebrow">Avaliação</span>
+      <h1>Prova final do curso</h1>
+      <p>
+        Esta rodada usa apenas os tópicos liberados para seu cargo atual, deixando a avaliação mais coerente com a etapa do membro.
+      </p>
+    </div>
+    <div class="practice-hero-metrics">
+      <article>
+        <strong>{{ exam_items | length }}</strong>
+        <span>questões liberadas</span>
+      </article>
+      <article>
+        <strong id="finalBestScore">0%</strong>
+        <span>melhor nota</span>
+      </article>
+      <article>
+        <strong id="finalLastScore">0%</strong>
+        <span>última nota</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="exam-shell reveal">
+    <div id="finalExamApp" class="final-exam-app">
+      <div class="exam-start">
+        <span class="eyebrow">Pronto para começar?</span>
+        <h2>Faça a prova no seu tempo</h2>
+        <p>As respostas ficam salvas localmente no navegador. Você pode refazer depois para tentar melhorar sua nota.</p>
+        <button class="btn btn-primary" id="startFinalExam">Começar prova</button>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

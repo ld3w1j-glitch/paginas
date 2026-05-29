@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-copy">
+            <span class="eyebrow">{{ site.subtitulo }}</span>
+            <h1>{{ site.nome }}</h1>
+            <p class="lead">{{ site.missao }}</p>
+            <blockquote>“{{ site.frase }}”</blockquote>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="{{ url_for('login') }}">Entrar na área interna</a>
+                <a class="btn btn-secondary" href="{{ url_for('regimento') }}">Ler regimento</a>
+            </div>
+        </div>
+
+        <div class="hero-art">
+            <img src="{{ url_for('static', filename='img/brasao-completo.png') }}" alt="Brasão completo da Legião">
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow">Fundamento institucional</span>
+            <h2>Pilares centrais</h2>
+        </div>
+
+        <div class="card-grid four">
+            {% for item in site.principios %}
+            <article class="card icon-card">
+                <img src="{{ url_for('static', filename='img/escudo.png') }}" alt="Símbolo do escudo">
+                <h3>{{ item.titulo }}</h3>
+                <p>{{ item.texto }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container split-grid">
+        <div>
+            <div class="section-head left">
+                <span class="eyebrow">Acesso restrito</span>
+                <h2>Portal interno com progressão por mérito</h2>
+            </div>
+            <ul class="feature-list">
+                <li>Apenas membros autorizados entram com login.</li>
+                <li>Somente o admin cria novos acessos e altera cargos.</li>
+                <li>Conteúdos exclusivos aparecem conforme o cargo liberado.</li>
+                <li>Cada etapa pode ter prova para progressão ao próximo nível.</li>
+            </ul>
+        </div>
+
+        <div class="image-panel">
+            <img src="{{ url_for('static', filename='img/lobo.png') }}" alt="Lobo simbólico da Legião">
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="eyebrow">Trilha inicial</span>
+            <h2>Materiais já preparados</h2>
+        </div>
+
+        <div class="card-grid three">
+            {% for module in featured_modules %}
+            <article class="card timeline-card">
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.summary }}</p>
+                <div class="meta-pill">Acesso mínimo: {{ all_roles[module.min_role_level - 1].name if all_roles|length >= module.min_role_level else module.min_role_level }}</div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Hierarquia</span>
+        <h1>Cargos, deveres e responsabilidade</h1>
+        <p class="lead">Cada nível representa dever ético crescente e capacidade de servir ao conjunto.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="levels-grid">
+            {% for nivel in site.hierarquia %}
+            <article class="card level-card">
+                <span class="roman-badge">{{ nivel.nivel }}</span>
+                <h2>{{ nivel.designacao }}</h2>
+                <p>{{ nivel.responsabilidade }}</p>
+                <div class="meta-pill">Acesso: {{ nivel.acesso }}</div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container split-grid">
+        <div>
+            <div class="section-head left">
+                <span class="eyebrow">Funções sugeridas</span>
+                <h2>Campos de atuação simbólica</h2>
+            </div>
+            <ul class="feature-list feature-columns">
+                {% for funcao in site.funcoes %}
+                <li>{{ funcao }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card statement-card">
+            <span class="eyebrow">Compromisso</span>
+            <h3>Termo simbólico resumido</h3>
+            <p>{{ site.termo_simbolico }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

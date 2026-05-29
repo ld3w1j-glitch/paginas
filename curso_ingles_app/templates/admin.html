@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Admin</span>
+        <h1>Painel do administrador</h1>
+        <p class="lead">Aqui você cria logins, delega cargos, publica conteúdos e organiza as provas de progressão.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container card-grid two admin-grid-top">
+        <article class="card form-card">
+            <div class="section-head left small-gap">
+                <span class="eyebrow">Novo acesso</span>
+                <h2>Criar login</h2>
+            </div>
+            <form method="post" class="form-grid">
+                <input type="hidden" name="action" value="create_user">
+                <label><span>Nome</span><input type="text" name="name" required></label>
+                <label><span>E-mail</span><input type="email" name="email" required></label>
+                <label><span>Senha inicial</span><input type="text" name="password" required></label>
+                <label>
+                    <span>Cargo inicial</span>
+                    <select name="role_level">
+                        {% for role in all_roles %}
+                        <option value="{{ role.level }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button class="btn btn-primary btn-full" type="submit">Criar usuário</button>
+            </form>
+        </article>
+
+        <article class="card form-card">
+            <div class="section-head left small-gap">
+                <span class="eyebrow">Novo conteúdo</span>
+                <h2>Criar módulo exclusivo</h2>
+            </div>
+            <form method="post" class="form-grid">
+                <input type="hidden" name="action" value="create_module">
+                <label><span>Título</span><input type="text" name="title" required></label>
+                <label><span>Slug opcional</span><input type="text" name="slug" placeholder="sera-gerado-automaticamente"></label>
+                <label><span>Resumo</span><textarea name="summary" rows="2" required></textarea></label>
+                <label><span>Conteúdo</span><textarea name="content" rows="8" required></textarea></label>
+                <div class="inline-fields">
+                    <label>
+                        <span>Cargo mínimo para ver</span>
+                        <select name="min_role_level">
+                            {% for role in all_roles %}
+                            <option value="{{ role.level }}">{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>
+                        <span>Cargo alvo da prova</span>
+                        <select name="target_role_level">
+                            {% for role in all_roles %}
+                            <option value="{{ role.level }}">{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>
+                        <span>Nota mínima (%)</span>
+                        <input type="number" name="passing_score" value="70" min="1" max="100" required>
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-full" type="submit">Publicar módulo</button>
+            </form>
+        </article>
+    </div>
+</section>
+
+
+
+<section class="section">
+    <div class="container">
+        <article class="card form-card admin-ai-card">
+            <div class="section-head left small-gap">
+                <span class="eyebrow">IA do Portal</span>
+                <h2>Conectar Gemini ou Ollama local</h2>
+                <p class="lead small-lead">
+                    Esta configuração alimenta o MCP do lobo e o Chat Agente. Usuários comuns não veem chaves, modelo ou URL interna.
+                </p>
+            </div>
+
+            <form method="post" class="form-grid">
+                {% set provider = mcp_config.provider if mcp_config else 'gemini' %}
+                <label>
+                    <span>Provedor principal</span>
+                    <select name="ai_provider">
+                        <option value="gemini" {% if provider != 'ollama' %}selected{% endif %}>Google Gemini API</option>
+                        <option value="ollama" {% if provider == 'ollama' %}selected{% endif %}>Ollama local</option>
+                    </select>
+                    <small>Escolha Gemini para usar chave de API ou Ollama para usar modelo rodando no seu computador/servidor.</small>
+                </label>
+
+                <div class="inline-fields">
+                    <label>
+                        <span>Google API Key</span>
+                        <input type="password" name="mcp_google_api_key" placeholder="Cole a chave apenas se quiser salvar ou trocar">
+                        <small>{% if mcp_has_key %}Já existe uma chave salva. Por segurança, ela não é exibida.{% else %}Nenhuma chave Gemini salva.{% endif %}</small>
+                    </label>
+                    <label>
+                        <span>Modelo Gemini</span>
+                        <select name="mcp_gemini_model">
+                            {% set current_model = mcp_config.model if mcp_config else 'gemini-2.5-flash' %}
+                            <option value="gemini-2.5-flash" {% if current_model == 'gemini-2.5-flash' %}selected{% endif %}>gemini-2.5-flash</option>
+                            <option value="gemini-2.5-flash-lite" {% if current_model == 'gemini-2.5-flash-lite' %}selected{% endif %}>gemini-2.5-flash-lite</option>
+                            <option value="gemini-2.5-pro" {% if current_model == 'gemini-2.5-pro' %}selected{% endif %}>gemini-2.5-pro</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="inline-fields">
+                    <label>
+                        <span>URL do Ollama</span>
+                        <input type="text" id="ollamaBaseUrlInput" name="ollama_base_url" value="{{ mcp_config.ollama_base_url if mcp_config else 'http://localhost:11434' }}" placeholder="http://localhost:11434">
+                        <small>No Railway, Ollama local só funciona se existir um serviço/URL acessível pelo deploy.</small>
+                    </label>
+                    <label>
+                        <span>Modelo Ollama conectado</span>
+                        <input type="text" id="ollamaModelInput" name="ollama_model" value="{{ mcp_config.ollama_model if mcp_config else 'llama3.1' }}" placeholder="llama3.1, qwen2.5-coder:7b, mistral, deepseek-r1">
+                    </label>
+                </div>
+
+                <div class="ollama-scan-panel" data-current-model="{{ mcp_config.ollama_model if mcp_config else '' }}">
+                    <div class="ollama-scan-head">
+                        <div>
+                            <strong>Escanear modelos locais instalados</strong>
+                            <small>Busca automaticamente no Ollama aberto neste computador/servidor usando <code>/api/tags</code>.</small>
+                        </div>
+                        <button class="btn btn-secondary" type="button" id="scanOllamaModelsBtn">Escanear Ollama</button>
+                    </div>
+                    <div class="ollama-scan-status" id="ollamaScanStatus">Clique em escanear para carregar a lista de modelos instalados.</div>
+                    <div class="ollama-model-list" id="ollamaModelList"></div>
+                </div>
+
+                <label class="checkbox-row">
+                    <input type="checkbox" name="clear_mcp_key">
+                    <span>Remover chave Gemini salva</span>
+                </label>
+                <div class="inline-fields">
+                    <button class="btn btn-primary" type="submit" name="action" value="save_mcp_api">Salvar configuração da IA</button>
+                    <button class="btn btn-secondary" type="submit" name="action" value="test_mcp_api">Testar conexão</button>
+                </div>
+            </form>
+        </article>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Gestão de usuários</span>
+            <h2>Editar, ativar ou remover acessos</h2>
+            <p class="lead small-lead">O administrador pode alterar nome, login/e-mail, senha, cargo, permissão de admin e status de acesso. Para segurança, o usuário logado não pode apagar ou desativar a si mesmo.</p>
+        </div>
+        <div class="card-grid two">
+            {% for user in users %}
+            <article class="card member-card">
+                <div class="member-top">
+                    <div>
+                        <h3>{{ user.name }}</h3>
+                        <p>{{ user.email }}</p>
+                    </div>
+                    <span class="meta-pill {{ 'gold' if user.is_admin else '' }}">{{ 'Admin' if user.is_admin else user.role.name }}</span>
+                </div>
+
+                <form method="post" class="form-grid compact-form">
+                    <input type="hidden" name="action" value="update_user">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+
+                    <label>
+                        <span>Nome</span>
+                        <input type="text" name="name" value="{{ user.name }}" required>
+                    </label>
+
+                    <label>
+                        <span>Login / e-mail</span>
+                        <input type="text" name="email" value="{{ user.email }}" required>
+                    </label>
+
+                    <label>
+                        <span>Nova senha <small>(deixe vazio para manter)</small></span>
+                        <input type="text" name="password" placeholder="Digite apenas se quiser trocar">
+                    </label>
+
+                    <label>
+                        <span>Cargo</span>
+                        <select name="role_level">
+                            {% for role in all_roles %}
+                            <option value="{{ role.level }}" {% if user.role.level == role.level %}selected{% endif %}>{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <div class="inline-fields admin-user-toggles">
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %} {% if user.id == current_user.id %}disabled{% endif %}>
+                            <span>Acesso ativo</span>
+                        </label>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="is_admin" {% if user.is_admin %}checked{% endif %} {% if user.id == current_user.id %}disabled{% endif %}>
+                            <span>Administrador</span>
+                        </label>
+                    </div>
+
+                    {% if user.id == current_user.id %}
+                    <input type="hidden" name="is_active" value="on">
+                    <input type="hidden" name="is_admin" value="on">
+                    <p class="muted-note">Este é o usuário logado. Por segurança, ele continuará ativo e administrador.</p>
+                    {% endif %}
+
+                    <button class="btn btn-secondary btn-full" type="submit">Salvar alterações</button>
+                </form>
+
+                {% if user.id != current_user.id %}
+                <form method="post" class="compact-form delete-user-form" onsubmit="return confirm('Tem certeza que deseja remover este usuário? Essa ação também apaga o histórico de provas dele.');">
+                    <input type="hidden" name="action" value="delete_user">
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <button class="btn btn-danger btn-full" type="submit">Remover usuário</button>
+                </form>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Gestão de conteúdo</span>
+            <h2>Controle de acesso por cargo</h2>
+        </div>
+        <div class="card-grid two">
+            {% for module in modules %}
+            <article class="card module-card admin-module-card">
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.summary }}</p>
+                <form method="post" class="form-grid compact-form">
+                    <input type="hidden" name="action" value="update_module">
+                    <input type="hidden" name="module_id" value="{{ module.id }}">
+                    <div class="inline-fields">
+                        <label>
+                            <span>Cargo mínimo</span>
+                            <select name="min_role_level">
+                                {% for role in all_roles %}
+                                <option value="{{ role.level }}" {% if module.min_role_level == role.level %}selected{% endif %}>{{ role.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label>
+                            <span>Cargo alvo</span>
+                            <select name="target_role_level">
+                                {% for role in all_roles %}
+                                <option value="{{ role.level }}" {% if module.target_role_level == role.level %}selected{% endif %}>{{ role.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label>
+                            <span>Nota mínima</span>
+                            <input type="number" name="passing_score" value="{{ module.passing_score }}" min="1" max="100">
+                        </label>
+                    </div>
+                    <label class="checkbox-row">
+                        <input type="checkbox" name="is_published" {% if module.is_published %}checked{% endif %}>
+                        <span>Conteúdo publicado</span>
+                    </label>
+                    <button class="btn btn-secondary btn-full" type="submit">Salvar configurações</button>
+                </form>
+                <div class="module-divider"></div>
+                <form method="post" class="form-grid compact-form">
+                    <input type="hidden" name="action" value="add_question">
+                    <input type="hidden" name="module_id" value="{{ module.id }}">
+                    <h4>Adicionar questão</h4>
+                    <label><span>Pergunta</span><textarea name="prompt" rows="2" required></textarea></label>
+                    <label><span>Alternativa A</span><input type="text" name="option_a" required></label>
+                    <label><span>Alternativa B</span><input type="text" name="option_b" required></label>
+                    <label><span>Alternativa C</span><input type="text" name="option_c" required></label>
+                    <label><span>Alternativa D</span><input type="text" name="option_d" required></label>
+                    <div class="inline-fields">
+                        <label>
+                            <span>Correta</span>
+                            <select name="correct_option">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </label>
+                        <label class="wide-field"><span>Explicação</span><input type="text" name="explanation"></label>
+                    </div>
+                    <button class="btn btn-primary btn-full" type="submit">Adicionar questão</button>
+                </form>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Atividade recente</span>
+            <h2>Últimas provas registradas</h2>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Módulo</th>
+                        <th>Nota</th>
+                        <th>Resultado</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in attempts %}
+                    <tr>
+                        <td>{{ attempt.user.name }}</td>
+                        <td>{{ attempt.module.title }}</td>
+                        <td>{{ attempt.score }}%</td>
+                        <td>{{ 'Aprovado' if attempt.passed else 'Reprovado' }}</td>
+                        <td>{{ attempt.created_at|datetime_br }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">Nenhuma prova registrada ainda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<script>
+(function(){
+  const scanBtn = document.getElementById('scanOllamaModelsBtn');
+  const list = document.getElementById('ollamaModelList');
+  const status = document.getElementById('ollamaScanStatus');
+  const baseInput = document.getElementById('ollamaBaseUrlInput');
+  const modelInput = document.getElementById('ollamaModelInput');
+  const providerSelect = document.querySelector('select[name="ai_provider"]');
+
+  function escapeHtml(value){
+    return String(value || '').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch] || ch));
+  }
+
+  function setStatus(text, type){
+    if(!status) return;
+    status.textContent = text;
+    status.className = 'ollama-scan-status ' + (type || '');
+  }
+
+  function renderModels(models){
+    if(!list) return;
+    if(!models || !models.length){
+      list.innerHTML = '<div class="ollama-empty">Nenhum modelo encontrado. No terminal, use <code>ollama list</code> para confirmar.</div>';
+      return;
+    }
+    const current = (modelInput && modelInput.value || '').trim();
+    list.innerHTML = models.map(model => {
+      const name = model.name || model.model || '';
+      const meta = [model.parameter_size, model.quantization_level, model.family, model.size_gb ? (model.size_gb + ' GB') : ''].filter(Boolean).join(' · ');
+      const active = name === current ? ' active' : '';
+      return '<button type="button" class="ollama-model-card' + active + '" data-ollama-model="' + escapeHtml(name) + '">' +
+        '<strong>' + escapeHtml(name) + '</strong>' +
+        '<small>' + escapeHtml(meta || 'Modelo local Ollama') + '</small>' +
+        '<span>Usar este modelo</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  async function scanModels(){
+    const baseUrl = (baseInput && baseInput.value || 'http://localhost:11434').trim();
+    setStatus('Escaneando modelos no Ollama...', 'loading');
+    if(list) list.innerHTML = '';
+    try{
+      const response = await fetch('{{ url_for("admin_ollama_models") }}?base_url=' + encodeURIComponent(baseUrl));
+      const data = await response.json();
+      if(!data.ok){
+        setStatus((data.message || 'Não consegui conectar ao Ollama.') + (data.hint ? ' ' + data.hint : ''), 'error');
+        renderModels([]);
+        return;
+      }
+      setStatus(data.message || 'Modelos carregados.', data.models && data.models.length ? 'success' : 'warning');
+      renderModels(data.models || []);
+    }catch(error){
+      setStatus('Erro ao escanear Ollama. Confira se o Flask está rodando e tente novamente.', 'error');
+    }
+  }
+
+  async function useModel(model){
+    const baseUrl = (baseInput && baseInput.value || 'http://localhost:11434').trim();
+    setStatus('Conectando modelo ' + model + '...', 'loading');
+    try{
+      const response = await fetch('{{ url_for("admin_ollama_use_model") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({model, base_url: baseUrl})
+      });
+      const data = await response.json();
+      if(!data.ok){ setStatus(data.message || 'Não consegui conectar o modelo.', 'error'); return; }
+      if(modelInput) modelInput.value = data.model || model;
+      if(baseInput) baseInput.value = data.base_url || baseUrl;
+      if(providerSelect) providerSelect.value = 'ollama';
+      setStatus(data.message || 'Modelo conectado.', 'success');
+      document.querySelectorAll('.ollama-model-card').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-ollama-model') === model));
+    }catch(error){
+      setStatus('Erro ao salvar o modelo selecionado.', 'error');
+    }
+  }
+
+  if(scanBtn){ scanBtn.addEventListener('click', scanModels); }
+  if(list){
+    list.addEventListener('click', function(event){
+      const btn = event.target.closest('[data-ollama-model]');
+      if(btn) useModel(btn.getAttribute('data-ollama-model'));
+    });
+  }
+})();
+</script>
+{% endblock %}

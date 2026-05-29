@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Capítulo I</span>
+        <h1>Princípios de base</h1>
+        <p class="lead">A fundação simbólica e ética que orienta a comunidade.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="card-grid two">
+            {% for item in site.principios %}
+            <article class="card principle-card">
+                <img src="{{ url_for('static', filename='img/escudo.png') }}" alt="Escudo institucional">
+                <div>
+                    <h2>{{ item.titulo }}</h2>
+                    <p>{{ item.texto }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

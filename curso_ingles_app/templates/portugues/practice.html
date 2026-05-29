@@ -1,0 +1,107 @@
+{% extends "portugues/base.html" %}
+{% block title %}Praticar - {{ site_overview.course_title }}{% endblock %}
+
+{% block page_data %}
+<script>
+  window.__PRACTICE__ = {
+    quizzes: {{ quiz_items | tojson }},
+    flashcards: {{ flashcards | tojson }}
+  };
+</script>
+{% endblock %}
+
+{% block content %}
+<main class="practice-page">
+  <section class="practice-hero reveal">
+    <div>
+      <span class="eyebrow">Modo interativo</span>
+      <h1>Treinar, revisar e fixar</h1>
+      <p>
+        Esta área agora respeita o cargo do membro e usa apenas as lições já liberadas no seu percurso.
+      </p>
+    </div>
+    <div class="practice-hero-metrics">
+      <article>
+        <strong>{{ quiz_items | length }}</strong>
+        <span>questões liberadas</span>
+      </article>
+      <article>
+        <strong>{{ flashcards | length }}</strong>
+        <span>flashcards liberados</span>
+      </article>
+      <article>
+        <strong id="practiceBestScore">0%</strong>
+        <span>melhor acerto</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="practice-grid">
+    <article class="practice-card reveal">
+      <div class="panel-heading compact">
+        <div>
+          <span class="eyebrow">Quiz</span>
+          <h2>Perguntas de múltipla escolha</h2>
+        </div>
+      </div>
+
+      <div class="practice-filter-bar">
+        <label>
+          <span>Filtrar por lição</span>
+          <select id="practiceLessonFilter"></select>
+        </label>
+        <button class="btn btn-ghost btn-small" id="practiceShuffle">Misturar</button>
+      </div>
+
+      <div id="quizApp" class="quiz-app">
+        <div class="quiz-empty">Carregando exercício...</div>
+      </div>
+    </article>
+
+    <aside class="practice-side reveal">
+      <article class="practice-card flashcard-card">
+        <div class="panel-heading compact">
+          <div>
+            <span class="eyebrow">Flashcards</span>
+            <h2>Virar e revisar</h2>
+          </div>
+        </div>
+        <div id="flashcardApp" class="flashcard-app">
+          <div class="flashcard-face front">Carregando...</div>
+        </div>
+        <div class="flashcard-actions">
+          <button class="btn btn-secondary btn-small" id="flashcardPrev">Anterior</button>
+          <button class="btn btn-primary btn-small" id="flashcardFlip">Virar</button>
+          <button class="btn btn-secondary btn-small" id="flashcardNext">Próximo</button>
+        </div>
+      </article>
+
+      <article class="practice-card stats-card">
+        <div class="panel-heading compact">
+          <div>
+            <span class="eyebrow">Seu histórico</span>
+            <h2>Resumo rápido</h2>
+          </div>
+        </div>
+        <div class="stats-list">
+          <div><strong id="quizHits">0</strong><span>acertos acumulados</span></div>
+          <div><strong id="quizAttempts">0</strong><span>respostas dadas</span></div>
+          <div><strong id="studiedOnPractice">0</strong><span>lições marcadas</span></div>
+          <div><strong id="practiceProgressCounter">0%</strong><span>progresso da prática</span></div>
+        </div>
+      </article>
+
+      <article class="practice-card callout-card">
+        <div class="panel-heading compact">
+          <div>
+            <span class="eyebrow">Fechamento</span>
+            <h2>Quando terminar</h2>
+          </div>
+        </div>
+        <p>Depois do treino, vá para a prova final para testar o conteúdo de forma mais ampla e medir seu resultado.</p>
+        <a class="btn btn-primary btn-small" href="{{ url_for('portugues_final_exam') }}">Abrir prova final</a>
+      </article>
+    </aside>
+  </section>
+</main>
+{% endblock %}

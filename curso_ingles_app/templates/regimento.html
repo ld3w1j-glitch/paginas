@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Documento base</span>
+        <h1>Regimento e leitura institucional</h1>
+        <p class="lead">Síntese navegável do conteúdo institucional estruturado para leitura web.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-grid align-start">
+        <div>
+            <div class="section-head left">
+                <span class="eyebrow">Preâmbulo</span>
+                <h2>Finalidade do portal</h2>
+            </div>
+            {% for paragrafo in site.preambulo %}
+            <p class="body-copy">{{ paragrafo }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="image-panel sticky-art">
+            <img src="{{ url_for('static', filename='img/escudo.png') }}" alt="Escudo institucional">
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Condutas vedadas</span>
+            <h2>Proteção da integridade interna</h2>
+        </div>
+        <div class="card-grid two">
+            {% for item in site.condutas_vedadas %}
+            <article class="card alert-card">
+                <h3>Vedação</h3>
+                <p>{{ item }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

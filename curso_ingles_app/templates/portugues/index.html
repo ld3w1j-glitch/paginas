@@ -1,0 +1,296 @@
+{% extends "portugues/base.html" %}
+{% block title %}Início - {{ site_overview.course_title }}{% endblock %}
+
+{% block content %}
+<main>
+  <section class="hero hero-split">
+    <div class="hero-ornament hero-ornament-left"></div>
+    <div class="hero-ornament hero-ornament-right"></div>
+
+    <div class="hero-panel hero-panel-left reveal">
+      <span class="eyebrow">Curso interno estruturado</span>
+      <h1>{{ overview.course_title }}</h1>
+      <p class="hero-text">
+        Agora o curso ficou com uma vitrine mais organizada, leitura melhor e desbloqueio por cargo.
+        Cada núcleo libera novas lições conforme o membro avança dentro da área interna.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#licoes">Ver lições</a>
+        <a class="btn btn-secondary" href="{{ url_for('dashboard') }}">Voltar ao portal</a>
+      </div>
+
+      <div class="hero-stats">
+        <article>
+          <strong>{{ site_meta.accessible_lessons }}</strong>
+          <span>lições liberadas agora</span>
+        </article>
+        <article>
+          <strong>{{ site_meta.locked_lessons }}</strong>
+          <span>lições bloqueadas por cargo</span>
+        </article>
+        <article>
+          <strong>{{ current_user.role.name }}</strong>
+          <span>nível atual do membro</span>
+        </article>
+      </div>
+    </div>
+
+    <div class="hero-panel hero-panel-right reveal">
+      <div class="cover-card">
+        <img src="{{ url_for('static', filename='portugues/img/cover.png') }}" alt="Capa do material base">
+      </div>
+      <div class="hero-quote">
+        <span class="eyebrow">Leitura organizada</span>
+        <p>Visual mais limpo, hierarquia clara, cartões separados e mapa de progressão para o curso não ficar mais solto ou desestruturado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-grid reveal">
+    <article class="dashboard-card progress-dashboard">
+      <span class="eyebrow">Seu painel</span>
+      <h2>Progresso salvo no navegador</h2>
+      <div class="dashboard-metrics">
+        <div>
+          <strong id="studiedCount">0</strong>
+          <span>lições marcadas</span>
+        </div>
+        <div>
+          <strong id="notesCount">0</strong>
+          <span>anotações salvas</span>
+        </div>
+        <div>
+          <strong id="quizAccuracy">0%</strong>
+          <span>aproveitamento</span>
+        </div>
+      </div>
+
+      <div class="overall-progress-block">
+        <div class="progress-circle" id="overallProgressCircle" style="--progress: 0;">
+          <div class="progress-circle-inner">
+            <strong id="overallProgressPercent">0%</strong>
+            <span>geral</span>
+          </div>
+        </div>
+        <div class="overall-progress-copy">
+          <strong>Leitura + prática + avaliação</strong>
+          <p>O percentual geral cresce conforme você marca lições, responde questões e faz a prova final disponível para seu cargo.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="dashboard-card accent-card">
+      <span class="eyebrow">Acesso por cargo</span>
+      <h2>Como o curso libera conteúdo</h2>
+      <div class="path-steps">
+        <div><strong>1</strong><span>Seu cargo atual libera um conjunto inicial de lições.</span></div>
+        <div><strong>2</strong><span>A prática abre a partir de <b>{{ course_access.practice_min_role_name }}</b>.</span></div>
+        <div><strong>3</strong><span>A prova final abre a partir de <b>{{ course_access.final_exam_min_role_name }}</b>.</span></div>
+        <div><strong>4</strong><span>Os próximos núcleos aparecem conforme o admin avança seu acesso.</span></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="access-grid reveal">
+    <article class="access-card">
+      <span class="eyebrow">Seu nível atual</span>
+      <h3>{{ current_user.role.name }}</h3>
+      <p>Você já pode estudar <strong>{{ site_meta.accessible_lessons }}</strong> lições deste curso interno.</p>
+      <div class="access-tags">
+        <span class="access-tag">Leitura liberada</span>
+        {% if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level %}
+        <span class="access-tag success">Prática liberada</span>
+        {% else %}
+        <span class="access-tag muted">Prática em {{ course_access.practice_min_role_name }}</span>
+        {% endif %}
+        {% if current_user.is_admin or current_user.role.level >= course_access.final_exam_min_role_level %}
+        <span class="access-tag success">Prova final liberada</span>
+        {% else %}
+        <span class="access-tag muted">Prova final em {{ course_access.final_exam_min_role_name }}</span>
+        {% endif %}
+      </div>
+    </article>
+
+    {% if next_unlock %}
+    <article class="access-card highlighted">
+      <span class="eyebrow">Próximo desbloqueio</span>
+      <h3>{{ next_unlock.title }}</h3>
+      <p>{{ next_unlock.summary }}</p>
+      <div class="locked-requirement">Necessário atingir o cargo <strong>{{ next_unlock.required_role_name }}</strong>.</div>
+    </article>
+    {% else %}
+    <article class="access-card highlighted">
+      <span class="eyebrow">Tudo liberado</span>
+      <h3>Curso completo disponível</h3>
+      <p>Seu cargo atual já alcançou o topo das etapas deste curso de português.</p>
+      <div class="locked-requirement">Você já pode navegar por todos os núcleos.</div>
+    </article>
+    {% endif %}
+  </section>
+
+  <section class="phase-grid reveal">
+    {% for phase in phase_groups %}
+    <article class="phase-card {{ 'is-unlocked' if phase.is_unlocked else 'is-locked' }}">
+      <div class="phase-card-head">
+        <div>
+          <span class="eyebrow">Etapa do curso</span>
+          <h3>{{ phase.title }}</h3>
+        </div>
+        <span class="phase-status {{ 'success' if phase.is_unlocked else 'locked' }}">{{ 'Liberado' if phase.is_unlocked else 'Bloqueado' }}</span>
+      </div>
+      <p>{{ phase.summary }}</p>
+      <div class="locked-requirement">Cargo mínimo: <strong>{{ phase.required_role_name }}</strong></div>
+      <div class="phase-lessons-preview">
+        {% for lesson in phase.lessons[:3] %}
+        <span>{{ lesson.label }}</span>
+        {% endfor %}
+        {% if phase.lessons|length > 3 %}
+        <span>+ {{ phase.lessons|length - 3 }} lições</span>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </section>
+
+  <section class="module-progress-grid reveal">
+    <article class="module-progress-card">
+      <span class="eyebrow">Leitura</span>
+      <h3>Trilha das lições</h3>
+      <div class="module-progress-row">
+        <strong id="readingProgressPercent">0%</strong>
+        <span id="readingProgressLabel">0 de {{ site_meta.total_lessons }} lições</span>
+      </div>
+      <div class="module-track"><div class="module-track-bar" id="readingProgressBar"></div></div>
+    </article>
+
+    <article class="module-progress-card">
+      <span class="eyebrow">Prática</span>
+      <h3>Questões respondidas</h3>
+      <div class="module-progress-row">
+        <strong id="practiceProgressPercent">0%</strong>
+        <span id="practiceProgressLabel">0 de {{ site_meta.total_quizzes }} questões</span>
+      </div>
+      <div class="module-track"><div class="module-track-bar" id="practiceProgressBar"></div></div>
+    </article>
+
+    <article class="module-progress-card">
+      <span class="eyebrow">Avaliação</span>
+      <h3>Prova final</h3>
+      <div class="module-progress-row">
+        <strong id="examProgressPercent">0%</strong>
+        <span id="examProgressLabel">Ainda não realizada</span>
+      </div>
+      <div class="module-track"><div class="module-track-bar" id="examProgressBar"></div></div>
+    </article>
+  </section>
+
+  <section class="study-strip reveal">
+    <div class="panel-heading compact">
+      <div>
+        <span class="eyebrow">Atalho rápido</span>
+        <h2>Entradas boas para estudar hoje</h2>
+      </div>
+    </div>
+    <div class="featured-grid">
+      {% for lesson in featured %}
+      <a class="featured-card" href="{{ url_for('portugues_lesson_detail', slug=lesson.slug) }}">
+        <span>{{ lesson.stage_title }}</span>
+        <strong>{{ lesson.label }}</strong>
+        <small>{{ lesson.summary }}</small>
+      </a>
+      {% endfor %}
+      <a class="featured-card {{ 'highlighted' if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level else '' }}" href="{{ url_for('portugues_practice') }}">
+        <span>Modo interativo</span>
+        <strong>Quiz + flashcards</strong>
+        <small>
+          {% if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level %}
+          Revisão bonita e rápida com progresso salvo.
+          {% else %}
+          Disponível a partir de {{ course_access.practice_min_role_name }}.
+          {% endif %}
+        </small>
+      </a>
+      <a class="featured-card highlighted-strong" href="{{ url_for('portugues_final_exam') }}">
+        <span>Avaliação</span>
+        <strong>Prova final</strong>
+        <small>
+          {% if current_user.is_admin or current_user.role.level >= course_access.final_exam_min_role_level %}
+          Uma rodada fechando os principais tópicos do curso.
+          {% else %}
+          Disponível a partir de {{ course_access.final_exam_min_role_name }}.
+          {% endif %}
+        </small>
+      </a>
+    </div>
+  </section>
+
+  <section class="search-panel reveal">
+    <div class="panel-heading">
+      <span class="eyebrow">Busca rápida</span>
+      <h2>Encontre uma regra, classe gramatical ou dúvida</h2>
+    </div>
+    <form class="search-form" method="get" action="{{ url_for('portugues_home') }}">
+      <input
+        type="text"
+        name="q"
+        id="clientSearch"
+        value="{{ query }}"
+        placeholder="Ex.: substantivo, artigo, sintaxe, porquês..."
+        autocomplete="off"
+      >
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+    <div class="search-hint">A busca detalhada mostra apenas conteúdos já liberados para seu cargo.</div>
+  </section>
+
+  <section class="lessons-section" id="licoes">
+    <div class="section-header reveal">
+      <div>
+        <span class="eyebrow">Mapa de leitura</span>
+        <h2>Lições organizadas</h2>
+      </div>
+      <p>Agora cada cartão mostra melhor a etapa, o status e o requisito de acesso.</p>
+    </div>
+
+    <div class="lesson-grid">
+      {% if lessons %}
+        {% for lesson in lessons %}
+        <article class="lesson-card reveal {{ 'is-locked' if lesson.is_locked else '' }}" data-lesson-card="{{ lesson.slug }}">
+          <div class="lesson-badge">{{ lesson.stage_title }}</div>
+          <h3>{{ lesson.label }}</h3>
+          {% if lesson.is_locked %}
+          <p>Conteúdo reservado para membros com cargo <strong>{{ lesson.required_role_name }}</strong> ou superior.</p>
+          {% else %}
+          <p>{{ lesson.summary }}</p>
+          {% endif %}
+
+          <div class="lesson-meta">
+            <span>{{ lesson.page_start }}-{{ lesson.page_end }}</span>
+            <span>{{ lesson.reading_minutes }} min</span>
+            <span>{{ lesson.required_role_name }}</span>
+          </div>
+
+          <div class="lesson-card-footer">
+            {% if lesson.is_locked %}
+            <span class="lesson-link is-disabled">Conteúdo bloqueado</span>
+            <span class="study-status-chip is-locked">Bloqueado</span>
+            {% else %}
+            <a class="lesson-link" href="{{ url_for('portugues_lesson_detail', slug=lesson.slug) }}">
+              Abrir lição
+            </a>
+            <span class="study-status-chip" data-study-chip="{{ lesson.slug }}">Não estudada</span>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state reveal">
+          <h3>Nada encontrado</h3>
+          <p>Tente pesquisar com outra palavra.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

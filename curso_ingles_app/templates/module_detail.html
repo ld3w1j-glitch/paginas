@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Conteúdo exclusivo</span>
+        <h1>{{ module.title }}</h1>
+        <p class="lead">{{ module.summary }}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-grid align-start">
+        <article class="card prose-card">
+            <div class="section-head left">
+                <span class="eyebrow">Material</span>
+                <h2>Leitura orientada</h2>
+            </div>
+            <div class="body-copy rich-copy">{{ module.content|replace('\n', '<br>')|safe }}</div>
+        </article>
+
+        <aside class="card side-panel">
+            <span class="meta-pill">Cargo alvo: {{ target_role.name if target_role else 'Definir' }}</span>
+            <p>Nota mínima para aprovação: <strong>{{ module.passing_score }}%</strong></p>
+            {% if latest_attempt %}
+            <div class="attempt-box {{ 'success' if latest_attempt.passed else 'danger' }}">
+                Última tentativa: {{ latest_attempt.score }}% em {{ latest_attempt.created_at|datetime_br }}
+            </div>
+            {% endif %}
+            <a class="btn btn-primary btn-full" href="{{ url_for('take_exam', slug=module.slug) }}">Ir para a prova</a>
+        </aside>
+    </div>
+</section>
+{% endblock %}

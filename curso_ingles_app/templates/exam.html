@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Prova</span>
+        <h1>{{ module.title }}</h1>
+        <p class="lead">Responda com atenção. Nota mínima: {{ module.passing_score }}%.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container narrow exam-area">
+        <form method="post" class="card form-card exam-form">
+            {% for question in questions %}
+            <div class="question-block">
+                <h3>{{ loop.index }}. {{ question.prompt }}</h3>
+                <label class="option-row"><input type="radio" name="question_{{ question.id }}" value="A" required> <span>A. {{ question.option_a }}</span></label>
+                <label class="option-row"><input type="radio" name="question_{{ question.id }}" value="B"> <span>B. {{ question.option_b }}</span></label>
+                <label class="option-row"><input type="radio" name="question_{{ question.id }}" value="C"> <span>C. {{ question.option_c }}</span></label>
+                <label class="option-row"><input type="radio" name="question_{{ question.id }}" value="D"> <span>D. {{ question.option_d }}</span></label>
+            </div>
+            {% endfor %}
+            <button class="btn btn-primary btn-full" type="submit">Enviar prova</button>
+        </form>
+
+        {% if result %}
+        <article class="card result-card {{ 'success' if result.passed else 'danger' }}">
+            <h2>{{ 'Aprovado' if result.passed else 'Reprovado' }}</h2>
+            <p>Nota final: <strong>{{ result.score }}%</strong></p>
+            {% if result.promoted_to %}
+            <p>Seu cargo foi atualizado para <strong>{{ result.promoted_to }}</strong>.</p>
+            {% endif %}
+            <div class="feedback-list">
+                {% for item in result.feedback %}
+                <div class="feedback-item {{ 'success' if item.is_correct else 'danger' }}">
+                    <strong>{{ loop.index }}. {{ item.question.prompt }}</strong>
+                    <p>Sua resposta: {{ item.selected }} · Correta: {{ item.question.correct_option }}</p>
+                    {% if item.question.explanation %}
+                    <small>{{ item.question.explanation }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

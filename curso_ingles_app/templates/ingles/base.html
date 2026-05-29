@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ overview.site_name }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ingles/css/style.css') }}?v=sidebar-cursos-1">
+</head>
+<body class="with-course-sidebar">
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-grid"></div>
+
+  <aside class="course-sidebar english-sidebar">
+    <a class="course-sidebar-brand" href="{{ url_for('ingles_home') }}">
+      <span class="brand-mark">EN</span>
+      <span>
+        <strong>{{ overview.site_name }}</strong>
+        <small>curso guiado de inglês</small>
+      </span>
+    </a>
+
+    <form class="course-sidebar-search" action="{{ url_for('ingles_search') }}" method="get">
+      <input type="search" name="q" placeholder="buscar módulo, estrutura...">
+      <button class="btn btn-ghost" type="submit">Buscar</button>
+    </form>
+
+    <nav class="course-sidebar-nav">
+      <a href="/">← Central</a>
+      <a href="{{ url_for('dashboard') }}">Portal</a>
+      <a href="{{ url_for('agent_chat_page') }}">Chat Agente</a>
+      <a href="{{ url_for('ingles_home') }}">Início do inglês</a>
+      <a href="{{ url_for('ingles_practice') }}">Prática</a>
+      <a href="{{ url_for('ingles_phrasebook') }}">Frases</a>
+      <a href="{{ url_for('ingles_vocabulary') }}">Vocabulário</a>
+      <a href="{{ url_for('ingles_study_plan') }}">Plano</a>
+      <a href="{{ url_for('ingles_final_exam') }}">Prova final</a>
+    </nav>
+  </aside>
+
+  <div class="course-main-area shell">
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='ingles/js/main.js') }}"></script>
+  {% include "partials/mcp_widget.html" %}
+  <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
+</body>
+</html>

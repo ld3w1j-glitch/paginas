@@ -1,0 +1,54 @@
+{% extends "portugues/base.html" %}
+{% block title %}Buscar - {{ site_overview.course_title }}{% endblock %}
+
+{% block content %}
+<main class="search-page">
+  <section class="search-panel reveal">
+    <div class="panel-heading">
+      <span class="eyebrow">Busca dedicada</span>
+      <h1>Pesquisar no curso</h1>
+    </div>
+    <form class="search-form" method="get" action="{{ url_for('portugues_search') }}">
+      <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="Ex.: advérbio, pronome, oração subordinada..."
+        autocomplete="off"
+      >
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    <div class="search-hint">A busca percorre apenas as lições que já estão liberadas para seu cargo atual.</div>
+  </section>
+
+  <section class="results-list">
+    {% if query %}
+      {% if results %}
+        {% for item in results %}
+        <article class="result-card reveal">
+          <span class="lesson-badge">{{ item.lesson.stage_title }}</span>
+          <h2>{{ item.lesson.label }}</h2>
+          <p>{{ item.lesson.summary }}</p>
+
+          {% for match in item.matches %}
+          <div class="result-snippet">{{ match }}</div>
+          {% endfor %}
+
+          <a class="lesson-link" href="{{ url_for('portugues_lesson_detail', slug=item.lesson.slug) }}">Abrir lição</a>
+        </article>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state reveal">
+          <h2>Nenhum resultado</h2>
+          <p>Tente outra palavra.</p>
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state reveal">
+        <h2>Digite algo para pesquisar</h2>
+        <p>Você pode procurar regras, nomes de classes gramaticais e dúvidas específicas.</p>
+      </div>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}

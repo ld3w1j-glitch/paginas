@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Admissão</span>
+        <h1>Entrada com prudência e mérito</h1>
+        <p class="lead">O ingresso depende de observação, alinhamento real, estudo e evolução prática.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Etapas</span>
+            <h2>Processo de admissão</h2>
+        </div>
+
+        <div class="steps-grid">
+            {% for etapa in site.etapas_admissao %}
+            <article class="card step-card">
+                <span class="step-number">{{ etapa.etapa }}</span>
+                <h3>{{ etapa.nome }}</h3>
+                <p>{{ etapa.objetivo }}</p>
+                <small>{{ etapa.resultado }}</small>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Critérios</span>
+            <h2>Leitura de compatibilidade</h2>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Critério</th>
+                        <th>Sinais de compatibilidade</th>
+                        <th>Sinais de alerta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for linha in site.avaliacao %}
+                    <tr>
+                        <td>{{ linha.criterio }}</td>
+                        <td>{{ linha.compativel }}</td>
+                        <td>{{ linha.alerta }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

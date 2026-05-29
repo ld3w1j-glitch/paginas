@@ -1,0 +1,195 @@
+{% extends "ingles/base.html" %}
+{% block title %}{{ overview.site_name }}
+<section class="pillars reveal">
+  <article class="panel feature-card">
+    <p class="panel-kicker">Seu cargo atual</p>
+    <p><strong>{{ current_user.role.name }}</strong><br>Você já tem <strong>{{ site_meta.accessible_modules }}</strong> módulos liberados neste curso interno.</p>
+  </article>
+  <article class="panel feature-card">
+    <p class="panel-kicker">Prática</p>
+    <p>{% if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level %}Seu cargo já libera quiz e flashcards do curso.{% else %}Quiz e flashcards completos liberam em <strong>{{ course_access.practice_min_role_name }}</strong>.{% endif %}</p>
+  </article>
+  <article class="panel feature-card">
+    <p class="panel-kicker">Próximo desbloqueio</p>
+    <p>{% if next_unlock %}<strong>{{ next_unlock.title }}</strong><br>Requer cargo <strong>{{ next_unlock.required_role_name }}</strong>.{% else %}Seu acesso já alcançou o topo da trilha de inglês.{% endif %}</p>
+  </article>
+</section>
+{% endblock %}
+{% block content %}
+<section class="hero reveal">
+  <div class="hero-copy">
+    <p class="eyebrow">Projeto em Python · trilha expandida</p>
+    <h1>{{ overview.hero_title }}</h1>
+    <p class="lead">{{ overview.hero_subtitle }}</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#roadmap">Ver módulos</a>
+      <a class="btn btn-ghost" href="{{ url_for('ingles_practice') }}">Treinar agora</a>
+    </div>
+    <div class="stats">
+      {% for stat in overview.stats %}
+      <article class="stat-card">
+        <strong>{{ stat.value }}</strong>
+        <span>{{ stat.label }}</span>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="hero-panel panel">
+    <span class="hero-tag">mais forte que a versão anterior</span>
+    <h2>Agora com trilha por nível, vocabulário por módulo e prova final.</h2>
+    <p>O foco do site ficou mais prático: entrar por assunto, revisar padrão, falar em voz alta, testar, salvar progresso e voltar exatamente de onde parou.</p>
+    <div class="dashboard-pills">
+      <span class="soft-pill">Missões diárias</span>
+      <span class="soft-pill">Speaking drills</span>
+      <span class="soft-pill">Word bank</span>
+      <span class="soft-pill">Final exam</span>
+    </div>
+    <div class="progress-panel" data-dashboard-summary></div>
+  </div>
+</section>
+
+<section class="pillars reveal">
+  {% for pillar in overview.pillars %}
+  <article class="panel feature-card">
+    <p class="panel-kicker">{{ pillar.title }}</p>
+    <p>{{ pillar.text }}</p>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Painel inicial</p>
+    <h2>Missões e progresso</h2>
+  </div>
+</section>
+
+<section class="split reveal">
+  <div class="panel">
+    <p class="eyebrow">Missão da semana</p>
+    <div class="mission-grid">
+      {% for item in study_plan[:4] %}
+      <article class="mission-card">
+        <strong>{{ item.day }}</strong>
+        <span>{{ item.focus }}</span>
+        <ul>
+          {% for task in item.tasks[:2] %}
+          <li>{{ task }}</li>
+          {% endfor %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+    <a class="btn btn-ghost" href="{{ url_for('ingles_study_plan') }}">Abrir plano completo</a>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">Vocabulário</p>
+    <div class="vocab-preview-grid">
+      {% for bank in vocab_preview %}
+      <article class="vocab-mini-card">
+        <strong>{{ bank.module_title }}</strong>
+        <div class="chip-row compact">
+          {% for word in bank.words[:6] %}
+          <span class="chip">{{ word }}</span>
+          {% endfor %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('ingles_vocabulary') }}">Abrir banco de palavras</a>
+  </div>
+</section>
+
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Módulos em destaque</p>
+    <h2>Entre por assunto e suba de nível sem bagunça.</h2>
+  </div>
+  <div class="progress-chip" data-progress-summary>Seu progresso aparece aqui</div>
+</section>
+
+<section class="module-grid reveal">
+  {% for module in featured %}
+  <article class="panel module-card {{ module.accent }}" data-module-card="{{ module.slug }}">
+    <div class="module-cover">
+      <span class="module-num">MÓDULO {{ module.number }} · {{ module.level }}</span>
+      <div class="module-angle"></div>
+    </div>
+    <div class="module-body">
+      <h3>{{ module.title }}</h3>
+      <p>{{ module.summary }}</p>
+      <div class="meta-line">
+        <span>{{ "Liberado" if not module.is_locked else "Bloqueado" }}</span>
+        <span>{{ module.required_role_name }}</span>
+      </div>
+      <div class="chip-row">
+        {% for skill in module.skills[:4] %}
+        <span class="chip">{{ skill }}</span>
+        {% endfor %}
+      </div>
+      <div class="meta-line">
+        <span>{{ module.assets.lesson_count }} lições</span>
+        <button class="mini-toggle" data-module-toggle="{{ module.slug }}">marcar concluído</button>
+      </div>
+      <a class="text-link" href="{{ url_for('ingles_module_detail', slug=module.slug) }}">Abrir módulo →</a>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+
+<section id="roadmap" class="roadmap reveal">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Trilha completa</p>
+      <h2>Mapa de estudo sugerido</h2>
+    </div>
+  </div>
+
+  <div class="timeline">
+    {% for module in roadmap %}
+    <article class="timeline-item panel {{ module.accent }}">
+      <span class="timeline-index">{{ module.number }}</span>
+      <div>
+        <h3>{{ module.title }}</h3>
+        <p>{{ module.assets.chipline }}</p>
+        <small>{{ "Liberado" if not module.is_locked else "Bloqueado" }} · {{ module.required_role_name }}</small>
+        <a class="text-link" href="{{ url_for('ingles_module_detail', slug=module.slug) }}">ver detalhes</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="split reveal">
+  <div class="panel">
+    <p class="eyebrow">Frases prontas</p>
+    <h2>Cenários para não travar</h2>
+    <div class="phrase-preview">
+      {% for block in phrasebook_preview %}
+      <article class="phrase-card">
+        <strong>{{ block.title }}</strong>
+        <small>{{ block.context }}</small>
+        <p>{{ block.lines[0].en }}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('ingles_phrasebook') }}">Abrir phrasebook</a>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">Aquecimento rápido</p>
+    <h2>Perguntas para destravar hoje</h2>
+    <div class="quiz-preview">
+      {% for quiz in quizzes %}
+      <article class="quiz-snippet">
+        <strong>{{ quiz.question }}</strong>
+        <span>{{ quiz.options[quiz.answer] }}</span>
+      </article>
+      {% endfor %}
+    </div>
+    <a class="btn btn-ghost" href="{{ url_for('ingles_practice') }}">Ir para quiz e flashcards</a>
+  </div>
+</section>
+{% endblock %}

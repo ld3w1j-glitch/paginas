@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container narrow">
+        <span class="eyebrow">Acesso interno</span>
+        <h1>Login de membros</h1>
+        <p class="lead">Somente acessos criados pelo administrador entram na área exclusiva.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container narrow">
+        <article class="card form-card">
+            <form method="post" class="form-grid">
+                <label>
+                    <span>Usuário ou e-mail</span>
+                    <input type="text" name="email" placeholder="usuário admin" required>
+                </label>
+                <label>
+                    <span>Senha</span>
+                    <input type="password" name="password" placeholder="Sua senha" required>
+                </label>
+                <button class="btn btn-primary btn-full" type="submit">Entrar</button>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

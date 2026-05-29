@@ -1,0 +1,34 @@
+{% extends "ingles/base.html" %}
+{% block title %}Buscar{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Busca</p>
+    <h1>Resultados para “{{ query }}”</h1>
+    <p class="lead">Busque por tempo verbal, vocabulário, travel, modal, phrasal verb e mais.</p>
+  </div>
+</section>
+
+<section class="search-grid reveal">
+  {% for result in results %}
+  <article class="panel">
+    <p class="eyebrow">Módulo {{ result.module.number }}</p>
+    <h2>{{ result.module.title }}</h2>
+    <p>{{ result.module.summary }}</p>
+    {% if result.matches %}
+    <ul class="practice-list">
+      {% for match in result.matches %}
+      <li>{{ match }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <a class="btn btn-ghost" href="{{ url_for('ingles_module_detail', slug=result.module.slug) }}">Abrir módulo</a>
+  </article>
+  {% else %}
+  <article class="panel">
+    <h2>Nada encontrado.</h2>
+    <p>Tente buscar por palavras como present perfect, hotel, airport, modals, directions ou phrasal verbs.</p>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

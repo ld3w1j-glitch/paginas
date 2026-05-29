@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parallax Lab V13 | Serviços</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('editor_admin.static', filename='css/style.css') }}">
+</head>
+<body data-page="servicos" data-runtime="flask">
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="noise"></div>
+
+  <header class="site-header" id="topo">
+    <nav class="nav container glass-nav">
+      <a href="{{ url_for('editor_admin.index') }}" class="brand" id="brand-name">Rua25Lab</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links-wrap" id="nav-links-wrap">
+        <div class="nav-links" id="nav-links"></div>
+        <a href="{{ url_for('editor_admin.index') }}#contato" class="mini-cta" id="mini-cta">Contato</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero page-hero mouse-scene">
+      <div class="hero-background">
+        <div class="grid-glow parallax-item" data-speed="0.05"></div>
+        <div class="blob blob-a parallax-item mouse-reactive" data-speed="0.15" data-depth="18"></div>
+        <div class="blob blob-b parallax-item mouse-reactive" data-speed="0.24" data-depth="26"></div>
+      </div>
+      <div class="container page-hero-layout">
+        <div class="page-copy reveal">
+          <span class="eyebrow" id="services-tag">Blocos prontos</span>
+          <h1 id="services-title">Seções fáceis de editar</h1>
+          <p id="services-text">Troque os textos e os cards no editor lateral e acompanhe as mudanças instantaneamente na página.</p>
+          <div class="page-actions">
+            <a href="{{ url_for('editor_admin.index') }}" class="btn primary">Voltar para a home</a>
+            <a href="{{ url_for('editor_admin.projetos') }}" class="btn secondary">Abrir projetos</a>
+          </div>
+        </div>
+        <aside class="page-side reveal mouse-reactive" data-depth="12">
+          <article class="page-card glass-card">
+            <span class="section-tag">V13</span>
+            <h3>O que melhorou aqui</h3>
+            <ul>
+              <li><strong>Menu mobile real</strong><span>Hambúrguer, abertura e fechamento limpos no celular.</span></li>
+              <li><strong>Página separada</strong><span>Agora os serviços podem viver fora da home sem perder o tema.</span></li>
+              <li><strong>Página de detalhe</strong><span>Cada card agora pode abrir uma página interna com mais contexto.</span></li>
+            </ul>
+          </article>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section reveal mouse-scene" id="servicos">
+      <div class="container">
+        <div class="cards-grid" id="services-grid"></div>
+      </div>
+    </section>
+
+    <section class="section section-dark reveal" id="contato">
+      <div class="container cta-panel mouse-scene">
+        <div class="cta-copy reveal">
+          <span class="section-tag">Continuar</span>
+          <h2 id="contact-title">Quer continuar evoluindo essa base?</h2>
+          <p id="contact-text">Agora o projeto já mistura editor visual, tema, layout, presets, imagens por seção, componentes reutilizáveis e drag and drop.</p>
+        </div>
+        <div class="cta-actions" id="contact-actions"></div>
+      </div>
+    </section>
+
+    <span id="editor" class="editor-anchor"></span>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <div class="footer-main">
+        <strong id="footer-brand">Rua25Lab</strong>
+        <p id="footer-description">Projeto de estudo com Python + HTML + CSS + JS, preparado para você editar no PC.</p>
+        <small id="footer-copy">Feito para estudo e testes locais.</small>
+      </div>
+      <div class="footer-links" id="footer-links"></div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('editor_admin.static', filename='js/site_data.js') }}"></script>
+  <script src="{{ url_for('editor_admin.static', filename='js/app.js') }}"></script>
+</body>
+</html>

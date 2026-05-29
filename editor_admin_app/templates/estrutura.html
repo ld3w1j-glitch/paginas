@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parallax Lab V13 | Estrutura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('editor_admin.static', filename='css/style.css') }}">
+</head>
+<body data-page="estrutura" data-runtime="flask">
+  <div class="scroll-progress" id="scroll-progress"></div>
+  <div class="noise"></div>
+
+  <header class="site-header" id="topo">
+    <nav class="nav container glass-nav">
+      <a href="{{ url_for('editor_admin.index') }}" class="brand" id="brand-name">Rua25Lab</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links-wrap" id="nav-links-wrap">
+        <div class="nav-links" id="nav-links"></div>
+        <a href="{{ url_for('editor_admin.index') }}#contato" class="mini-cta" id="mini-cta">Contato</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero page-hero mouse-scene">
+      <div class="hero-background">
+        <div class="grid-glow parallax-item" data-speed="0.05"></div>
+        <div class="blob blob-a parallax-item mouse-reactive" data-speed="0.14" data-depth="16"></div>
+        <div class="blob blob-c parallax-item mouse-reactive" data-speed="0.10" data-depth="12"></div>
+      </div>
+      <div class="container page-hero-layout">
+        <div class="page-copy reveal">
+          <span class="eyebrow" id="process-tag">Estrutura</span>
+          <h1 id="process-title">A lógica continua simples por trás</h1>
+          <p id="process-text">O scroll move as camadas, o mouse dá profundidade e o editor muda os dados que são renderizados na página.</p>
+          <div class="page-actions">
+            <a href="{{ url_for('editor_admin.index') }}" class="btn primary">Voltar para a home</a>
+            <a href="{{ url_for('editor_admin.servicos') }}" class="btn secondary">Abrir serviços</a>
+          </div>
+        </div>
+        <aside class="page-side reveal mouse-reactive" data-depth="12">
+          <article class="page-card glass-card">
+            <span class="section-tag">Como isso ajuda</span>
+            <h3>Você separa melhor cada parte do site</h3>
+            <ul>
+              <li><strong>Processo separado</strong><span>Explicações e fluxo do projeto agora podem ficar em uma página própria.</span></li>
+              <li><strong>FAQ junto</strong><span>Dá para usar essa rota como base de documentação ou página de ajuda.</span></li>
+              <li><strong>Navegação pronta</strong><span>O menu mobile já conecta tudo sem quebrar a experiência.</span></li>
+            </ul>
+          </article>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section reveal mouse-scene" id="processo">
+      <div class="container">
+        <div class="timeline" id="steps-grid"></div>
+      </div>
+    </section>
+
+    <section class="section section-dark reveal" id="faq">
+      <div class="container">
+        <div class="section-head centered">
+          <span class="section-tag" id="faq-tag">FAQ</span>
+          <h2 id="faq-title">Você edita aqui e aprende a estrutura ao mesmo tempo</h2>
+          <p id="faq-text">Essa versão já começa a parecer um pequeno construtor visual de páginas.</p>
+        </div>
+        <div class="faq-list" id="faq-list"></div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="contato">
+      <div class="container cta-panel mouse-scene">
+        <div class="cta-copy reveal">
+          <span class="section-tag">Próximo passo</span>
+          <h2 id="contact-title">Quer continuar evoluindo essa base?</h2>
+          <p id="contact-text">Agora você já tem uma página de estrutura/documentação separada e pronta para crescer.</p>
+        </div>
+        <div class="cta-actions" id="contact-actions"></div>
+      </div>
+    </section>
+
+    <span id="editor" class="editor-anchor"></span>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <div class="footer-main">
+        <strong id="footer-brand">Rua25Lab</strong>
+        <p id="footer-description">Projeto de estudo com Python + HTML + CSS + JS, preparado para você editar no PC.</p>
+        <small id="footer-copy">Feito para estudo e testes locais.</small>
+      </div>
+      <div class="footer-links" id="footer-links"></div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('editor_admin.static', filename='js/site_data.js') }}"></script>
+  <script src="{{ url_for('editor_admin.static', filename='js/app.js') }}"></script>
+</body>
+</html>

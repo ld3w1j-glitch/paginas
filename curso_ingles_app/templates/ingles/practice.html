@@ -1,0 +1,42 @@
+{% extends "ingles/base.html" %}
+{% block title %}Praticar{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Prática</p>
+    <h1>Quiz e flashcards</h1>
+    <p class="lead">Escolha um módulo, revise o essencial e use os cards para memorizar rápido.</p>
+  </div>
+</section>
+
+<section class="panel reveal">
+  <form class="filter-row" method="get" action="{{ url_for('ingles_practice') }}">
+    <select name="module">
+      <option value="all" {% if selected_module == 'all' %}selected{% endif %}>Todos os módulos</option>
+      {% for module in all_modules %}
+      <option value="{{ module.slug }}" {% if selected_module == module.slug %}selected{% endif %}>{{ module.number }} · {{ module.title }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">Filtrar</button>
+  </form>
+</section>
+
+<section class="split reveal">
+  <div class="panel">
+    <p class="eyebrow">Quiz</p>
+    <div id="quiz-app" data-quiz='{{ quiz_items|tojson }}'></div>
+  </div>
+
+  <div class="panel">
+    <p class="eyebrow">Flashcards</p>
+    <div class="flashcard-grid practice-grid">
+      {% for card in flashcards %}
+      <button type="button" class="flashcard" data-flip-card>
+        <span class="flash-front">{{ card.front }}</span>
+        <span class="flash-back">{{ card.back }}</span>
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

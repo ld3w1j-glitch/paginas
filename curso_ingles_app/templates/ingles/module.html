@@ -1,0 +1,128 @@
+{% extends "ingles/base.html" %}
+{% block title %}{{ module.title }}{% endblock %}
+{% block content %}
+<section class="module-hero reveal">
+  <div class="panel hero-copy {{ module.accent }}">
+    <p class="eyebrow">Módulo {{ module.number }} · {{ module.level }}</p>
+    <h1>{{ module.title }}</h1>
+    <p class="lead">{{ module.summary }}</p>
+    <div class="chip-row">
+      {% for word in module.assets.quick_words %}
+      <span class="chip">{{ word }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="panel note-panel">
+    <p class="eyebrow">Seu painel</p>
+    <h2>Notas, módulo e lições</h2>
+    <button class="btn btn-primary full" data-module-toggle="{{ module.slug }}">Marcar módulo concluído</button>
+    <textarea class="note-box" rows="8" data-module-notes="{{ module.slug }}" placeholder="Escreva aqui suas anotações, dúvidas, frases ou palavras novas..."></textarea>
+    <p class="note-hint">As notas ficam salvas no navegador deste dispositivo.</p>
+  </div>
+</section>
+
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Como estudar este módulo</p>
+    <h2>Fluxo sugerido</h2>
+  </div>
+</section>
+<section class="flow-grid reveal">
+  {% for step in module.study_flow %}
+  <article class="panel flow-card">
+    <span>{{ loop.index }}</span>
+    <p>{{ step }}</p>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Lições</p>
+    <h2>Resumo de cada bloco</h2>
+  </div>
+</section>
+
+<section class="lesson-stack reveal">
+  {% for lesson in module.lessons %}
+  <article class="panel lesson-card" data-lesson-card="{{ module.slug }}-{{ loop.index }}">
+    <div class="lesson-top">
+      <h3>{{ lesson.title }}</h3>
+      <div class="lesson-actions">
+        <span class="lesson-badge">{{ module.number }}.{{ loop.index }}</span>
+        <button class="mini-toggle" data-lesson-toggle="{{ module.slug }}-{{ loop.index }}">concluir lição</button>
+      </div>
+    </div>
+    <p class="lesson-focus">{{ lesson.focus }}</p>
+    <div class="lesson-columns three-col">
+      <div>
+        <p class="mini-title">Padrões</p>
+        <ul class="example-list">
+          {% for item in lesson.patterns %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <p class="mini-title">Exemplos</p>
+        <ul class="example-list">
+          {% for example in lesson.examples %}
+          <li>{{ example }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div>
+        <p class="mini-title">Prática guiada</p>
+        <ul class="practice-list">
+          {% for prompt in lesson.practice %}
+          <li>{{ prompt }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="lesson-bottom-grid">
+      <div class="mini-panel">
+        <p class="mini-title">Speaking drill</p>
+        <p>{{ lesson.speaking_prompt }}</p>
+      </div>
+      <div class="mini-panel">
+        <p class="mini-title">Erro comum</p>
+        <ul class="practice-list">
+          {% for mistake in lesson.common_mistakes %}
+          <li>{{ mistake }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="split reveal">
+  <div class="panel">
+    <p class="eyebrow">Quiz relacionado</p>
+    <div id="quiz-app" data-quiz='{{ related_quiz|tojson }}'></div>
+  </div>
+  <div class="panel">
+    <p class="eyebrow">Flashcards</p>
+    <div class="flashcard-grid">
+      {% for card in related_cards %}
+      <button type="button" class="flashcard" data-flip-card>
+        <span class="flash-front">{{ card.front }}</span>
+        <span class="flash-back">{{ card.back }}</span>
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="nav-footer reveal">
+  {% if prev_module %}
+  <a class="btn btn-ghost" href="{{ url_for('ingles_module_detail', slug=prev_module.slug) }}">← {{ prev_module.title }}</a>
+  {% endif %}
+  {% if next_module %}
+  <a class="btn btn-primary" href="{{ url_for('ingles_module_detail', slug=next_module.slug) }}">{{ next_module.title }} →</a>
+  {% endif %}
+</section>
+{% endblock %}

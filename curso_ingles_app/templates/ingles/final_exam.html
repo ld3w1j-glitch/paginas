@@ -1,0 +1,14 @@
+{% extends "ingles/base.html" %}
+{% block title %}Prova final{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Prova final</p>
+    <h1>Fechamento geral do curso</h1>
+    <p class="lead">Faça a prova para ver sua pontuação e os pontos que mais precisam de revisão.</p>
+  </div>
+</section>
+<section class="panel reveal">
+  <div id="final-exam-app" data-exam='{{ exam_items|tojson }}'></div>
+</section>
+{% endblock %}

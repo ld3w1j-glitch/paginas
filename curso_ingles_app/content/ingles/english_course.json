@@ -1,0 +1,1603 @@
+{
+  "overview": {
+    "site_name": "English Track Pro",
+    "hero_title": "Curso de inglês mais forte, mais prático e mais guiado.",
+    "hero_subtitle": "Agora com trilha por nível, banco de vocabulário, missões diárias, revisão inteligente e prova final. Feito para estudar sem travar.",
+    "stats": [
+      {
+        "value": "10",
+        "label": "módulos estruturados"
+      },
+      {
+        "value": "40",
+        "label": "lições práticas"
+      },
+      {
+        "value": "250+",
+        "label": "palavras e expressões"
+      },
+      {
+        "value": "1",
+        "label": "prova final integrada"
+      }
+    ],
+    "pillars": [
+      {
+        "title": "Estudo guiado",
+        "text": "Cada módulo tem objetivo, padrões-chave, exemplos, prática, speaking drill e revisão."
+      },
+      {
+        "title": "Uso real",
+        "text": "O foco sai da gramática isolada e entra em situações: viagem, rotina, cidade, restaurante, casa e trabalho."
+      },
+      {
+        "title": "Memorização",
+        "text": "Você pode marcar palavras dominadas, concluir lições, salvar notas e acompanhar evolução no navegador."
+      }
+    ]
+  },
+  "study_plan": [
+    {
+      "day": "Dia 1",
+      "focus": "Base + fala curta",
+      "tasks": [
+        "Estude 1 lição nova",
+        "Leia os exemplos em voz alta 3 vezes",
+        "Anote 5 palavras úteis"
+      ]
+    },
+    {
+      "day": "Dia 2",
+      "focus": "Revisão ativa",
+      "tasks": [
+        "Faça 1 bloco de quiz",
+        "Revise os flashcards do módulo",
+        "Monte 5 frases próprias"
+      ]
+    },
+    {
+      "day": "Dia 3",
+      "focus": "Escuta e resposta",
+      "tasks": [
+        "Leia um diálogo em voz alta",
+        "Responda os speaking prompts",
+        "Reescreva uma situação real sua"
+      ]
+    },
+    {
+      "day": "Dia 4",
+      "focus": "Misturas de tempo verbal",
+      "tasks": [
+        "Compare presente e passado",
+        "Use conectores simples",
+        "Revisite seu erro mais comum"
+      ]
+    },
+    {
+      "day": "Dia 5",
+      "focus": "Conversação temática",
+      "tasks": [
+        "Treine phrasebook",
+        "Simule hotel/restaurante/aeroporto",
+        "Fale sem traduzir palavra por palavra"
+      ]
+    },
+    {
+      "day": "Dia 6",
+      "focus": "Vocabulário + precisão",
+      "tasks": [
+        "Marque novas palavras dominadas",
+        "Treine comparativos/modais/phrasal verbs",
+        "Faça 1 mini revisão escrita"
+      ]
+    },
+    {
+      "day": "Dia 7",
+      "focus": "Fechamento semanal",
+      "tasks": [
+        "Faça a prova curta",
+        "Veja o que precisa reforçar",
+        "Escolha o próximo módulo"
+      ]
+    }
+  ],
+  "phrasebook": [
+    {
+      "title": "Apresentação rápida",
+      "context": "abrir conversa sem travar",
+      "lines": [
+        {
+          "en": "Hi, my name is Washington. Nice to meet you.",
+          "pt": "Oi, meu nome é Washington. Prazer em conhecer você."
+        },
+        {
+          "en": "I am from Minas Gerais, Brazil.",
+          "pt": "Eu sou de Minas Gerais, Brasil."
+        },
+        {
+          "en": "I am learning English step by step.",
+          "pt": "Estou aprendendo inglês passo a passo."
+        }
+      ]
+    },
+    {
+      "title": "Hotel",
+      "context": "check-in e problemas simples",
+      "lines": [
+        {
+          "en": "I have a reservation under Ladeira.",
+          "pt": "Tenho uma reserva no nome Ladeira."
+        },
+        {
+          "en": "Could you tell me the check-out time?",
+          "pt": "Você pode me dizer o horário do check-out?"
+        },
+        {
+          "en": "The air conditioner is not working.",
+          "pt": "O ar-condicionado não está funcionando."
+        }
+      ]
+    },
+    {
+      "title": "Restaurante",
+      "context": "pedido e conta",
+      "lines": [
+        {
+          "en": "Could I see the menu, please?",
+          "pt": "Posso ver o cardápio, por favor?"
+        },
+        {
+          "en": "I will have the pasta and a coffee.",
+          "pt": "Vou querer a massa e um café."
+        },
+        {
+          "en": "Could we have the bill, please?",
+          "pt": "Pode trazer a conta, por favor?"
+        }
+      ]
+    },
+    {
+      "title": "Aeroporto",
+      "context": "embarque e orientação",
+      "lines": [
+        {
+          "en": "Where is the boarding gate?",
+          "pt": "Onde fica o portão de embarque?"
+        },
+        {
+          "en": "I only have a carry-on bag.",
+          "pt": "Eu só tenho bagagem de mão."
+        },
+        {
+          "en": "My flight was delayed.",
+          "pt": "Meu voo atrasou."
+        }
+      ]
+    },
+    {
+      "title": "Cidade e direção",
+      "context": "pedir ajuda",
+      "lines": [
+        {
+          "en": "How do I get to the subway station?",
+          "pt": "Como eu chego à estação de metrô?"
+        },
+        {
+          "en": "Go straight, then turn left.",
+          "pt": "Siga reto, depois vire à esquerda."
+        },
+        {
+          "en": "Is it far from here?",
+          "pt": "É longe daqui?"
+        }
+      ]
+    },
+    {
+      "title": "Trabalho e rotina",
+      "context": "falar da semana",
+      "lines": [
+        {
+          "en": "I work during the day and study at night.",
+          "pt": "Eu trabalho durante o dia e estudo à noite."
+        },
+        {
+          "en": "I usually start early, but today I am running late.",
+          "pt": "Eu geralmente começo cedo, mas hoje estou atrasado."
+        },
+        {
+          "en": "I need to finish this before Friday.",
+          "pt": "Preciso terminar isso antes de sexta."
+        }
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "number": 1,
+      "slug": "foundation",
+      "accent": "mod-red",
+      "level": "A1",
+      "title": "Base forte",
+      "summary": "Alfabeto, números, pronomes, verbo to be, artigos, preposições e frases curtas de sobrevivência.",
+      "skills": [
+        "to be",
+        "pronomes",
+        "números",
+        "preposições",
+        "saudações"
+      ],
+      "vocabulary": [
+        "hello",
+        "name",
+        "country",
+        "city",
+        "teacher",
+        "student",
+        "book",
+        "phone",
+        "in",
+        "on",
+        "at",
+        "from"
+      ],
+      "lessons": [
+        {
+          "title": "Saudações e apresentação",
+          "focus": "Aprender a abrir conversa e dizer quem você é.",
+          "patterns": [
+            "My name is...",
+            "I am from...",
+            "Nice to meet you."
+          ],
+          "examples": [
+            "Hi, my name is Washington.",
+            "I am from Brazil.",
+            "Nice to meet you."
+          ],
+          "practice": [
+            "Diga seu nome e cidade.",
+            "Escreva 3 formas de se apresentar."
+          ],
+          "speaking_prompt": "Apresente-se em 20 segundos.",
+          "common_mistakes": [
+            "Trocar I am por is.",
+            "Esquecer o artigo em frases simples."
+          ]
+        },
+        {
+          "title": "Verbo to be",
+          "focus": "Usar am, is, are com segurança.",
+          "patterns": [
+            "I am",
+            "You are",
+            "He is / She is"
+          ],
+          "examples": [
+            "I am tired.",
+            "She is my friend.",
+            "They are ready."
+          ],
+          "practice": [
+            "Complete 5 frases com am/is/are.",
+            "Transforme afirmações em perguntas."
+          ],
+          "speaking_prompt": "Fale 5 frases sobre você usando to be.",
+          "common_mistakes": [
+            "Usar he are.",
+            "Omitir o verbo em inglês."
+          ]
+        },
+        {
+          "title": "Números, dias e horas",
+          "focus": "Ler horário, datas e números do cotidiano.",
+          "patterns": [
+            "It is seven o’clock.",
+            "Today is Monday.",
+            "I have two brothers."
+          ],
+          "examples": [
+            "It is 8:30.",
+            "Today is Friday.",
+            "The bus leaves at 10."
+          ],
+          "practice": [
+            "Escreva 5 horários.",
+            "Monte 3 frases com números."
+          ],
+          "speaking_prompt": "Diga que horas você acorda e trabalha.",
+          "common_mistakes": [
+            "Confundir twelve e twenty.",
+            "Trocar at por in ao falar horas."
+          ]
+        },
+        {
+          "title": "Preposições e objetos do dia a dia",
+          "focus": "Usar in, on, at com contexto simples.",
+          "patterns": [
+            "The phone is on the table.",
+            "I am at home.",
+            "The keys are in the bag."
+          ],
+          "examples": [
+            "The coffee is on the desk.",
+            "I am at work.",
+            "The notebook is in my backpack."
+          ],
+          "practice": [
+            "Descreva 5 objetos perto de você.",
+            "Complete frases com in/on/at."
+          ],
+          "speaking_prompt": "Descreva seu quarto ou mesa.",
+          "common_mistakes": [
+            "Usar in home.",
+            "Misturar on e in sem referência visual."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 2,
+      "slug": "present-routine",
+      "accent": "mod-blue",
+      "level": "A1/A2",
+      "title": "Presente e rotina",
+      "summary": "Simple present, present continuous, there is/are, quantifiers, possessives, frequency and time.",
+      "skills": [
+        "simple present",
+        "present continuous",
+        "there is/are",
+        "how much/many",
+        "frequency"
+      ],
+      "vocabulary": [
+        "usually",
+        "sometimes",
+        "never",
+        "always",
+        "kitchen",
+        "office",
+        "coffee",
+        "test",
+        "money",
+        "people",
+        "some",
+        "any"
+      ],
+      "lessons": [
+        {
+          "title": "Simple present",
+          "focus": "Falar de rotina, hábitos e verdades simples.",
+          "patterns": [
+            "I work",
+            "She works",
+            "Do you work?",
+            "He does not work"
+          ],
+          "examples": [
+            "I work during the day.",
+            "She studies at night.",
+            "Do you like coffee?"
+          ],
+          "practice": [
+            "Escreva sua rotina da manhã.",
+            "Faça 5 perguntas com do/does."
+          ],
+          "speaking_prompt": "Explique sua rotina em 30 segundos.",
+          "common_mistakes": [
+            "Esquecer o s da terceira pessoa.",
+            "Usar do com he/she."
+          ]
+        },
+        {
+          "title": "Present continuous",
+          "focus": "Falar do que está acontecendo agora.",
+          "patterns": [
+            "I am studying.",
+            "They are working.",
+            "Is she sleeping?"
+          ],
+          "examples": [
+            "I am drinking water now.",
+            "We are studying English.",
+            "He is not driving."
+          ],
+          "practice": [
+            "Descreva 5 ações que estão acontecendo agora.",
+            "Compare rotina e agora."
+          ],
+          "speaking_prompt": "Descreva a cena ao seu redor.",
+          "common_mistakes": [
+            "Trocar present continuous por simple present em ações do momento."
+          ]
+        },
+        {
+          "title": "There is, there are e quantidades",
+          "focus": "Descrever ambientes e quantidades.",
+          "patterns": [
+            "There is a book.",
+            "There are two chairs.",
+            "How many people...?"
+          ],
+          "examples": [
+            "There is a car outside.",
+            "There are many students here.",
+            "How much time do we have?"
+          ],
+          "practice": [
+            "Descreva sua casa.",
+            "Monte 5 perguntas com how much/many."
+          ],
+          "speaking_prompt": "Fale do que existe no seu quarto.",
+          "common_mistakes": [
+            "Usar there have.",
+            "Misturar much e many."
+          ]
+        },
+        {
+          "title": "Possessives, time and frequency",
+          "focus": "Falar do que é seu e quando algo acontece.",
+          "patterns": [
+            "My book",
+            "Her phone",
+            "I usually wake up at 6.",
+            "He sometimes cooks."
+          ],
+          "examples": [
+            "My brother is tall.",
+            "Her car is new.",
+            "I usually train at night."
+          ],
+          "practice": [
+            "Escreva 5 frases com possessives.",
+            "Use always/usually/sometimes/never."
+          ],
+          "speaking_prompt": "Conte sua semana usando frequência.",
+          "common_mistakes": [
+            "Trocar his e her.",
+            "Posição errada do advérbio de frequência."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 3,
+      "slug": "past-story",
+      "accent": "mod-amber",
+      "level": "A2",
+      "title": "Passado e histórias",
+      "summary": "Was/were, simple past, past continuous, when/while, used to e diferença entre remember e remind.",
+      "skills": [
+        "simple past",
+        "past continuous",
+        "used to",
+        "when/while",
+        "remember vs remind"
+      ],
+      "vocabulary": [
+        "yesterday",
+        "last week",
+        "mall",
+        "stadium",
+        "forgot",
+        "remembered",
+        "while",
+        "when",
+        "used to",
+        "terrible time"
+      ],
+      "lessons": [
+        {
+          "title": "Was e were",
+          "focus": "Dizer onde alguém estava ou como estava.",
+          "patterns": [
+            "I was",
+            "We were",
+            "Was she...?"
+          ],
+          "examples": [
+            "I was at home yesterday.",
+            "They were tired.",
+            "Were you at school?"
+          ],
+          "practice": [
+            "Escreva 5 frases sobre ontem.",
+            "Faça 3 perguntas com was/were."
+          ],
+          "speaking_prompt": "Conte como foi seu último fim de semana.",
+          "common_mistakes": [
+            "Usar was com you/they.",
+            "Misturar presente e passado."
+          ]
+        },
+        {
+          "title": "Simple past",
+          "focus": "Narrar ações concluídas no passado.",
+          "patterns": [
+            "I went",
+            "She bought",
+            "Did you call?",
+            "He didn’t remember"
+          ],
+          "examples": [
+            "I went to the mall.",
+            "She bought a jacket.",
+            "Did you watch the game?"
+          ],
+          "practice": [
+            "Escreva 6 frases sobre algo que você fez semana passada.",
+            "Converta frases para negativa e pergunta."
+          ],
+          "speaking_prompt": "Conte uma compra que você fez.",
+          "common_mistakes": [
+            "Usar did + verbo no passado.",
+            "Trocar bought por buyed."
+          ]
+        },
+        {
+          "title": "Past continuous com when e while",
+          "focus": "Misturar ação em andamento com interrupção.",
+          "patterns": [
+            "I was studying when...",
+            "While I was driving..."
+          ],
+          "examples": [
+            "I was sleeping when you called.",
+            "While we were cooking, it started to rain."
+          ],
+          "practice": [
+            "Monte 5 frases com when/while.",
+            "Compare simple past e past continuous."
+          ],
+          "speaking_prompt": "Conte um imprevisto do passado.",
+          "common_mistakes": [
+            "Usar while com ação curta pontual sem contexto."
+          ]
+        },
+        {
+          "title": "Used to, remember e remind",
+          "focus": "Falar de hábitos antigos e distinções úteis.",
+          "patterns": [
+            "I used to play soccer.",
+            "Remember to call me.",
+            "You remind me of my father."
+          ],
+          "examples": [
+            "I used to wake up late.",
+            "Remember to buy milk.",
+            "This song reminds me of school."
+          ],
+          "practice": [
+            "Escreva 4 hábitos antigos seus.",
+            "Monte frases com remember e remind."
+          ],
+          "speaking_prompt": "Fale de como você era alguns anos atrás.",
+          "common_mistakes": [
+            "Usar used to + ing.",
+            "Confundir lembrar de fazer com lembrar algo."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 4,
+      "slug": "travel-survival",
+      "accent": "mod-graphite",
+      "level": "A2",
+      "title": "Viagem e sobrevivência",
+      "summary": "Aeroporto, imigração, hotel, transporte, restaurante e aluguel de carro.",
+      "skills": [
+        "airport",
+        "hotel",
+        "restaurant",
+        "transport",
+        "reservation"
+      ],
+      "vocabulary": [
+        "reservation",
+        "boarding gate",
+        "flight",
+        "check-in",
+        "bill",
+        "menu",
+        "subway",
+        "ticket",
+        "car rental",
+        "luggage"
+      ],
+      "lessons": [
+        {
+          "title": "Aeroporto e imigração",
+          "focus": "Fazer perguntas e responder no embarque.",
+          "patterns": [
+            "Where is gate B12?",
+            "My flight was delayed.",
+            "I am here for tourism."
+          ],
+          "examples": [
+            "Where is the check-in desk?",
+            "I only have a carry-on bag.",
+            "How long is the layover?"
+          ],
+          "practice": [
+            "Monte 5 perguntas de aeroporto.",
+            "Responda como se estivesse na imigração."
+          ],
+          "speaking_prompt": "Simule sua chegada ao aeroporto.",
+          "common_mistakes": [
+            "Confundir gate e flight.",
+            "Esquecer polite forms."
+          ]
+        },
+        {
+          "title": "Hotel",
+          "focus": "Check-in, problemas no quarto e check-out.",
+          "patterns": [
+            "I have a reservation under...",
+            "The shower is not working.",
+            "Could I get another room?"
+          ],
+          "examples": [
+            "I would like to check in.",
+            "The room is too noisy.",
+            "What time is breakfast?"
+          ],
+          "practice": [
+            "Crie um diálogo de check-in.",
+            "Liste 4 problemas comuns de quarto."
+          ],
+          "speaking_prompt": "Explique um problema na sua reserva.",
+          "common_mistakes": [
+            "Usar reserve em vez de reservation no contexto errado."
+          ]
+        },
+        {
+          "title": "Restaurante e café",
+          "focus": "Pedir comida, fazer ajustes e pedir a conta.",
+          "patterns": [
+            "I will have...",
+            "Could I have...?",
+            "Can we have the bill?"
+          ],
+          "examples": [
+            "I will have the grilled chicken.",
+            "Could I have no onions?",
+            "Could we split the bill?"
+          ],
+          "practice": [
+            "Monte seu pedido ideal.",
+            "Escreva um mini diálogo com garçom."
+          ],
+          "speaking_prompt": "Peça um café da manhã completo.",
+          "common_mistakes": [
+            "Usar want de forma seca demais em serviço."
+          ]
+        },
+        {
+          "title": "Transporte e aluguel de carro",
+          "focus": "Ir do ponto A ao B com clareza.",
+          "patterns": [
+            "How do I get to...?",
+            "I need to rent a car.",
+            "Turn left / turn right / go straight."
+          ],
+          "examples": [
+            "Which line goes downtown?",
+            "Is there a daily fee?",
+            "Do I need insurance?"
+          ],
+          "practice": [
+            "Descreva um trajeto.",
+            "Faça 5 perguntas de transporte."
+          ],
+          "speaking_prompt": "Explique como chegar ao hotel.",
+          "common_mistakes": [
+            "Misturar directions e location forms."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 5,
+      "slug": "future-and-modals",
+      "accent": "mod-green",
+      "level": "A2/B1",
+      "title": "Futuro, modais e decisões",
+      "summary": "Can, could, should, must, may, might, will, going to, conditionals, wish e verbos irregulares.",
+      "skills": [
+        "modals",
+        "future",
+        "conditionals",
+        "wish",
+        "irregular verbs"
+      ],
+      "vocabulary": [
+        "should",
+        "must",
+        "might",
+        "going to",
+        "if",
+        "unless",
+        "wish",
+        "late",
+        "fired",
+        "shock",
+        "rain"
+      ],
+      "lessons": [
+        {
+          "title": "Modais essenciais",
+          "focus": "Dar conselho, obrigação, possibilidade e permissão.",
+          "patterns": [
+            "You should rest.",
+            "You must wear a seat belt.",
+            "It might rain."
+          ],
+          "examples": [
+            "You should study harder.",
+            "You must not park here.",
+            "Could you help me?"
+          ],
+          "practice": [
+            "Escreva 2 conselhos, 2 regras e 2 possibilidades.",
+            "Reescreva frases com modais."
+          ],
+          "speaking_prompt": "Dê conselho a um amigo cansado.",
+          "common_mistakes": [
+            "Usar to depois de modal.",
+            "Confundir must e have to em todos os contextos."
+          ]
+        },
+        {
+          "title": "Will e going to",
+          "focus": "Separar decisão do momento e plano.",
+          "patterns": [
+            "I will call you.",
+            "I am going to travel next month."
+          ],
+          "examples": [
+            "I will have the pasta.",
+            "We are going to move soon.",
+            "It will be fine."
+          ],
+          "practice": [
+            "Crie 5 frases de plano e 5 de decisão espontânea.",
+            "Faça previsões para sua semana."
+          ],
+          "speaking_prompt": "Fale seus planos para o mês.",
+          "common_mistakes": [
+            "Usar going to em tudo sem pensar no contexto."
+          ]
+        },
+        {
+          "title": "Conditionals",
+          "focus": "Ligar condição e consequência.",
+          "patterns": [
+            "If I wake up late, I get late for work.",
+            "If it rains, we will stay home."
+          ],
+          "examples": [
+            "If you mix water and electricity, you get a shock.",
+            "If I have time, I will call you."
+          ],
+          "practice": [
+            "Escreva 5 conditionals.",
+            "Monte frases com if e unless."
+          ],
+          "speaking_prompt": "Diga o que você faz se estiver sem tempo.",
+          "common_mistakes": [
+            "Colocar will nas duas partes da zero conditional."
+          ]
+        },
+        {
+          "title": "Wish e verbos irregulares",
+          "focus": "Expressar arrependimento e destravar o passado.",
+          "patterns": [
+            "I wish I had more time.",
+            "I wish you were here."
+          ],
+          "examples": [
+            "I wish I spoke English better.",
+            "She went home early.",
+            "He has eaten already."
+          ],
+          "practice": [
+            "Escreva 3 desejos com wish.",
+            "Revise 20 verbos irregulares úteis."
+          ],
+          "speaking_prompt": "Fale de uma coisa que você gostaria de melhorar.",
+          "common_mistakes": [
+            "Usar wish com estrutura literal do português."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 6,
+      "slug": "perfect-and-comparison",
+      "accent": "mod-violet",
+      "level": "B1",
+      "title": "Perfect tenses e comparação",
+      "summary": "Present perfect, for/since, present perfect continuous, comparatives, superlatives, past perfect.",
+      "skills": [
+        "present perfect",
+        "for/since",
+        "comparatives",
+        "superlatives",
+        "past perfect"
+      ],
+      "vocabulary": [
+        "for",
+        "since",
+        "already",
+        "yet",
+        "ever",
+        "never",
+        "faster",
+        "the best",
+        "bigger",
+        "smaller"
+      ],
+      "lessons": [
+        {
+          "title": "Present perfect",
+          "focus": "Conectar passado e presente.",
+          "patterns": [
+            "I have worked here since 2020.",
+            "Have you ever been to London?"
+          ],
+          "examples": [
+            "I have studied English for two years.",
+            "She has never tried sushi."
+          ],
+          "practice": [
+            "Escreva 6 frases com for e since.",
+            "Faça 4 perguntas com ever."
+          ],
+          "speaking_prompt": "Fale do que você já fez e do que nunca fez.",
+          "common_mistakes": [
+            "Usar ago com present perfect.",
+            "Confundir for e since."
+          ]
+        },
+        {
+          "title": "Present perfect continuous",
+          "focus": "Mostrar duração com atividade em andamento.",
+          "patterns": [
+            "I have been studying all morning."
+          ],
+          "examples": [
+            "She has been working too much lately.",
+            "We have been waiting for an hour."
+          ],
+          "practice": [
+            "Transforme 5 frases simples em continuous.",
+            "Escreva atividades da sua semana."
+          ],
+          "speaking_prompt": "Diga no que você tem focado ultimamente.",
+          "common_mistakes": [
+            "Trocar been por being.",
+            "Usar com verbos estáticos sem necessidade."
+          ]
+        },
+        {
+          "title": "Comparatives e superlatives",
+          "focus": "Comparar pessoas, objetos e opções.",
+          "patterns": [
+            "bigger than",
+            "more expensive than",
+            "the fastest",
+            "the most interesting"
+          ],
+          "examples": [
+            "This bottle is smaller.",
+            "The cheetah is the fastest animal.",
+            "My city is quieter than São Paulo."
+          ],
+          "practice": [
+            "Compare 5 objetos.",
+            "Escreva 3 superlatives."
+          ],
+          "speaking_prompt": "Compare duas cidades ou dois carros.",
+          "common_mistakes": [
+            "Usar more com adjetivos curtos que aceitam -er."
+          ]
+        },
+        {
+          "title": "Past perfect e past perfect continuous",
+          "focus": "Organizar duas ações no passado.",
+          "patterns": [
+            "The train had left before I arrived.",
+            "They had been waiting for hours."
+          ],
+          "examples": [
+            "I had finished the report before lunch.",
+            "She had been studying when the lights went out."
+          ],
+          "practice": [
+            "Monte 5 frases com before/after.",
+            "Misture passado simples e perfect."
+          ],
+          "speaking_prompt": "Conte uma situação em cadeia no passado.",
+          "common_mistakes": [
+            "Usar past perfect sem marco de relação temporal."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 7,
+      "slug": "city-culture",
+      "accent": "mod-slate",
+      "level": "B1",
+      "title": "Cidade, cultura e vida real",
+      "summary": "Direções, Londres, pubs, saúde pública, trânsito e perguntas indiretas.",
+      "skills": [
+        "indirect questions",
+        "directions",
+        "pub vocabulary",
+        "driving",
+        "city life"
+      ],
+      "vocabulary": [
+        "pub",
+        "street",
+        "cab",
+        "fare",
+        "ticket",
+        "turn left",
+        "straight ahead",
+        "driver",
+        "license",
+        "appointment"
+      ],
+      "lessons": [
+        {
+          "title": "Directions e mapa mental",
+          "focus": "Pedir e dar orientações sem confusão.",
+          "patterns": [
+            "Could you tell me how to get to...?",
+            "Go straight ahead.",
+            "It is next to..."
+          ],
+          "examples": [
+            "Turn right at the corner.",
+            "The station is across from the bank."
+          ],
+          "practice": [
+            "Explique um trajeto até um mercado.",
+            "Descreva seu bairro."
+          ],
+          "speaking_prompt": "Guie alguém do hotel até o metrô.",
+          "common_mistakes": [
+            "Usar go in front em vez de go straight."
+          ]
+        },
+        {
+          "title": "Indirect questions",
+          "focus": "Soar mais natural e educado.",
+          "patterns": [
+            "Could you tell me where the station is?",
+            "Do you know what time it opens?"
+          ],
+          "examples": [
+            "Can you tell me how this works?",
+            "Do you know where she lives?"
+          ],
+          "practice": [
+            "Reescreva 6 perguntas diretas como indiretas.",
+            "Crie perguntas educadas de viagem."
+          ],
+          "speaking_prompt": "Faça 5 perguntas educadas para um turista.",
+          "common_mistakes": [
+            "Manter ordem de pergunta em indirect question."
+          ]
+        },
+        {
+          "title": "Pub, cidade e cultura",
+          "focus": "Vocabulário de ambiente social e leitura cultural.",
+          "patterns": [
+            "I will have a lager.",
+            "The pub is crowded tonight.",
+            "Let’s meet after work."
+          ],
+          "examples": [
+            "Cheers!",
+            "This place is famous for live music.",
+            "The fare is too expensive today."
+          ],
+          "practice": [
+            "Monte diálogo curto em pub ou café.",
+            "Liste diferenças entre bar, pub e restaurant."
+          ],
+          "speaking_prompt": "Convide alguém para sair depois do trabalho.",
+          "common_mistakes": [
+            "Usar words isoladas sem contexto de ambiente."
+          ]
+        },
+        {
+          "title": "Driving and city rules",
+          "focus": "Falar de trânsito, rota e regras básicas.",
+          "patterns": [
+            "You must wear a seat belt.",
+            "Where can I park?",
+            "The speed limit is..."
+          ],
+          "examples": [
+            "Do I need an international driver’s license?",
+            "This road is closed.",
+            "Take the next exit."
+          ],
+          "practice": [
+            "Escreva regras básicas de trânsito.",
+            "Simule aluguel de carro."
+          ],
+          "speaking_prompt": "Explique um caminho de carro.",
+          "common_mistakes": [
+            "Misturar drive e ride o tempo todo."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 8,
+      "slug": "home-and-life",
+      "accent": "mod-olive",
+      "level": "B1",
+      "title": "Casa, rotina e vida prática",
+      "summary": "Cômodos, objetos, problemas domésticos, compromissos e rotina estendida.",
+      "skills": [
+        "house vocabulary",
+        "appointments",
+        "daily life",
+        "problem solving"
+      ],
+      "vocabulary": [
+        "kitchen",
+        "hallway",
+        "bathroom",
+        "appointment",
+        "stairs",
+        "loft",
+        "closet",
+        "broken",
+        "repair",
+        "clean up"
+      ],
+      "lessons": [
+        {
+          "title": "House vocabulary",
+          "focus": "Nomear partes da casa e objetos úteis.",
+          "patterns": [
+            "The kitchen is next to the dining room.",
+            "The closet is upstairs."
+          ],
+          "examples": [
+            "The bathroom is on the left.",
+            "There is a ladder in the garage."
+          ],
+          "practice": [
+            "Descreva sua casa.",
+            "Liste 10 objetos de um cômodo."
+          ],
+          "speaking_prompt": "Faça um tour pela sua casa em inglês.",
+          "common_mistakes": [
+            "Confundir room com bedroom em todo contexto."
+          ]
+        },
+        {
+          "title": "Problemas domésticos",
+          "focus": "Explicar defeitos e pedir ajuda.",
+          "patterns": [
+            "The shower is leaking.",
+            "The stove is not working.",
+            "I need someone to fix it."
+          ],
+          "examples": [
+            "The sink is clogged.",
+            "The light went out.",
+            "The ceiling is too low."
+          ],
+          "practice": [
+            "Escreva 5 problemas de casa.",
+            "Crie um pedido de ajuda."
+          ],
+          "speaking_prompt": "Explique um defeito urgente em casa.",
+          "common_mistakes": [
+            "Usar broke como adjetivo universal."
+          ]
+        },
+        {
+          "title": "Appointments e compromissos",
+          "focus": "Marcar horário, confirmar e remarcar.",
+          "patterns": [
+            "I would like to schedule an appointment.",
+            "Can we reschedule?"
+          ],
+          "examples": [
+            "I am available on Thursday afternoon.",
+            "Could we move it to next week?"
+          ],
+          "practice": [
+            "Monte um diálogo de agendamento.",
+            "Escreva horários disponíveis."
+          ],
+          "speaking_prompt": "Marque uma consulta ou reunião.",
+          "common_mistakes": [
+            "Trocar schedule e agenda como substantivo português."
+          ]
+        },
+        {
+          "title": "Vida prática com conectores",
+          "focus": "Falar do dia com fluidez maior.",
+          "patterns": [
+            "First, then, after that, finally"
+          ],
+          "examples": [
+            "First I make coffee, then I check my phone.",
+            "After that, I start working."
+          ],
+          "practice": [
+            "Escreva sua rotina com 4 conectores.",
+            "Reconte um dia corrido."
+          ],
+          "speaking_prompt": "Conte seu dia em sequência.",
+          "common_mistakes": [
+            "Frases quebradas sem ligação lógica."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 9,
+      "slug": "conversation-power",
+      "accent": "mod-crimson",
+      "level": "B1/B2",
+      "title": "Poder de conversação",
+      "summary": "Phrasal verbs, intensifiers, agreeing/disagreeing, passive voice, inversion e naturalidade.",
+      "skills": [
+        "phrasal verbs",
+        "passive voice",
+        "inversion",
+        "agree/disagree",
+        "discourse"
+      ],
+      "vocabulary": [
+        "give up",
+        "find out",
+        "hang out",
+        "put away",
+        "actually",
+        "basically",
+        "either",
+        "neither",
+        "rarely",
+        "never"
+      ],
+      "lessons": [
+        {
+          "title": "Phrasal verbs úteis",
+          "focus": "Aprender blocos que realmente aparecem na fala.",
+          "patterns": [
+            "give up",
+            "find out",
+            "hang out",
+            "put away",
+            "get along"
+          ],
+          "examples": [
+            "Do not give up now.",
+            "I found out the truth yesterday.",
+            "We usually hang out on Fridays."
+          ],
+          "practice": [
+            "Crie 2 frases para cada phrasal verb.",
+            "Substitua verbos simples por phrasal verbs quando couber."
+          ],
+          "speaking_prompt": "Conte seu fim de semana usando 3 phrasal verbs.",
+          "common_mistakes": [
+            "Traduzir cada partícula ao pé da letra."
+          ]
+        },
+        {
+          "title": "Agreeing, disagreeing and softening",
+          "focus": "Concordar e discordar sem soar duro.",
+          "patterns": [
+            "I agree.",
+            "I do not think so.",
+            "Actually...",
+            "I see your point, but..."
+          ],
+          "examples": [
+            "I agree with you.",
+            "I am not sure about that.",
+            "That makes sense, but I see it differently."
+          ],
+          "practice": [
+            "Escreva respostas de concordância e discordância.",
+            "Monte mini debate."
+          ],
+          "speaking_prompt": "Dê sua opinião sobre aprender idiomas.",
+          "common_mistakes": [
+            "Discordar de forma seca demais."
+          ]
+        },
+        {
+          "title": "Passive voice",
+          "focus": "Falar de ações quando o agente não importa.",
+          "patterns": [
+            "The report was finished.",
+            "English is spoken worldwide."
+          ],
+          "examples": [
+            "The food was prepared earlier.",
+            "The tickets were sold out."
+          ],
+          "practice": [
+            "Transforme 6 frases da ativa para a passiva.",
+            "Explique processos simples."
+          ],
+          "speaking_prompt": "Descreva como algo é produzido.",
+          "common_mistakes": [
+            "Misturar tempos da passiva."
+          ]
+        },
+        {
+          "title": "Inversion e ênfase",
+          "focus": "Reconhecer estruturas mais avançadas.",
+          "patterns": [
+            "Never have I seen...",
+            "Rarely does he forget..."
+          ],
+          "examples": [
+            "Never had I been to such a great party.",
+            "Rarely do we get this chance."
+          ],
+          "practice": [
+            "Reescreva 4 frases com inversion.",
+            "Use intensifiers como really, absolutely, extremely."
+          ],
+          "speaking_prompt": "Faça uma frase enfática sobre uma experiência sua.",
+          "common_mistakes": [
+            "Usar inversion sem advérbio negativo desencadeando a estrutura."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    },
+    {
+      "number": 10,
+      "slug": "integration-mission",
+      "accent": "mod-gold",
+      "level": "B2",
+      "title": "Missão final e integração",
+      "summary": "Revisão prática, simulações e fechamento com prova final e plano de continuidade.",
+      "skills": [
+        "review",
+        "simulation",
+        "self-correction",
+        "speaking",
+        "exam"
+      ],
+      "vocabulary": [
+        "review",
+        "goal",
+        "weak point",
+        "strength",
+        "next step",
+        "fluency",
+        "confidence",
+        "mistake"
+      ],
+      "lessons": [
+        {
+          "title": "Simulação de viagem",
+          "focus": "Juntar aeroporto, hotel, restaurante e cidade.",
+          "patterns": [
+            "I have a reservation...",
+            "Could you tell me...?",
+            "Can we have the bill?"
+          ],
+          "examples": [
+            "My flight was delayed, so I arrived late.",
+            "Could you help me find the station?"
+          ],
+          "practice": [
+            "Escreva um roteiro curto de viagem.",
+            "Grave sua própria simulação falando."
+          ],
+          "speaking_prompt": "Simule uma viagem completa em 1 minuto.",
+          "common_mistakes": [
+            "Travar por tentar traduzir tudo literalmente."
+          ]
+        },
+        {
+          "title": "Simulação de rotina e trabalho",
+          "focus": "Misturar presente, passado e futuro com clareza.",
+          "patterns": [
+            "I usually...",
+            "Yesterday I...",
+            "Tomorrow I am going to..."
+          ],
+          "examples": [
+            "I usually start work early, but yesterday I was late.",
+            "Tomorrow I am going to finish the report."
+          ],
+          "practice": [
+            "Monte um mini relato com 3 tempos verbais.",
+            "Explique sua semana."
+          ],
+          "speaking_prompt": "Fale da sua rotina, do ontem e do amanhã.",
+          "common_mistakes": [
+            "Misturar tempo verbal na mesma linha sem intenção."
+          ]
+        },
+        {
+          "title": "Autoavaliação guiada",
+          "focus": "Descobrir onde reforçar.",
+          "patterns": [
+            "I still struggle with...",
+            "My strongest area is...",
+            "I need more practice with..."
+          ],
+          "examples": [
+            "I still struggle with listening.",
+            "My strongest area is vocabulary."
+          ],
+          "practice": [
+            "Liste 3 pontos fortes e 3 fracos.",
+            "Escolha 1 módulo para revisar."
+          ],
+          "speaking_prompt": "Faça sua autoavaliação em voz alta.",
+          "common_mistakes": [
+            "Estudar tudo igual sem priorizar pontos fracos."
+          ]
+        },
+        {
+          "title": "Plano de continuidade",
+          "focus": "Sair com rotina clara de evolução.",
+          "patterns": [
+            "My next goal is...",
+            "I will review...",
+            "I am going to practice..."
+          ],
+          "examples": [
+            "My next goal is speaking faster.",
+            "I will review phrasal verbs this week."
+          ],
+          "practice": [
+            "Escreva um plano de 7 dias.",
+            "Escolha 15 palavras para consolidar."
+          ],
+          "speaking_prompt": "Diga qual será seu próximo passo.",
+          "common_mistakes": [
+            "Estudar só consumindo conteúdo e não produzindo frases."
+          ]
+        }
+      ],
+      "study_flow": [
+        "Leia o foco da lição e identifique a estrutura principal.",
+        "Fale os exemplos em voz alta.",
+        "Escreva duas frases próprias.",
+        "Faça a prática guiada e marque a lição como concluída."
+      ]
+    }
+  ],
+  "vocabulary_banks": [
+    {
+      "module_slug": "foundation",
+      "module_title": "Base forte",
+      "words": [
+        "hello",
+        "name",
+        "country",
+        "city",
+        "teacher",
+        "student",
+        "book",
+        "phone",
+        "in",
+        "on",
+        "at",
+        "from"
+      ]
+    },
+    {
+      "module_slug": "present-routine",
+      "module_title": "Presente e rotina",
+      "words": [
+        "usually",
+        "sometimes",
+        "never",
+        "always",
+        "kitchen",
+        "office",
+        "coffee",
+        "test",
+        "money",
+        "people",
+        "some",
+        "any"
+      ]
+    },
+    {
+      "module_slug": "past-story",
+      "module_title": "Passado e histórias",
+      "words": [
+        "yesterday",
+        "last week",
+        "mall",
+        "stadium",
+        "forgot",
+        "remembered",
+        "while",
+        "when",
+        "used to",
+        "terrible time"
+      ]
+    },
+    {
+      "module_slug": "travel-survival",
+      "module_title": "Viagem e sobrevivência",
+      "words": [
+        "reservation",
+        "boarding gate",
+        "flight",
+        "check-in",
+        "bill",
+        "menu",
+        "subway",
+        "ticket",
+        "car rental",
+        "luggage"
+      ]
+    },
+    {
+      "module_slug": "future-and-modals",
+      "module_title": "Futuro, modais e decisões",
+      "words": [
+        "should",
+        "must",
+        "might",
+        "going to",
+        "if",
+        "unless",
+        "wish",
+        "late",
+        "fired",
+        "shock",
+        "rain"
+      ]
+    },
+    {
+      "module_slug": "perfect-and-comparison",
+      "module_title": "Perfect tenses e comparação",
+      "words": [
+        "for",
+        "since",
+        "already",
+        "yet",
+        "ever",
+        "never",
+        "faster",
+        "the best",
+        "bigger",
+        "smaller"
+      ]
+    },
+    {
+      "module_slug": "city-culture",
+      "module_title": "Cidade, cultura e vida real",
+      "words": [
+        "pub",
+        "street",
+        "cab",
+        "fare",
+        "ticket",
+        "turn left",
+        "straight ahead",
+        "driver",
+        "license",
+        "appointment"
+      ]
+    },
+    {
+      "module_slug": "home-and-life",
+      "module_title": "Casa, rotina e vida prática",
+      "words": [
+        "kitchen",
+        "hallway",
+        "bathroom",
+        "appointment",
+        "stairs",
+        "loft",
+        "closet",
+        "broken",
+        "repair",
+        "clean up"
+      ]
+    },
+    {
+      "module_slug": "conversation-power",
+      "module_title": "Poder de conversação",
+      "words": [
+        "give up",
+        "find out",
+        "hang out",
+        "put away",
+        "actually",
+        "basically",
+        "either",
+        "neither",
+        "rarely",
+        "never"
+      ]
+    },
+    {
+      "module_slug": "integration-mission",
+      "module_title": "Missão final e integração",
+      "words": [
+        "review",
+        "goal",
+        "weak point",
+        "strength",
+        "next step",
+        "fluency",
+        "confidence",
+        "mistake"
+      ]
+    }
+  ]
+}

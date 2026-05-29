@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor visual local V17</title>
+  <link rel="stylesheet" href="{{ url_for('editor_admin.static', filename='css/style.css') }}">
+</head>
+<body data-runtime="flask">
+  <div class="editor-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand">Editor Visual V17</div>
+        <div class="brand-sub">canvas livre, undo/redo, edição inline, zoom por roda do mouse e gradientes</div>
+      </div>
+      <div class="topbar-center">
+        <button class="ghost-btn" data-action="new-project">Novo</button>
+        <button class="ghost-btn" data-action="save-project">Salvar</button>
+        <button class="ghost-btn" data-action="undo">Undo</button>
+        <button class="ghost-btn" data-action="redo">Redo</button>
+        <button class="ghost-btn" data-action="export-json">Exportar JSON</button>
+        <button class="ghost-btn" data-action="import-json">Importar JSON</button>
+        <button class="ghost-btn" data-action="export-html">Exportar HTML</button>
+        <button class="ghost-btn" data-action="clear-guides">Limpar guias</button>
+        <input id="jsonImportInput" type="file" accept="application/json" hidden>
+        <input id="imageImportInput" type="file" accept="image/*" hidden>
+      </div>
+      <div class="topbar-right">
+        <button class="ghost-btn" data-action="bring-forward">Frente</button>
+        <button class="ghost-btn" data-action="send-backward">Trás</button>
+        <button class="ghost-btn" data-action="duplicate-selected">Duplicar</button>
+        <button class="danger-btn" data-action="delete-selected">Excluir</button>
+      </div>
+    </header>
+
+    <div class="workspace-shell">
+      <aside class="sidebar sidebar-left">
+        <section class="panel-block">
+          <div class="panel-title">Ferramentas</div>
+          <div class="tool-grid">
+            <button class="tool-btn" data-add="frame">Frame</button>
+            <button class="tool-btn" data-add="rect">Retângulo</button>
+            <button class="tool-btn" data-add="circle">Círculo</button>
+            <button class="tool-btn" data-add="text">Texto</button>
+            <button class="tool-btn" data-add="button">Botão</button>
+            <button class="tool-btn" data-add="image">Imagem</button>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <div class="panel-title">Alinhar e distribuir</div>
+          <div class="action-grid">
+            <button class="ghost-btn small-btn" data-action="align-left">Esquerda</button>
+            <button class="ghost-btn small-btn" data-action="align-h-center">Centro H</button>
+            <button class="ghost-btn small-btn" data-action="align-right">Direita</button>
+            <button class="ghost-btn small-btn" data-action="align-top">Topo</button>
+            <button class="ghost-btn small-btn" data-action="align-v-center">Centro V</button>
+            <button class="ghost-btn small-btn" data-action="align-bottom">Base</button>
+            <button class="ghost-btn small-btn" data-action="distribute-horizontal">Distribuir H</button>
+            <button class="ghost-btn small-btn" data-action="distribute-vertical">Distribuir V</button>
+          </div>
+          <div class="help-note">Selecione 2 ou mais elementos para alinhar. Para distribuir, o ideal é selecionar 3 ou mais.</div>
+        </section>
+
+        <section class="panel-block">
+          <div class="panel-title">Camadas</div>
+          <div class="help-note">Shift + clique para seleção múltipla. Arraste no canvas para selecionar em área. Arraste da régua para criar guias. Duplo clique em texto ou botão para editar direto no canvas.</div>
+          <div id="layersList" class="layers-list"></div>
+        </section>
+      </aside>
+
+      <main class="workspace-area">
+        <div class="workspace-topline">
+          <div class="zoom-controls">
+            <button class="mini-btn" data-action="zoom-out">-</button>
+            <span id="zoomLabel">100%</span>
+            <button class="mini-btn" data-action="zoom-in">+</button>
+            <button class="mini-btn" data-action="zoom-reset">100%</button>
+          </div>
+          <div id="selectionLabel" class="selection-label">Nenhum elemento selecionado</div>
+        </div>
+
+        <div class="stage-grid">
+          <div class="ruler-corner"></div>
+          <div class="ruler ruler-top" id="rulerTop"><div id="topRulerInner" class="ruler-inner ruler-inner-top"></div></div>
+          <div class="ruler ruler-left" id="rulerLeft"><div id="leftRulerInner" class="ruler-inner ruler-inner-left"></div></div>
+          <div class="workspace-stage" id="workspaceStage">
+            <div class="artboard-wrap" id="artboardWrap">
+              <div class="artboard" id="artboard"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <aside class="sidebar sidebar-right">
+        <section class="panel-block">
+          <div class="panel-title">Página</div>
+          <div class="form-grid compact-grid">
+            <label>
+              <span>Largura</span>
+              <input id="pageWidth" type="number" min="320" step="10">
+            </label>
+            <label>
+              <span>Altura</span>
+              <input id="pageHeight" type="number" min="320" step="10">
+            </label>
+            <label>
+              <span>Grade</span>
+              <input id="gridSize" type="number" min="2" step="1">
+            </label>
+            <label class="toggle-row">
+              <span>Snap</span>
+              <input id="snapToggle" type="checkbox">
+            </label>
+            <label class="toggle-row">
+              <span>Mostrar grade</span>
+              <input id="showGridToggle" type="checkbox">
+            </label>
+            <label class="full-row">
+              <span>Fundo</span>
+              <input id="pageBg" type="color">
+            </label>
+          </div>
+        </section>
+
+        <section class="panel-block">
+          <div class="panel-title">Elemento selecionado</div>
+          <div id="emptyStateBox" class="empty-state-box">
+            Clique em um elemento para editar as propriedades.
+          </div>
+          <div id="multiStateBox" class="empty-state-box hidden">
+            Seleção múltipla ativa. Você pode arrastar os elementos juntos, duplicar, excluir, alinhar e distribuir.
+          </div>
+          <div id="guideStateBox" class="empty-state-box hidden">
+            Guia selecionada. Arraste para reposicionar. Pressione Delete para remover ou use “Limpar guias”.
+          </div>
+          <div id="propsPanel" class="form-grid hidden">
+            <label class="full-row">
+              <span>Nome</span>
+              <input id="propName" type="text">
+            </label>
+            <label>
+              <span>X</span>
+              <input id="propX" type="number" step="1">
+            </label>
+            <label>
+              <span>Y</span>
+              <input id="propY" type="number" step="1">
+            </label>
+            <label>
+              <span>Largura</span>
+              <input id="propW" type="number" step="1" min="10">
+            </label>
+            <label>
+              <span>Altura</span>
+              <input id="propH" type="number" step="1" min="10">
+            </label>
+            <label>
+              <span>Rotação</span>
+              <input id="propRotate" type="number" step="1">
+            </label>
+            <label>
+              <span>Opacidade</span>
+              <input id="propOpacity" type="number" step="0.05" min="0" max="1">
+            </label>
+            <label>
+              <span>Raio</span>
+              <input id="propRadius" type="number" step="1" min="0">
+            </label>
+            <label>
+              <span>Cor</span>
+              <input id="propFill" type="color">
+            </label>
+            <label>
+              <span>Opacidade da cor</span>
+              <input id="propFillOpacity" type="number" step="0.05" min="0" max="1">
+            </label>
+            <label>
+              <span>Modo de preenchimento</span>
+              <select id="propFillMode">
+                <option value="solid">Sólido</option>
+                <option value="gradient">Degradê</option>
+              </select>
+            </label>
+            <label>
+              <span>Tipo do degradê</span>
+              <select id="propGradientType">
+                <option value="linear">Linear</option>
+                <option value="radial">Radial</option>
+              </select>
+            </label>
+            <label>
+              <span>Degradê cor A</span>
+              <input id="propGradientColorA" type="color">
+            </label>
+            <label>
+              <span>Opacidade A</span>
+              <input id="propGradientOpacityA" type="number" step="0.05" min="0" max="1">
+            </label>
+            <label>
+              <span>Degradê cor B</span>
+              <input id="propGradientColorB" type="color">
+            </label>
+            <label>
+              <span>Opacidade B</span>
+              <input id="propGradientOpacityB" type="number" step="0.05" min="0" max="1">
+            </label>
+            <label>
+              <span>Ângulo</span>
+              <input id="propGradientAngle" type="number" step="1">
+            </label>
+            <label>
+              <span>Borda</span>
+              <input id="propStroke" type="color">
+            </label>
+            <label>
+              <span>Opacidade da borda</span>
+              <input id="propStrokeOpacity" type="number" step="0.05" min="0" max="1">
+            </label>
+            <label>
+              <span>Espessura</span>
+              <input id="propStrokeWidth" type="number" step="1" min="0">
+            </label>
+            <label>
+              <span>Fonte</span>
+              <input id="propFontSize" type="number" step="1" min="8">
+            </label>
+            <label>
+              <span>Peso</span>
+              <select id="propFontWeight">
+                <option value="400">400</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+              </select>
+            </label>
+            <label class="full-row">
+              <span>Texto</span>
+              <textarea id="propText" rows="4"></textarea>
+            </label>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script src="{{ url_for('editor_admin.static', filename='js/app.js') }}"></script>
+</body>
+</html>

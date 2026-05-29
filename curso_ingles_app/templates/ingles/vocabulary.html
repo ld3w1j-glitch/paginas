@@ -1,0 +1,32 @@
+{% extends "ingles/base.html" %}
+{% block title %}Vocabulário{% endblock %}
+{% block content %}
+<section class="section-head reveal">
+  <div>
+    <p class="eyebrow">Vocabulário</p>
+    <h1>Banco de palavras por módulo</h1>
+    <p class="lead">Marque palavras dominadas e use a busca para revisar por assunto.</p>
+  </div>
+</section>
+
+<section class="panel reveal">
+  <form class="searchbar inside" action="{{ url_for('ingles_vocabulary') }}" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="buscar palavra ou módulo">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </form>
+</section>
+
+<section class="phrasebook-grid reveal">
+  {% for bank in banks %}
+  <article class="panel vocab-bank">
+    <p class="eyebrow">{{ bank.module_slug }}</p>
+    <h2>{{ bank.module_title }}</h2>
+    <div class="word-grid">
+      {% for word in bank.words %}
+      <button type="button" class="word-chip" data-word-chip="{{ bank.module_slug }}::{{ word }}">{{ word }}</button>
+      {% endfor %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

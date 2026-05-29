@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="agent-chat-page">
+  <div class="container agent-chat-shell">
+    <header class="agent-chat-hero card">
+      <div>
+        <span class="eyebrow">Chat Agente</span>
+        <h1>Equipe multiagente contextual do portal</h1>
+        <p>O portal agora trabalha com uma equipe de agentes: o coordenador entende a conversa, o LeanCTX compacta o contexto e o especialista certo continua o trabalho quando necessário. Você ainda pode repensar, aprovar execução e gerar ZIP.</p>
+      </div>
+      <div class="agent-status-card">
+        <span class="agent-status-dot {{ 'online' if has_ai_key else 'local' }}"></span>
+        <strong>{{ 'Ollama local' if ai_provider == 'ollama' else ('Gemini conectado' if has_ai_key else 'Modo local') }}</strong>
+        <small>{{ ai_model if has_ai_key else 'Configure Gemini ou Ollama no Admin' }}</small>
+      </div>
+    </header>
+
+    <div class="agent-chat-layout wide">
+      <aside class="card agent-context-panel">
+        <span class="eyebrow">Histórico</span>
+        <h2>Conversas salvas</h2>
+        <p>Abra uma conversa antiga para continuar de onde parou, ou crie uma nova conversa.</p>
+        <button class="btn btn-primary btn-full" type="button" id="newConversationBtn">Nova conversa</button>
+        <button class="btn btn-ghost btn-full agent-delete-all" type="button" id="deleteAllConversationsBtn">Excluir todas as conversas</button>
+        <div class="agent-history-list" id="agentConversationList">
+          <span class="muted-note">Carregando conversas...</span>
+        </div>
+
+        <div class="agent-tip-box">
+          <strong>Exemplos</strong>
+          <button type="button" data-agent-example="Crie uma página protegida por admin, deixe o backend e o frontend conversarem e me entregue os arquivos em ZIP.">Criar página admin</button>
+          <button type="button" data-agent-example="Analise essa interface com LeanCTX, UX, Frontend e Testador, monte um plano e me pergunte antes de executar.">Analisar interface</button>
+          <button type="button" data-agent-example="Quais arquivos provavelmente preciso alterar para mudar essa interface?">Quais arquivos alterar?</button>
+        </div>
+      </aside>
+
+      <section class="card agent-chat-card">
+        <div class="agent-flow-bar">
+          <span class="agent-step active">1. Plano</span>
+          <span class="agent-step">2. LeanCTX + roteamento</span>
+          <span class="agent-step">3. Repensar se necessário</span>
+          <span class="agent-step">4. Executar/ZIP</span>
+        </div>
+
+        <div class="agent-messages" id="agentMessages" aria-live="polite">
+          <article class="agent-message bot">
+            <strong>Agente do Portal</strong>
+            <p>Olá, {{ current_user.name }}. Envie um pedido. Eu vou montar um plano, compactar o contexto com LeanCTX, escolher quais agentes devem participar e mostrar quem deve continuar o trabalho antes de executar.</p>
+          </article>
+        </div>
+
+        <form class="agent-form" id="agentChatForm">
+          <textarea id="agentMessageInput" rows="4" placeholder="Ex: Crie uma página nova protegida por admin e me devolva o ZIP." required></textarea>
+          <div class="agent-form-actions">
+            <div class="agent-toggles">
+              <label class="agent-context-toggle">
+                <input type="checkbox" id="agentUsePageContext" checked>
+                <span>Enviar contexto da página atual</span>
+              </label>
+              <label class="agent-context-toggle">
+                <input type="checkbox" id="agentAllowFiles" checked>
+                <span>Permitir criar arquivos e ZIP após aprovação</span>
+              </label>
+            </div>
+            <button class="btn btn-primary" type="submit">Criar plano</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</section>
+<script src="{{ url_for('static', filename='js/agent_chat.js') }}?v=agent-chat-leanctx-1"></script>
+{% endblock %}

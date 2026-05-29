@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="page-hero compact">
+    <div class="container">
+        <span class="eyebrow">Biblioteca</span>
+        <h1>Documentos institucionais</h1>
+        <p class="lead">Os documentos enviados serviram de base para o site, a trilha de estudo e a progressão por cargos.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="doc-grid">
+            {% for doc in docs %}
+            <article class="card doc-card">
+                <div class="doc-top">
+                    <span class="meta-pill">{{ doc.status }}</span>
+                    <img src="{{ url_for('static', filename='img/faixa.png') }}" alt="Faixa institucional">
+                </div>
+                <h2>{{ doc.titulo }}</h2>
+                <strong>{{ doc.versao }}</strong>
+                <p>{{ doc.descricao }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
