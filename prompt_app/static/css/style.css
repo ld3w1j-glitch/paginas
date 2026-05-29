@@ -369,3 +369,102 @@ pre,code,.ai-output,.mini-output{background:#030806!important;color:#eaf5ea!impo
   color:#eaf5ea!important;
 }
 /* ===================== FIM CORREÇÃO CHAT EXECUTOR ===================== */
+
+/* ===================== CORREÇÃO ADICIONAL - PROJETOS / ERROS / HISTÓRICO / MODELOS ===================== */
+/* Remove fundos brancos remanescentes nas áreas inferiores do Prompt Profissional */
+.advanced,
+.advanced summary,
+.cards-list article,
+.cards-list details,
+.cards-list summary,
+.empty,
+.search,
+.searchbar,
+#buscaHistorico,
+#erroLivre,
+#erroLivreResultado,
+#histList,
+#projetos .grid-form,
+#modelos .grid-form,
+#projetos .field,
+#modelos .field,
+#historico .hist-item,
+#historico .hist-item details,
+#historico .hist-item summary,
+#projetos article pre,
+#modelos article pre{
+  background:linear-gradient(180deg,rgba(9,28,19,.94),rgba(4,13,9,.96))!important;
+  border:1px solid rgba(236,243,233,.16)!important;
+  color:var(--theme-text)!important;
+  box-shadow:0 16px 44px rgba(0,0,0,.24)!important;
+}
+
+.advanced{
+  border-style:dashed!important;
+}
+
+.advanced summary,
+.cards-list summary{
+  color:var(--theme-green-2)!important;
+  font-weight:900!important;
+}
+
+.empty,
+.search,
+#buscaHistorico{
+  color:var(--theme-muted)!important;
+}
+
+.cards-list article h3,
+.cards-list article strong,
+.cards-list article b,
+#historico .hist-item h3{
+  color:var(--theme-text)!important;
+}
+
+.cards-list article small,
+.cards-list article p,
+.cards-list article span,
+.cards-list article li,
+.cards-list article details,
+.cards-list article pre,
+.empty{
+  color:var(--theme-muted)!important;
+}
+
+#projetos .field,
+#modelos .field{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+
+#projetos input,
+#projetos textarea,
+#modelos input,
+#modelos textarea,
+#erros textarea,
+.search,
+#buscaHistorico{
+  background:rgba(3,8,6,.78)!important;
+  color:var(--theme-text)!important;
+  border:1px solid rgba(236,243,233,.16)!important;
+}
+
+#projetos input::placeholder,
+#projetos textarea::placeholder,
+#modelos input::placeholder,
+#modelos textarea::placeholder,
+#erros textarea::placeholder,
+.search::placeholder,
+#buscaHistorico::placeholder{
+  color:rgba(184,201,187,.70)!important;
+}
+
+#projetos .btn.primary,
+#modelos .btn.primary,
+#erros .btn.primary,
+#historico .btn.primary{
+  color:#fff!important;
+}
+/* ===================== FIM CORREÇÃO ADICIONAL ===================== */
