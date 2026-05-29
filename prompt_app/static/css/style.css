@@ -278,3 +278,94 @@ pre,code,.ai-output,.mini-output{background:#030806!important;color:#eaf5ea!impo
   .btn,.button,button,input[type="submit"]{width:auto;max-width:100%;}
 }
 /* ===================== FIM TEMA FINAL ===================== */
+
+/* ===================== CORREÇÃO CHAT EXECUTOR - CARDS BRANCOS ===================== */
+/* Remove fundos brancos antigos dentro do Chat Executor */
+.chat-card .workspace-panel,
+.chat-card .chat-guide div,
+.chat-card .chat-box,
+.chat-card .chat-empty,
+.chat-card .chat-msg,
+.chat-card .file-pill{
+  background:linear-gradient(180deg,rgba(9,28,19,.94),rgba(4,13,9,.96))!important;
+  border:1px solid rgba(236,243,233,.16)!important;
+  color:var(--theme-text)!important;
+  box-shadow:0 16px 44px rgba(0,0,0,.24)!important;
+}
+.chat-card .workspace-panel{
+  border-radius:22px!important;
+  padding:18px!important;
+}
+.chat-card .workspace-title{
+  color:var(--theme-gold)!important;
+  font-weight:900!important;
+}
+.chat-card .chat-guide{
+  gap:14px!important;
+}
+.chat-card .chat-guide div{
+  border-radius:18px!important;
+  min-height:72px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+.chat-card .chat-guide b{
+  flex:0 0 34px!important;
+  width:34px!important;
+  height:34px!important;
+  margin-right:0!important;
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  color:#fff!important;
+  box-shadow:0 8px 22px rgba(42,174,102,.28)!important;
+}
+.chat-card .chat-guide span,
+.chat-card .chat-empty p,
+.chat-card .chat-empty b,
+.chat-card .chat-msg pre,
+.chat-card .file-pill,
+.chat-card .file-pill small{
+  color:var(--theme-text)!important;
+}
+.chat-card .status-steps span{
+  background:rgba(255,255,255,.06)!important;
+  border:1px solid rgba(236,243,233,.14)!important;
+  color:var(--theme-muted)!important;
+}
+.chat-card .status-steps span.active{
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  border-color:rgba(42,174,102,.60)!important;
+  color:#fff!important;
+}
+.chat-card .chat-box{
+  border-radius:22px!important;
+  min-height:430px!important;
+}
+.chat-card .chat-empty{
+  border-style:solid!important;
+  border-radius:18px!important;
+  padding:22px!important;
+}
+.chat-card .chat-empty h3{
+  color:var(--theme-green-2)!important;
+  margin-top:0!important;
+}
+.chat-card .chat-empty p{
+  line-height:1.55!important;
+}
+.chat-card .chat-empty b{
+  font-weight:900!important;
+}
+.chat-card .field select,
+.chat-card .field textarea,
+.chat-card textarea,
+.chat-card select{
+  background:rgba(3,8,6,.78)!important;
+  color:var(--theme-text)!important;
+  border-color:rgba(236,243,233,.16)!important;
+}
+.chat-card .field select option{
+  background:#07120d!important;
+  color:#eaf5ea!important;
+}
+/* ===================== FIM CORREÇÃO CHAT EXECUTOR ===================== */
