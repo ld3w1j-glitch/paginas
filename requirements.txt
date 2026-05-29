@@ -1,0 +1,14 @@
+Flask==3.0.3
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+Werkzeug==3.0.3
+python-dotenv==1.0.1
+gunicorn==23.0.0
+pg8000==1.31.2
+requests==2.32.3
+email-validator==2.2.0
+pypdf==5.9.0
+Flask-Migrate==4.0.7
+
+pytest==8.3.4
+ruff==0.8.6
