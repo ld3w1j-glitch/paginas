@@ -1,0 +1,56 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Dashboard financeiro" %}
+{% set page_subtitle = "Resumo de saldo, contas e gastos." %}
+{% block content %}
+<section class="stats-grid">
+  <div class="stat card"><span>Saldo total</span><strong>R$ {{ '%.2f'|format(total_balance|default(0, true)) }}</strong></div>
+  <div class="stat card"><span>Receitas</span><strong class="value-income">R$ {{ '%.2f'|format(total_income|default(0, true)) }}</strong></div>
+  <div class="stat card"><span>Despesas</span><strong class="value-expense">R$ {{ '%.2f'|format(total_expense|default(0, true)) }}</strong></div>
+  <div class="stat card"><span>Fixas previstas</span><strong>R$ {{ '%.2f'|format(fixed_expenses|default(0, true)) }}</strong></div>
+</section>
+
+
+<section class="card">
+  <h2>Contas bancárias</h2>
+  {% if accounts %}
+    <div class="account-list">
+      {% for account in accounts %}
+        <div class="account-card compact-card" style="--account-color: {{ account.color or '#2563eb' }}">
+          <div class="account-color-bar"></div>
+          <div class="account-main">
+            <span>{{ account.bank_name }} — {{ account.account_name }}</span>
+            <strong>R$ {{ '%.2f'|format(account.current_balance) }}</strong>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <a class="btn" href="{{ url_for('financeiro.accounts') }}">Editar contas e cores</a>
+  {% else %}
+    <p>Nenhuma conta cadastrada.</p>
+    <a class="btn primary" href="{{ url_for('financeiro.accounts') }}">Cadastrar conta</a>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Últimas transações</h2>
+  {% if transactions %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Data</th><th>Conta</th><th>Descrição</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead>
+      <tbody>
+        {% for tx in transactions %}
+        <tr>
+          <td>{{ tx.occurrence_date.strftime('%d/%m/%Y') }}</td>
+          <td><span class="account-chip" style="--account-color: {{ tx.account.color if tx.account else '#2563eb' }}">{{ tx.account.bank_name if tx.account else 'Conta' }}</span></td>
+          <td>{{ tx.description }}</td>
+          <td>{{ 'Receita' if tx.type == 'income' else 'Despesa' }}</td>
+          <td><strong class="{{ 'value-income' if tx.type == 'income' else 'value-expense' }}">R$ {{ '%.2f'|format(tx.amount) }}</strong></td>
+          <td><a class="btn small" href="{{ url_for('financeiro.edit_transaction', tx_id=tx.id) }}">Editar valor</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p>Nenhuma transação registrada.</p>{% endif %}
+</section>
+{% endblock %}

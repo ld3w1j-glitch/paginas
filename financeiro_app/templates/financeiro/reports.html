@@ -1,0 +1,38 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Relatórios e gráficos" %}
+{% set page_subtitle = "Análise visual de gastos e desempenho financeiro." %}
+{% block content %}
+
+<section class="card ai-card">
+  <div class="section-head">
+    <div>
+      <h2>Analisar relatórios com IA</h2>
+      <p class="muted">A IA usa os lançamentos cadastrados para explicar os gráficos e sugerir ações.</p>
+    </div>
+    <span class="tag-soft">Análise</span>
+  </div>
+  <form class="form" method="post" action="{{ url_for('financeiro.ai_analyze') }}">
+    <input type="hidden" name="origem" value="reports">
+    <input type="hidden" name="action" value="chat">
+    <label>Foco da análise
+      <input name="prompt" placeholder="Ex: avalie minhas categorias e me diga onde cortar primeiro">
+    </label>
+    <div class="actions compact"><button class="btn primary" type="submit">Gerar análise dos relatórios</button></div>
+  </form>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <h2>Despesas por categoria</h2>
+    <canvas id="categoryChart" data-labels='{{ category_labels|tojson }}' data-values='{{ category_values|tojson }}'></canvas>
+  </div>
+  <div class="card">
+    <h2>Receitas x despesas por mês</h2>
+    <canvas id="monthChart" data-months='{{ months|tojson }}' data-income='{{ income_values|tojson }}' data-expense='{{ expense_values|tojson }}'></canvas>
+  </div>
+</section>
+<section class="card insight">
+  <h2>Leitura diferente do dinheiro</h2>
+  <p>Use os gráficos para identificar concentração de gastos por categoria, meses com maior pressão financeira e diferença entre receita e despesa. Essa visão ajuda a decidir onde cortar, onde investir e quais despesas fixas merecem revisão.</p>
+</section>
+{% endblock %}

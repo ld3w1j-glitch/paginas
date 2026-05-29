@@ -1,0 +1,46 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Contas bancárias" %}
+{% set page_subtitle = "Cadastre, edite saldo e use cores para identificar cada banco." %}
+{% block content %}
+<section class="grid two">
+  <form class="card form" method="post" action="{{ url_for('financeiro.edit_account', account_id=editing_account.id) if editing_account else url_for('financeiro.accounts') }}">
+    <h2>{{ 'Editar conta' if editing_account else 'Nova conta' }}</h2>
+    <p class="muted">Escolha uma cor para reconhecer o banco rapidamente nos cards e lançamentos.</p>
+    <label>Banco<input name="bank_name" value="{{ editing_account.bank_name if editing_account else '' }}" placeholder="Ex: Nubank, Itaú, Caixa" required></label>
+    <label>Nome da conta<input name="account_name" value="{{ editing_account.account_name if editing_account else '' }}" placeholder="Ex: Conta principal" required></label>
+    <label>Saldo inicial<input name="initial_balance" value="{{ '%.2f'|format(editing_account.initial_balance) if editing_account else '' }}" placeholder="0,00" required></label>
+    <label>Cor da conta
+      <input class="color-input" type="color" name="color" value="{{ editing_account.color if editing_account else '#2563eb' }}">
+    </label>
+    <div class="color-presets" aria-label="Cores rápidas">
+      {% for color in colors %}
+        <button type="button" class="color-dot" style="--account-color: {{ color }}" onclick="document.querySelector('input[name=color]').value='{{ color }}'" title="Usar esta cor"></button>
+      {% endfor %}
+    </div>
+    <div class="actions compact">
+      <button class="btn primary" type="submit">{{ 'Salvar alterações' if editing_account else 'Adicionar conta' }}</button>
+      {% if editing_account %}<a class="btn" href="{{ url_for('financeiro.accounts') }}">Cancelar edição</a>{% endif %}
+    </div>
+  </form>
+
+  <div class="card">
+    <h2>Minhas contas</h2>
+    {% for account in accounts %}
+      <div class="account-card" style="--account-color: {{ account.color or '#2563eb' }}">
+        <div class="account-color-bar"></div>
+        <div class="account-main">
+          <div>
+            <strong>{{ account.bank_name }}</strong>
+            <span>{{ account.account_name }}</span>
+          </div>
+          <strong>R$ {{ '%.2f'|format(account.current_balance) }}</strong>
+        </div>
+        <div class="account-actions">
+          <a class="btn small" href="{{ url_for('financeiro.edit_account', account_id=account.id) }}">Editar saldo/cor</a>
+          <form method="post" action="{{ url_for('financeiro.delete_account', account_id=account.id) }}" onsubmit="return confirm('Remover esta conta e suas transações?')"><button class="link-danger">Remover</button></form>
+        </div>
+      </div>
+    {% else %}<p>Nenhuma conta cadastrada.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Receitas e despesas" %}
+{% set page_subtitle = "Registre lançamentos e edite valores quando precisar corrigir." %}
+{% block content %}
+
+<section class="card ai-card">
+  <div class="section-head">
+    <div>
+      <h2>IA nas transações</h2>
+      <p class="muted">Use a IA para revisar categorias, encontrar possíveis duplicidades, recorrências e gastos que merecem atenção.</p>
+    </div>
+    <span class="tag-soft">Organização</span>
+  </div>
+  <form class="form" method="post" action="{{ url_for('financeiro.ai_analyze') }}">
+    <input type="hidden" name="origem" value="transactions">
+    <input type="hidden" name="action" value="chat">
+    <label>Pedido para a IA
+      <input name="prompt" placeholder="Ex: organize minhas categorias e destaque gastos repetidos">
+    </label>
+    <div class="actions compact"><button class="btn primary" type="submit">Analisar transações com IA</button></div>
+  </form>
+</section>
+
+
+<section class="card import-card">
+  <div class="section-head">
+    <div>
+      <h2>Importar comprovante Pix</h2>
+      <p class="muted">Envie um PDF no padrão PicPay ou Nubank. O sistema lê data, valor, destino/recebedor e ID da transação e registra como despesa automaticamente.</p>
+    </div>
+    <span class="tag-soft">PDF Pix</span>
+  </div>
+  <form class="form grid-form" method="post" enctype="multipart/form-data" action="{{ url_for('financeiro.import_receipt_transaction') }}">
+    <label>Conta de origem
+      <select name="account_id" required>
+        {% for acc in accounts %}
+          <option value="{{ acc.id }}">{{ acc.bank_name }} — {{ acc.account_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>PDF do comprovante
+      <input type="file" name="receipt_pdf" accept=".pdf" required>
+    </label>
+    <div class="actions compact">
+      <button class="btn primary" type="submit">Ler PDF e registrar</button>
+    </div>
+  </form>
+  <div class="receipt-support">
+    <span>Suportado agora:</span>
+    <strong>PicPay Pix</strong>
+    <strong>Nubank / Nu Pagamentos</strong>
+  </div>
+  <p class="hint">Para prints/imagens, lance manualmente por enquanto. A leitura automática usa o texto interno do PDF.</p>
+</section>
+
+<section class="card">
+  <h2>{{ 'Editar lançamento' if editing_tx else 'Novo lançamento' }}</h2>
+  {% if editing_tx %}<p class="muted">Você está editando um lançamento existente. Ajuste o valor, tipo, conta ou descrição e salve.</p>{% endif %}
+  <form class="form grid-form" method="post" enctype="multipart/form-data" action="{{ url_for('financeiro.edit_transaction', tx_id=editing_tx.id) if editing_tx else url_for('financeiro.transactions') }}">
+    <label>Conta<select name="account_id" required>{% for acc in accounts %}<option value="{{ acc.id }}" {% if editing_tx and editing_tx.account_id == acc.id %}selected{% endif %}>{{ acc.bank_name }} — {{ acc.account_name }}</option>{% endfor %}</select></label>
+    <label>Tipo<select name="type"><option value="expense" {% if editing_tx and editing_tx.type == 'expense' %}selected{% endif %}>Despesa</option><option value="income" {% if editing_tx and editing_tx.type == 'income' %}selected{% endif %}>Receita</option></select></label>
+    <label>Descrição<input name="description" value="{{ editing_tx.description if editing_tx else '' }}" required></label>
+    <label>Categoria<input name="category" value="{{ editing_tx.category if editing_tx else '' }}" placeholder="Moradia, Alimentação, Investimentos..."></label>
+    <label>Valor<input name="amount" value="{{ '%.2f'|format(editing_tx.amount) if editing_tx else '' }}" placeholder="0,00" required></label>
+    <label>Data<input type="date" name="occurrence_date" value="{{ editing_tx.occurrence_date.isoformat() if editing_tx else '' }}" required></label>
+    <label>Periodicidade<select name="periodicity"><option value="">Não recorrente</option><option value="mensal" {% if editing_tx and editing_tx.periodicity == 'mensal' %}selected{% endif %}>Mensal</option><option value="anual" {% if editing_tx and editing_tx.periodicity == 'anual' %}selected{% endif %}>Anual</option><option value="semanal" {% if editing_tx and editing_tx.periodicity == 'semanal' %}selected{% endif %}>Semanal</option></select></label>
+    <label class="check"><input type="checkbox" name="is_fixed" {% if editing_tx and editing_tx.is_fixed %}checked{% endif %}> Despesa fixa/recorrente</label>
+    {% if not editing_tx %}<label>Comprovante<input type="file" name="receipt" accept=".pdf,.png,.jpg,.jpeg,.webp"></label>{% endif %}
+    <div class="actions compact">
+      <button class="btn primary" type="submit">{{ 'Salvar alterações' if editing_tx else 'Salvar lançamento' }}</button>
+      {% if editing_tx %}<a class="btn" href="{{ url_for('financeiro.transactions') }}">Cancelar edição</a>{% endif %}
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Histórico</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Data</th><th>Conta</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Comprovante</th><th>Ação</th></tr></thead>
+      <tbody>
+        {% for tx in transactions %}
+        <tr>
+          <td>{{ tx.occurrence_date.strftime('%d/%m/%Y') }}</td>
+          <td><span class="account-chip" style="--account-color: {{ tx.account.color if tx.account else '#2563eb' }}">{{ tx.account.bank_name if tx.account else 'Conta' }}</span></td>
+          <td>{{ tx.description }}</td>
+          <td>{{ tx.category }}</td>
+          <td>{{ 'Receita' if tx.type == 'income' else 'Despesa' }}{% if tx.is_fixed %} fixa{% endif %}</td>
+          <td><strong class="{{ 'value-income' if tx.type == 'income' else 'value-expense' }}">R$ {{ '%.2f'|format(tx.amount) }}</strong></td>
+          <td>{% if tx.receipt_filename %}<a href="{{ url_for('financeiro.uploaded_file', filename=tx.receipt_filename) }}" target="_blank">Abrir</a>{% else %}—{% endif %}</td>
+          <td class="row-actions"><a class="btn small" href="{{ url_for('financeiro.edit_transaction', tx_id=tx.id) }}">Editar valor</a><form method="post" action="{{ url_for('financeiro.delete_transaction', tx_id=tx.id) }}" onsubmit="return confirm('Remover lançamento?')"><button class="link-danger">Remover</button></form></td>
+        </tr>
+        {% else %}<tr><td colspan="8">Nenhuma transação.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

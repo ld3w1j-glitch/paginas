@@ -1,0 +1,10 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Entrar" %}
+{% block content %}
+<form class="card form" method="post">
+  <label>Login ou e-mail<input type="text" name="email" placeholder="login ou e-mail" required></label>
+  <label>Senha<input type="password" name="password" required></label>
+  <button class="btn primary" type="submit">Entrar</button>
+  <p>Ainda não tem conta? <a href="{{ url_for('financeiro_auth.register') }}">Criar conta</a></p>
+</form>
+{% endblock %}

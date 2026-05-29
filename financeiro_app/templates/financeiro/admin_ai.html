@@ -1,0 +1,37 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Admin IA Financeira" %}
+{% set page_subtitle = "Conecte a API que alimenta as análises inteligentes do financeiro." %}
+{% block content %}
+<section class="card admin-ai-card">
+  <div class="section-head">
+    <div>
+      <h2>Conexão Google Gemini</h2>
+      <p class="muted">A chave fica salva apenas no painel administrativo. As outras telas usam a IA sem mostrar a API para usuários comuns.</p>
+    </div>
+    <span class="tag-soft">{{ 'Conectado' if gemini_configured else 'Pendente' }}</span>
+  </div>
+  <form class="form grid-form" method="post">
+    <label>Chave da API Google
+      <input type="password" name="google_api_key" placeholder="Cole a chave somente para cadastrar ou trocar">
+    </label>
+    <label>Modelo Gemini
+      <input name="gemini_model" value="{{ gemini_model or 'gemini-2.5-flash' }}" placeholder="gemini-2.5-flash">
+    </label>
+    <label class="check"><input type="checkbox" name="clear_google_api_key"> Remover chave salva</label>
+    <div class="actions compact">
+      <button class="btn primary" type="submit">Salvar conexão da IA</button>
+      <a class="btn" href="{{ url_for('financeiro.dashboard') }}">Voltar ao financeiro</a>
+    </div>
+  </form>
+  <p class="hint">Login admin definido por <code>ADMIN_USER</code> e <code>ADMIN_PASSWORD</code> nas variáveis de ambiente.</p>
+</section>
+
+<section class="card">
+  <h2>Onde a IA foi ligada</h2>
+  <div class="ai-feature-grid">
+    <div><strong>Dashboard</strong><span>Análise geral de saldo, receitas, despesas e gastos fixos.</span></div>
+    <div><strong>Transações</strong><span>Leitura de histórico, categorias, recorrências e possíveis duplicidades.</span></div>
+    <div><strong>Relatórios</strong><span>Interpretação dos gráficos e sugestões de organização.</span></div>
+  </div>
+</section>
+{% endblock %}

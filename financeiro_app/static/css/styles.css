@@ -1,0 +1,520 @@
+:root{--bg:#eef2f7;--card:#ffffff;--text:#172033;--muted:#6b7280;--primary:#2563eb;--primary-dark:#1d4ed8;--danger:#dc2626;--border:#dbe2ea;--soft:#f8fafc}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text)}a{color:var(--primary);text-decoration:none}.layout{display:flex;min-height:100vh}.sidebar{width:270px;background:#111827;color:white;padding:24px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:12px;align-items:center;margin-bottom:32px}.brand-icon{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#60a5fa,#2563eb);display:grid;place-items:center;font-weight:800}.brand span{display:block;color:#9ca3af;font-size:13px}nav{display:grid;gap:8px}nav a{color:#d1d5db;padding:12px 14px;border-radius:12px}nav a:hover{background:#1f2937;color:#fff}.content{flex:1;padding:28px;overflow:auto}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.topbar h1{margin:0;font-size:28px}.topbar p{margin:5px 0 0;color:var(--muted)}.user-pill{background:white;border:1px solid var(--border);padding:10px 14px;border-radius:999px}.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:22px;box-shadow:0 10px 30px rgba(15,23,42,.06);margin-bottom:20px}.hero{min-height:360px;display:flex;align-items:center;background:radial-gradient(circle at top right,#dbeafe,#fff 50%)}.hero h2{font-size:42px;margin:0 0 12px}.hero p{font-size:18px;color:var(--muted);max-width:620px}.actions{display:flex;gap:12px;margin-top:20px}.btn{border:1px solid var(--border);background:white;border-radius:12px;padding:11px 16px;cursor:pointer;font-weight:700;display:inline-block;color:var(--text)}.btn.primary{background:var(--primary);border-color:var(--primary);color:white}.btn.primary:hover{background:var(--primary-dark)}.form{display:grid;gap:14px}.form label{display:grid;gap:7px;font-weight:700}.form input,.form select{width:100%;border:1px solid var(--border);border-radius:12px;padding:12px;background:#fff;font-size:15px}.grid{display:grid;gap:20px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-form{grid-template-columns:repeat(3,minmax(0,1fr));align-items:end}.check{display:flex!important;align-items:center;gap:8px}.check input{width:auto}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.stat span{display:block;color:var(--muted);margin-bottom:10px}.stat strong{font-size:26px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:0}.boxed{background:var(--soft);border-radius:14px;border:1px solid var(--border);padding:14px;margin-bottom:10px}.boxed span{display:block;color:var(--muted);font-size:13px}.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.market-item{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:14px}.market-item span,.market-item small{display:block;color:var(--muted);margin-top:5px}table{width:100%;border-collapse:collapse;overflow:hidden}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-size:13px;background:var(--soft)}.muted{color:var(--muted)}.alerts{display:grid;gap:10px;margin-bottom:16px}.alert{padding:12px 14px;border-radius:14px;background:#eff6ff;border:1px solid #bfdbfe}.alert.danger{background:#fef2f2;border-color:#fecaca}.alert.success{background:#ecfdf5;border-color:#bbf7d0}.alert.warning{background:#fffbeb;border-color:#fde68a}.link-danger{border:0;background:transparent;color:var(--danger);cursor:pointer}.insight p{font-size:17px;line-height:1.6}@media(max-width:900px){.layout{display:block}.sidebar{height:auto;width:auto;position:static}.content{padding:18px}.grid.two,.stats-grid,.grid-form{grid-template-columns:1fr}.topbar{align-items:flex-start;gap:12px}.market-grid{grid-template-columns:1fr}table{display:block;overflow:auto}.hero h2{font-size:30px}}
+/* v2 UX/responsivo - ajuste para central multi-programas */
+html,body{max-width:100%;overflow-x:hidden}.content{min-width:0}.card{min-width:0}.topbar{min-width:0}.topbar h1{line-height:1.15}.stats-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}.market-grid{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}.actions{flex-wrap:wrap}.btn{max-width:100%;text-align:center}.sidebar nav a.current,.sidebar nav a:focus{background:#1f2937;color:#fff;outline:2px solid #60a5fa;outline-offset:2px}.mobile-programs-link{display:inline-flex}
+@media(max-width:1180px){.layout{display:block}.sidebar{position:relative;top:auto;width:100%;height:auto;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08)}.brand{margin-bottom:14px}.sidebar nav{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.sidebar nav a{white-space:nowrap;background:rgba(255,255,255,.04)}.content{padding:20px}.topbar{background:rgba(238,242,247,.94);position:sticky;top:0;z-index:5;padding:10px 0;margin:-6px 0 16px}.mobile-programs-link{display:inline-flex}}
+@media(max-width:760px){.content{padding:14px}.topbar{display:block}.topbar h1{font-size:24px}.topbar p{font-size:14px}.user-pill{display:inline-flex;margin-top:10px}.card{border-radius:18px;padding:18px}.stat strong{font-size:22px}.stats-grid{gap:12px}.grid.two{grid-template-columns:1fr}.market-grid{grid-template-columns:1fr 1fr}.row{display:grid;grid-template-columns:1fr;gap:6px}.form input,.form select{font-size:16px}.grid-form{grid-template-columns:1fr}.table-wrap,table{width:100%;display:block;overflow-x:auto}.hero{min-height:auto}.hero h2{font-size:28px}.actions .btn,.btn.primary{width:100%}}
+@media(max-width:420px){.market-grid{grid-template-columns:1fr}.sidebar{padding:14px}.brand-icon{width:38px;height:38px}.sidebar nav a{padding:10px 12px}.card{padding:16px}.content{padding:12px}.topbar h1{font-size:22px}}
+
+/* v3 financeiro - edição de valores e cores por banco */
+.color-input{height:46px;padding:4px!important;cursor:pointer}.color-presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:-6px}.color-dot{width:30px;height:30px;border-radius:999px;border:3px solid #fff;box-shadow:0 0 0 1px var(--border),0 4px 10px rgba(15,23,42,.12);background:var(--account-color);cursor:pointer}.actions.compact{margin-top:4px;align-items:center}.btn.small{padding:7px 10px;border-radius:10px;font-size:13px}.account-list{display:grid;gap:10px;margin-bottom:14px}.account-card{position:relative;display:grid;grid-template-columns:8px 1fr;gap:12px;background:var(--soft);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px;overflow:hidden}.account-card.compact-card{margin-bottom:0}.account-color-bar{background:var(--account-color);border-radius:999px}.account-main{display:flex;justify-content:space-between;gap:12px;align-items:center;min-width:0}.account-main span{display:block;color:var(--muted);font-size:13px}.account-actions{grid-column:2;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.account-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--account-color) 13%,white);border:1px solid color-mix(in srgb,var(--account-color) 38%,#dbe2ea);font-weight:700;white-space:nowrap}.account-chip:before{content:"";width:10px;height:10px;border-radius:999px;background:var(--account-color);display:inline-block}.value-income{color:#059669}.value-expense{color:#dc2626}.row-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.table-wrap{width:100%;overflow-x:auto}
+@supports not (background: color-mix(in srgb,#000 10%,white)){.account-chip{background:#f8fafc;border-color:var(--border)}}
+@media(max-width:760px){.account-main{display:grid;gap:6px}.account-actions{display:grid;grid-template-columns:1fr;align-items:stretch}.account-actions .btn,.row-actions .btn{width:100%}.row-actions{display:grid}.color-presets{justify-content:flex-start}}
+
+/* v4 financeiro - importação automática de comprovante PicPay em PDF */
+.section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.section-head h2{margin-top:0}.tag-soft{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;font-weight:800;padding:8px 12px;white-space:nowrap}.import-card{border-left:6px solid #2563eb}.hint{font-size:13px;color:var(--muted);margin:12px 0 0;background:var(--soft);border:1px dashed var(--border);padding:10px 12px;border-radius:12px}
+@media(max-width:760px){.section-head{display:block}.tag-soft{margin-top:8px}.import-card .grid-form{grid-template-columns:1fr}.import-card .actions .btn{width:100%}}
+
+/* v5 financeiro - importação automática PicPay + Nubank */
+.receipt-support{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.receipt-support span{color:var(--muted);font-size:13px;font-weight:700}
+.receipt-support strong{background:#f8fafc;border:1px solid var(--border);border-radius:999px;padding:7px 10px;font-size:13px}
+@media(max-width:760px){.receipt-support{display:grid;grid-template-columns:1fr}.receipt-support strong{text-align:center}}
+
+/* v6 financeiro - painel admin IA + análise inteligente */
+.ai-card{border-left:6px solid #7c3aed;background:linear-gradient(180deg,#fff,#fbfaff)}
+.admin-ai-card{border-left:6px solid #111827}.ai-feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.ai-feature-grid div{background:var(--soft);border:1px solid var(--border);border-radius:16px;padding:14px}.ai-feature-grid strong,.ai-feature-grid span{display:block}.ai-feature-grid span{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.45}.ai-output{white-space:pre-wrap;font-family:Inter,Segoe UI,Arial,sans-serif;background:#0f172a;color:#e5e7eb;border-radius:18px;padding:18px;line-height:1.6;overflow:auto;max-height:68vh}.ai-result-card{border-left:6px solid #7c3aed}.form input[type="password"]{letter-spacing:.05em}
+@media(max-width:760px){.ai-output{font-size:14px;max-height:none}.ai-feature-grid{grid-template-columns:1fr}}
+
+/* v6.2 Financeiro: cards de IA/admin com contraste e cores */
+.ai-feature-grid div:nth-child(1){background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#bfdbfe}
+.ai-feature-grid div:nth-child(2){background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-color:#ddd6fe}
+.ai-feature-grid div:nth-child(3){background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#a7f3d0}
+.ai-feature-grid div strong{color:#0f172a}
+.ai-feature-grid div span{color:#475569}
+.admin-ai-card{background:linear-gradient(135deg,#ffffff,#f8fbff);border-color:#bfdbfe}
+
+
+/* v7 financeiro - botão fixo para voltar à Central */
+.sidebar nav a.central-link,
+.sidebar nav a.mobile-programs-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:12px;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 10px 22px rgba(37,99,235,.22);
+}
+.sidebar nav a.central-link:hover,
+.sidebar nav a.mobile-programs-link:hover{
+  background:linear-gradient(135deg,#1d4ed8,#1e40af);
+  color:#fff;
+}
+@media(max-width:1180px){
+  .sidebar nav a.central-link,
+  .sidebar nav a.mobile-programs-link{
+    margin-bottom:0;
+    min-width:max-content;
+  }
+}
+
+
+/* ===== TEMA PADRONIZADO VERDE/DOURADO - FORÇADO ===== */
+:root{
+  --bg:#07120d!important;--bg-soft:#0d1f18!important;--card:rgba(12,31,22,.90)!important;--soft:rgba(17,44,31,.72)!important;
+  --text:#edf7ee!important;--muted:#b8c9bb!important;--line:rgba(236,243,233,.14)!important;
+  --primary:#1f8c4c!important;--primary-dark:#176d3b!important;--primary-2:#2aae66!important;--gold:#f0c94f!important;
+  --border:rgba(236,243,233,.14)!important;--shadow:0 24px 70px rgba(0,0,0,.38)!important;
+}
+html{background:#07120d!important}body{color:var(--text)!important;background:radial-gradient(circle at top center,rgba(240,201,79,.13),transparent 32%),linear-gradient(180deg,#08120d 0%,#06110b 45%,#030806 100%)!important;min-height:100vh!important}body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:82px 82px;mask-image:radial-gradient(circle at center,black 20%,transparent 84%);opacity:.20;z-index:-1}
+a{color:inherit}.topbar,.sidebar,.card,.guide-card,.start-card,.hero,.admin-hero,.stat,.boxed,.market-item,.account-card,.form input,.form select,textarea,.choice,.start-option,.ai-feature-grid div,.api-card,.admin-ai-card,.user-pill,.alert,.guide,.file-preview,.workspace-panel,.copy-panel{background:rgba(12,31,22,.90)!important;border-color:rgba(236,243,233,.14)!important;color:var(--text)!important;box-shadow:0 20px 60px rgba(0,0,0,.30)!important}.topbar,.sidebar{backdrop-filter:blur(14px)!important}.sidebar{background:rgba(4,10,7,.86)!important}.sidebar nav a,.nav-link{color:var(--muted)!important}.sidebar nav a:hover,.nav-link:hover,.nav-link.active,.sidebar nav a.current{background:rgba(240,201,79,.12)!important;color:var(--gold)!important}.brand-icon,.nav-link.active span,.nav-link span,.progress-pill,.score,.btn.primary,.wizard-actions .btn.primary,button.primary,.sidebar nav a.central-link,.sidebar nav a.mobile-programs-link{background:linear-gradient(135deg,#1f8c4c,#2aae66)!important;color:#fff!important;border-color:rgba(42,174,102,.55)!important}.btn,.button,button,input[type=submit]{border:1px solid rgba(240,201,79,.28)!important;background:rgba(255,255,255,.05)!important;color:var(--text)!important;border-radius:999px!important}.btn:hover,button:hover{border-color:var(--gold)!important;color:var(--gold)!important}.hero,.start-card,.admin-hero,.guide-card,.primary-card{background:linear-gradient(135deg,rgba(15,34,24,.92),rgba(8,21,15,.96))!important;border:1px solid rgba(240,201,79,.18)!important}.eyebrow,.badge,.side-hint,.section-head .eyebrow{color:var(--gold)!important}.topbar h1,.topbar h2,h1,h2,h3,strong,label,th,.card h2{color:var(--text)!important}.topbar p,p,.muted,small,span,.card p,td,.field small,.brand span{color:var(--muted)!important}.value-income{color:#45e08a!important}.value-expense,.danger,.link-danger{color:#ff7575!important}.form input,.form select,textarea{background:rgba(4,10,7,.55)!important;color:var(--text)!important;outline-color:var(--gold)!important}.form input::placeholder,textarea::placeholder{color:rgba(184,201,187,.7)!important}table{background:transparent!important}th{background:rgba(240,201,79,.08)!important;color:var(--gold)!important}td,th{border-color:rgba(236,243,233,.12)!important}.stats-grid .card,.stat.card{background:linear-gradient(180deg,rgba(15,42,28,.96),rgba(8,21,15,.95))!important}.account-chip,.tag-soft{background:rgba(240,201,79,.10)!important;border-color:rgba(240,201,79,.28)!important;color:var(--gold)!important}.ai-output,pre,code{background:#030806!important;color:#eaf5ea!important;border-color:rgba(236,243,233,.14)!important}.content,.layout{background:transparent!important}.choice input:checked + span,.choice:hover span{color:var(--gold)!important}@media(max-width:900px){.sidebar nav a{background:rgba(255,255,255,.04)!important}}
+/* ===== FIM DO TEMA ===== */
+
+
+/* =========================================================
+   TEMA FINAL UNIFICADO VERDE/DOURADO
+   Aplicado como camada de correção para páginas antigas.
+   ========================================================= */
+:root{
+  --theme-bg:#030806;
+  --theme-bg-2:#07120d;
+  --theme-panel:rgba(10,30,20,.94);
+  --theme-panel-2:rgba(14,42,28,.90);
+  --theme-panel-3:rgba(5,16,11,.86);
+  --theme-text:#edf7ee;
+  --theme-muted:#b8c9bb;
+  --theme-line:rgba(236,243,233,.15);
+  --theme-gold:#f0c94f;
+  --theme-green:#1f8c4c;
+  --theme-green-2:#2aae66;
+  --theme-red:#ff7575;
+  --theme-shadow:0 24px 70px rgba(0,0,0,.42);
+
+  --bg:#07120d!important;
+  --bg-2:#07120d!important;
+  --bg-soft:#0d1f18!important;
+  --card:var(--theme-panel)!important;
+  --panel:var(--theme-panel)!important;
+  --panel-2:var(--theme-panel-2)!important;
+  --panel-strong:var(--theme-panel)!important;
+  --soft:rgba(17,44,31,.72)!important;
+  --soft-paper:var(--theme-panel)!important;
+  --white:var(--theme-panel)!important;
+  --text:var(--theme-text)!important;
+  --ink:var(--theme-text)!important;
+  --muted:var(--theme-muted)!important;
+  --ink-soft:var(--theme-muted)!important;
+  --line:var(--theme-line)!important;
+  --border:var(--theme-line)!important;
+  --gold:var(--theme-gold)!important;
+  --yellow:var(--theme-gold)!important;
+  --amber:var(--theme-gold)!important;
+  --deep-amber:#c48b26!important;
+  --amber-soft:#f0c94f!important;
+  --copper-line:rgba(240,201,79,.22)!important;
+  --green:var(--theme-green)!important;
+  --green-2:var(--theme-green-2)!important;
+  --green2:var(--theme-green-2)!important;
+  --primary:var(--theme-green)!important;
+  --primary-dark:#176d3b!important;
+  --blue:var(--theme-green)!important;
+  --shadow:var(--theme-shadow)!important;
+}
+html,body{background:var(--theme-bg)!important;color:var(--theme-text)!important;}
+body{
+  min-height:100vh!important;
+  background:
+    radial-gradient(circle at 75% 12%,rgba(240,201,79,.14),transparent 28%),
+    radial-gradient(circle at 10% 0%,rgba(42,174,102,.12),transparent 28%),
+    linear-gradient(180deg,#07120d 0%,#06110b 45%,#030806 100%)!important;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:linear-gradient(rgba(255,255,255,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.032) 1px,transparent 1px)!important;
+  background-size:82px 82px!important;opacity:.20!important;
+  mask-image:radial-gradient(circle at center,black 18%,transparent 84%);
+}
+body,button,input,select,textarea{font-family:Inter,"Segoe UI",Arial,sans-serif!important;}
+a{color:inherit!important;text-decoration:none;}
+
+/* Estrutura principal */
+.shell,.container,.content,.layout,main,.main,.page,.workspace,.admin-layout{background:transparent!important;}
+.topbar,.site-header,.sidebar,.nav-wrap,.navbar,.hero,.hero-card,.start-card,.guide-card,.card,.panel,.box,.boxed,.stat,.stat-card,.metric-card,.module-card,.lesson-card,.course-card,.track-card,.mission-card,.admin-card,.api-card,.admin-ai-card,.ai-card,.import-card,.file-preview,.apply-zip,.copy-panel,.workspace-panel,.result-card,.quiz-card,.flashcard,.vocab-card,.phrase-card,.exam-card,.search-card,.guide,.account-card,.market-item,.ai-feature-grid>div,section.card,article.card{
+  background:linear-gradient(180deg,rgba(12,31,22,.95),rgba(7,18,13,.94))!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+.hero,.start-card,.admin-hero,.primary-card,.highlight,.portal-card{
+  background:
+    radial-gradient(circle at 85% 16%,rgba(240,201,79,.13),transparent 30%),
+    linear-gradient(135deg,rgba(15,42,28,.96),rgba(5,16,11,.98))!important;
+  border-color:rgba(240,201,79,.22)!important;
+}
+.sidebar,.topbar,.site-header{backdrop-filter:blur(14px)!important;background:rgba(4,10,7,.86)!important;}
+
+/* Texto */
+h1,h2,h3,h4,h5,h6,strong,b,label,legend,th,.brand strong,.card h2,.section-title,.title,.headline{color:var(--theme-text)!important;}
+p,small,span,li,td,.muted,.subtitle,.description,.card p,.brand span,.topbar p,.field small,.help,.hint{color:var(--theme-muted)!important;}
+.eyebrow,.badge,.side-hint,.section-kicker,.kicker,.section-head .eyebrow,.guide h3,.tag-soft,th{color:var(--theme-gold)!important;letter-spacing:.06em;}
+
+/* Botões e navegação */
+.btn,.button,button,input[type="submit"],.nav a,.top-actions a,.actions a,.actions button,.wizard-actions button,.central-link,.mobile-programs-link{
+  border:1px solid rgba(240,201,79,.30)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:var(--theme-text)!important;
+  border-radius:999px!important;
+  font-weight:800!important;
+}
+.btn.primary,.primary,button.primary,.card .btn,.sidebar nav a.central-link,input[type="submit"],.wizard-actions .btn.primary{
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  border-color:rgba(42,174,102,.65)!important;
+  color:#fff!important;
+}
+.btn:hover,button:hover,.nav a:hover,.top-actions a:hover,.sidebar nav a:hover,.nav-link:hover{
+  border-color:var(--theme-gold)!important;color:var(--theme-gold)!important;background:rgba(240,201,79,.10)!important;
+}
+.sidebar nav a,.nav-link{color:var(--theme-muted)!important;background:transparent!important;}
+.sidebar nav a.current,.sidebar nav a.active,.nav-link.active,.nav-link:focus{
+  background:rgba(240,201,79,.12)!important;color:var(--theme-gold)!important;outline-color:var(--theme-gold)!important;
+}
+.brand-icon,.brand-mark,.nav-link span,.score,.progress-pill,.icon{
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  color:#fff!important;border-color:rgba(42,174,102,.55)!important;
+}
+.logo-icon{background:rgba(240,201,79,.10)!important;border-color:rgba(240,201,79,.28)!important;}
+.logo-icon img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;}
+
+/* Formulários: remove branco antigo */
+input,select,textarea,.form input,.form select,.form textarea,.searchbar input,.field input,.field select,.field textarea{
+  background:rgba(3,8,6,.72)!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+input::placeholder,textarea::placeholder{color:rgba(184,201,187,.68)!important;}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(240,201,79,.55)!important;border-color:rgba(240,201,79,.65)!important;}
+input[type="file"]{padding:9px!important;color:var(--theme-muted)!important;}
+input[type="file"]::file-selector-button{
+  border:0!important;border-radius:999px!important;background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;color:#fff!important;padding:9px 14px!important;font-weight:800!important;margin-right:10px!important;
+}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--theme-green)!important;}
+
+/* Tabelas, cards internos e utilidades */
+table{background:transparent!important;color:var(--theme-text)!important;}
+th{background:rgba(240,201,79,.08)!important;border-bottom:1px solid var(--theme-line)!important;}
+td,th{border-color:var(--theme-line)!important;}
+tr:hover td{background:rgba(240,201,79,.045)!important;}
+.row,.item,.list-item,.lesson-row,.study-row{border-color:var(--theme-line)!important;}
+.tag,.chip,.pill,.account-chip,.status,.receipt-support strong{
+  background:rgba(240,201,79,.10)!important;border:1px solid rgba(240,201,79,.25)!important;color:var(--theme-gold)!important;border-radius:999px!important;
+}
+.alert,.flash{background:rgba(15,42,28,.96)!important;border-color:rgba(240,201,79,.25)!important;color:var(--theme-text)!important;}
+pre,code,.ai-output,.mini-output{background:#030806!important;color:#eaf5ea!important;border:1px solid var(--theme-line)!important;}
+.value-income,.income,.success{color:#45e08a!important;}
+.value-expense,.expense,.danger,.link-danger{color:var(--theme-red)!important;}
+
+/* Correções específicas do Prompt Profissional */
+.choice,.start-option,.guide-steps div,.file-pill,.api-clean .checkline{
+  background:rgba(6,20,13,.88)!important;border-color:var(--theme-line)!important;color:var(--theme-text)!important;
+}
+.choice:hover,.start-option:hover{background:rgba(240,201,79,.10)!important;}
+.choice input:checked+span,.choice:hover span{color:var(--theme-gold)!important;}
+.copy-panel{background:rgba(5,16,11,.97)!important;}
+
+/* Correções específicas do curso de inglês */
+.bg-orb.orb-a{background:rgba(240,201,79,.35)!important;}
+.bg-orb.orb-b{background:rgba(42,174,102,.28)!important;}
+.module-banner,.module-art,.gradient-card{filter:saturate(.95) brightness(.82)!important;}
+.flashcards .flashcard,.flashcard,.answer-option,.quiz-option,.option,.vocab-grid .chip{
+  background:rgba(12,31,22,.92)!important;border-color:rgba(240,201,79,.24)!important;color:var(--theme-text)!important;
+}
+.answer-option:hover,.quiz-option:hover,.option:hover{border-color:var(--theme-gold)!important;background:rgba(240,201,79,.10)!important;}
+
+/* Correções específicas do curso de português: troca papel claro por painel escuro */
+.page-noise,.page-grid{opacity:.06!important;mix-blend-mode:normal!important;}
+.site-header,.internal-hero,.dashboard-hero,.lesson-hero,.reader-card,.progress-card,.access-card,.level-card,.lesson-card,.quick-card,.search-panel,.home-hero,.login-card,.exam-panel,.practice-panel,.final-panel,.study-map,.grammar-card,.library-card{
+  background:linear-gradient(180deg,rgba(12,31,22,.95),rgba(7,18,13,.94))!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+.book-cover,.cover-card{background:linear-gradient(135deg,rgba(240,201,79,.18),rgba(42,174,102,.13))!important;border-color:rgba(240,201,79,.24)!important;}
+.progress-ring,.stat-number{color:var(--theme-gold)!important;}
+
+/* Correções específicas do financeiro */
+.user-pill{background:rgba(12,31,22,.92)!important;color:var(--theme-text)!important;}
+.topbar{position:sticky;top:0;z-index:20;}
+.stat strong{font-size:clamp(22px,2vw,30px)!important;}
+.import-card{border-left-color:var(--theme-green)!important;}
+.ai-card{border-left-color:var(--theme-gold)!important;}
+.section-head{border-color:var(--theme-line)!important;}
+
+@media(max-width:1180px){
+  .topbar{background:rgba(4,10,7,.92)!important;}
+  .sidebar nav a{background:rgba(255,255,255,.045)!important;white-space:nowrap!important;}
+}
+@media(max-width:760px){
+  .card,.panel,.hero,.guide,.start-card,.guide-card{border-radius:20px!important;padding:18px!important;}
+  .btn,.button,button,input[type="submit"]{width:auto;max-width:100%;}
+}
+/* ===================== FIM TEMA FINAL ===================== */
+
+/* ==========================================================
+   AJUSTE FINAL: arredondar cantos quadrados do Financeiro
+   ========================================================== */
+:root{
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 16px;
+}
+
+/* blocos principais */
+.topbar,
+.page-header,
+.content-header,
+.main-header,
+.dashboard-header,
+.header-card,
+.card,
+.panel,
+.stat,
+.stat-card,
+.metric-card,
+.account-card,
+.transaction-card,
+.report-card,
+.import-card,
+.ai-card,
+.box,
+.boxed,
+.guide,
+.alert,
+.flash,
+.table-wrap,
+.table-card,
+.form-card,
+.user-pill{
+  border-radius: var(--radius-xl) !important;
+  overflow: hidden !important;
+}
+
+/* cards menores */
+.stats-grid .card,
+.stats-grid .stat,
+.dashboard-grid .card,
+.accounts-grid .card,
+.transactions-list .card,
+.market-item,
+.receipt-support strong,
+.tag,
+.chip,
+.pill,
+.account-chip,
+.status{
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden !important;
+}
+
+/* barra lateral e marca */
+.sidebar{
+  border-top-right-radius: var(--radius-xl) !important;
+  border-bottom-right-radius: var(--radius-xl) !important;
+  overflow: hidden !important;
+}
+.sidebar .brand,
+.sidebar-header,
+.sidebar nav a,
+.nav-link,
+.central-link,
+.mobile-programs-link{
+  border-radius: var(--radius-lg) !important;
+}
+.brand-icon,
+.brand-mark{
+  border-radius: 18px !important;
+}
+
+/* botões e campos */
+button,
+.btn,
+.button,
+input[type="submit"],
+a.btn,
+.actions a,
+.actions button{
+  border-radius: 999px !important;
+}
+input,
+select,
+textarea,
+.form input,
+.form select,
+.form textarea,
+.field input,
+.field select,
+.field textarea,
+.searchbar input{
+  border-radius: var(--radius-md) !important;
+}
+
+/* tabelas: evita cantos retos nos blocos de histórico */
+table{
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  overflow: hidden !important;
+  border-radius: var(--radius-lg) !important;
+}
+thead tr:first-child th:first-child{
+  border-top-left-radius: var(--radius-lg) !important;
+}
+thead tr:first-child th:last-child{
+  border-top-right-radius: var(--radius-lg) !important;
+}
+tbody tr:last-child td:first-child{
+  border-bottom-left-radius: var(--radius-lg) !important;
+}
+tbody tr:last-child td:last-child{
+  border-bottom-right-radius: var(--radius-lg) !important;
+}
+
+/* quando algum container tiver borda reta por classe genérica */
+main > section,
+.content > section,
+.container > section,
+.layout > section,
+section[class*="card"],
+article[class*="card"],
+div[class*="card"],
+div[class*="panel"],
+div[class*="box"]{
+  border-radius: var(--radius-xl) !important;
+}
+
+/* mantém responsivo no celular */
+@media(max-width: 760px){
+  .topbar,
+  .page-header,
+  .content-header,
+  .main-header,
+  .dashboard-header,
+  .header-card,
+  .card,
+  .panel,
+  .stat,
+  .stat-card,
+  .metric-card,
+  .account-card,
+  .transaction-card,
+  .report-card,
+  .import-card,
+  .ai-card,
+  .box,
+  .boxed,
+  .guide,
+  .table-wrap,
+  .table-card,
+  .form-card{
+    border-radius: 22px !important;
+  }
+  .sidebar{
+    border-radius: 0 !important;
+  }
+}
+
+
+/* =========================================================
+   Correção de encaixe e arredondamento do Financeiro
+   - evita título/subtítulo colados ou cortados
+   - arredonda todos os blocos visuais restantes
+   ========================================================= */
+.content{
+  padding:28px 32px 56px !important;
+}
+.topbar{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:18px !important;
+  min-height:92px !important;
+  padding:18px 22px !important;
+  margin:0 0 24px !important;
+  border-radius:26px !important;
+  overflow:visible !important;
+  line-height:1.25 !important;
+}
+.topbar > div{
+  min-width:0 !important;
+  display:block !important;
+}
+.topbar h1{
+  margin:0 0 6px !important;
+  line-height:1.12 !important;
+  letter-spacing:-.02em !important;
+  font-size:clamp(24px,2vw,34px) !important;
+  white-space:normal !important;
+}
+.topbar p{
+  margin:0 !important;
+  line-height:1.45 !important;
+  white-space:normal !important;
+  max-width:980px !important;
+}
+.user-pill{
+  flex:none !important;
+  border-radius:999px !important;
+}
+.card,
+.stat,
+.boxed,
+.account-card,
+.market-item,
+.alert,
+.user-pill,
+.sidebar,
+.sidebar nav a,
+.btn,
+button,
+input,
+select,
+textarea,
+table,
+th,
+td,
+.table-wrap,
+.form-card,
+.ai-card,
+.import-card,
+.result-card,
+.section-head,
+.hero{
+  border-radius:24px !important;
+}
+.sidebar{
+  border-top-right-radius:0 !important;
+  border-bottom-right-radius:0 !important;
+}
+table{
+  border-collapse:separate !important;
+  border-spacing:0 !important;
+  overflow:hidden !important;
+}
+th:first-child{border-top-left-radius:18px !important;}
+th:last-child{border-top-right-radius:18px !important;}
+.card,.stat,.boxed,.account-card,.market-item,.hero{
+  overflow:hidden !important;
+}
+@media(max-width:1180px){
+  .content{padding:20px 18px 44px !important;}
+  .topbar{position:relative !important;top:auto !important;padding:16px 18px !important;border-radius:22px !important;align-items:flex-start !important;}
+}
+@media(max-width:760px){
+  .content{padding:14px 12px 36px !important;}
+  .topbar{display:block !important;min-height:auto !important;padding:16px !important;}
+  .topbar h1{font-size:24px !important;}
+  .user-pill{margin-top:12px !important;display:inline-flex !important;}
+}

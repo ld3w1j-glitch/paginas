@@ -1,0 +1,208 @@
+:root{
+  --bg:#07120d; --bg2:#0b1b13; --card:rgba(12,31,22,.88); --card2:rgba(17,44,31,.82);
+  --text:#edf7ee; --muted:#b8c9bb; --line:rgba(236,243,233,.14);
+  --gold:#f0c94f; --green:#1f8c4c; --green2:#2aae66; --blue:#0d3f91;
+  --shadow:0 24px 70px rgba(0,0,0,.38); --radius:26px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top center,rgba(240,201,79,.13),transparent 32%),linear-gradient(180deg,#08120d 0%,#06110b 45%,#030806 100%);min-height:100vh}body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:82px 82px;mask-image:radial-gradient(circle at center,black 20%,transparent 84%);opacity:.24}.shell{max-width:1200px;margin:0 auto;padding:34px 18px 60px}.hero{background:linear-gradient(135deg,rgba(15,34,24,.88),rgba(8,21,15,.95));border:1px solid var(--line);border-radius:30px;padding:44px 38px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;right:-180px;top:-180px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(42,174,102,.22),transparent 64%)}.badge{display:inline-flex;border:1px solid rgba(240,201,79,.35);background:rgba(240,201,79,.10);color:var(--gold);padding:8px 14px;border-radius:999px;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.03;margin:22px 0 14px;letter-spacing:-.04em}.hero p{max-width:780px;color:var(--muted);font-size:18px;line-height:1.7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:24px}.card,.guide{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:26px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}.card{min-height:292px;display:flex;flex-direction:column}.card:hover{transform:translateY(-3px);border-color:rgba(240,201,79,.35);transition:.2s ease}.card.highlight,.english-card,.portal-card{background:linear-gradient(180deg,rgba(15,42,28,.92),rgba(8,21,15,.94));border-color:rgba(240,201,79,.22)}.icon{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,rgba(240,201,79,.18),rgba(42,174,102,.18));border:1px solid rgba(240,201,79,.2);display:grid;place-items:center;font-size:28px;margin-bottom:16px}.logo-icon{padding:6px;overflow:hidden}.logo-icon img{width:100%;height:100%;object-fit:contain;display:block}.card h2{margin:0 0 12px;font-size:25px}.card p{color:var(--muted);line-height:1.55;min-height:76px;flex:1}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid rgba(240,201,79,.28);border-radius:999px;padding:13px 18px;color:var(--text);font-weight:900;background:rgba(255,255,255,.05)}.btn:hover{border-color:var(--gold);color:var(--gold)}.btn.primary,.card .btn{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border-color:rgba(42,174,102,.6)}.guide{margin-top:24px}.guide h3{margin:0 0 12px;color:var(--gold);letter-spacing:.05em}.guide li{margin:10px 0;color:var(--muted);line-height:1.4}@media(max-width:640px){.shell{padding:18px 12px}.hero,.card,.guide{border-radius:22px;padding:22px}.card{min-height:auto}.btn{width:100%}}
+
+
+/* =========================================================
+   TEMA FINAL UNIFICADO VERDE/DOURADO
+   Aplicado como camada de correção para páginas antigas.
+   ========================================================= */
+:root{
+  --theme-bg:#030806;
+  --theme-bg-2:#07120d;
+  --theme-panel:rgba(10,30,20,.94);
+  --theme-panel-2:rgba(14,42,28,.90);
+  --theme-panel-3:rgba(5,16,11,.86);
+  --theme-text:#edf7ee;
+  --theme-muted:#b8c9bb;
+  --theme-line:rgba(236,243,233,.15);
+  --theme-gold:#f0c94f;
+  --theme-green:#1f8c4c;
+  --theme-green-2:#2aae66;
+  --theme-red:#ff7575;
+  --theme-shadow:0 24px 70px rgba(0,0,0,.42);
+
+  --bg:#07120d!important;
+  --bg-2:#07120d!important;
+  --bg-soft:#0d1f18!important;
+  --card:var(--theme-panel)!important;
+  --panel:var(--theme-panel)!important;
+  --panel-2:var(--theme-panel-2)!important;
+  --panel-strong:var(--theme-panel)!important;
+  --soft:rgba(17,44,31,.72)!important;
+  --soft-paper:var(--theme-panel)!important;
+  --white:var(--theme-panel)!important;
+  --text:var(--theme-text)!important;
+  --ink:var(--theme-text)!important;
+  --muted:var(--theme-muted)!important;
+  --ink-soft:var(--theme-muted)!important;
+  --line:var(--theme-line)!important;
+  --border:var(--theme-line)!important;
+  --gold:var(--theme-gold)!important;
+  --yellow:var(--theme-gold)!important;
+  --amber:var(--theme-gold)!important;
+  --deep-amber:#c48b26!important;
+  --amber-soft:#f0c94f!important;
+  --copper-line:rgba(240,201,79,.22)!important;
+  --green:var(--theme-green)!important;
+  --green-2:var(--theme-green-2)!important;
+  --green2:var(--theme-green-2)!important;
+  --primary:var(--theme-green)!important;
+  --primary-dark:#176d3b!important;
+  --blue:var(--theme-green)!important;
+  --shadow:var(--theme-shadow)!important;
+}
+html,body{background:var(--theme-bg)!important;color:var(--theme-text)!important;}
+body{
+  min-height:100vh!important;
+  background:
+    radial-gradient(circle at 75% 12%,rgba(240,201,79,.14),transparent 28%),
+    radial-gradient(circle at 10% 0%,rgba(42,174,102,.12),transparent 28%),
+    linear-gradient(180deg,#07120d 0%,#06110b 45%,#030806 100%)!important;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background-image:linear-gradient(rgba(255,255,255,.032) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.032) 1px,transparent 1px)!important;
+  background-size:82px 82px!important;opacity:.20!important;
+  mask-image:radial-gradient(circle at center,black 18%,transparent 84%);
+}
+body,button,input,select,textarea{font-family:Inter,"Segoe UI",Arial,sans-serif!important;}
+a{color:inherit!important;text-decoration:none;}
+
+/* Estrutura principal */
+.shell,.container,.content,.layout,main,.main,.page,.workspace,.admin-layout{background:transparent!important;}
+.topbar,.site-header,.sidebar,.nav-wrap,.navbar,.hero,.hero-card,.start-card,.guide-card,.card,.panel,.box,.boxed,.stat,.stat-card,.metric-card,.module-card,.lesson-card,.course-card,.track-card,.mission-card,.admin-card,.api-card,.admin-ai-card,.ai-card,.import-card,.file-preview,.apply-zip,.copy-panel,.workspace-panel,.result-card,.quiz-card,.flashcard,.vocab-card,.phrase-card,.exam-card,.search-card,.guide,.account-card,.market-item,.ai-feature-grid>div,section.card,article.card{
+  background:linear-gradient(180deg,rgba(12,31,22,.95),rgba(7,18,13,.94))!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+.hero,.start-card,.admin-hero,.primary-card,.highlight,.portal-card{
+  background:
+    radial-gradient(circle at 85% 16%,rgba(240,201,79,.13),transparent 30%),
+    linear-gradient(135deg,rgba(15,42,28,.96),rgba(5,16,11,.98))!important;
+  border-color:rgba(240,201,79,.22)!important;
+}
+.sidebar,.topbar,.site-header{backdrop-filter:blur(14px)!important;background:rgba(4,10,7,.86)!important;}
+
+/* Texto */
+h1,h2,h3,h4,h5,h6,strong,b,label,legend,th,.brand strong,.card h2,.section-title,.title,.headline{color:var(--theme-text)!important;}
+p,small,span,li,td,.muted,.subtitle,.description,.card p,.brand span,.topbar p,.field small,.help,.hint{color:var(--theme-muted)!important;}
+.eyebrow,.badge,.side-hint,.section-kicker,.kicker,.section-head .eyebrow,.guide h3,.tag-soft,th{color:var(--theme-gold)!important;letter-spacing:.06em;}
+
+/* Botões e navegação */
+.btn,.button,button,input[type="submit"],.nav a,.top-actions a,.actions a,.actions button,.wizard-actions button,.central-link,.mobile-programs-link{
+  border:1px solid rgba(240,201,79,.30)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:var(--theme-text)!important;
+  border-radius:999px!important;
+  font-weight:800!important;
+}
+.btn.primary,.primary,button.primary,.card .btn,.sidebar nav a.central-link,input[type="submit"],.wizard-actions .btn.primary{
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  border-color:rgba(42,174,102,.65)!important;
+  color:#fff!important;
+}
+.btn:hover,button:hover,.nav a:hover,.top-actions a:hover,.sidebar nav a:hover,.nav-link:hover{
+  border-color:var(--theme-gold)!important;color:var(--theme-gold)!important;background:rgba(240,201,79,.10)!important;
+}
+.sidebar nav a,.nav-link{color:var(--theme-muted)!important;background:transparent!important;}
+.sidebar nav a.current,.sidebar nav a.active,.nav-link.active,.nav-link:focus{
+  background:rgba(240,201,79,.12)!important;color:var(--theme-gold)!important;outline-color:var(--theme-gold)!important;
+}
+.brand-icon,.brand-mark,.nav-link span,.score,.progress-pill,.icon{
+  background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;
+  color:#fff!important;border-color:rgba(42,174,102,.55)!important;
+}
+.logo-icon{background:rgba(240,201,79,.10)!important;border-color:rgba(240,201,79,.28)!important;}
+.logo-icon img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;}
+
+/* Formulários: remove branco antigo */
+input,select,textarea,.form input,.form select,.form textarea,.searchbar input,.field input,.field select,.field textarea{
+  background:rgba(3,8,6,.72)!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+input::placeholder,textarea::placeholder{color:rgba(184,201,187,.68)!important;}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(240,201,79,.55)!important;border-color:rgba(240,201,79,.65)!important;}
+input[type="file"]{padding:9px!important;color:var(--theme-muted)!important;}
+input[type="file"]::file-selector-button{
+  border:0!important;border-radius:999px!important;background:linear-gradient(135deg,var(--theme-green),var(--theme-green-2))!important;color:#fff!important;padding:9px 14px!important;font-weight:800!important;margin-right:10px!important;
+}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--theme-green)!important;}
+
+/* Tabelas, cards internos e utilidades */
+table{background:transparent!important;color:var(--theme-text)!important;}
+th{background:rgba(240,201,79,.08)!important;border-bottom:1px solid var(--theme-line)!important;}
+td,th{border-color:var(--theme-line)!important;}
+tr:hover td{background:rgba(240,201,79,.045)!important;}
+.row,.item,.list-item,.lesson-row,.study-row{border-color:var(--theme-line)!important;}
+.tag,.chip,.pill,.account-chip,.status,.receipt-support strong{
+  background:rgba(240,201,79,.10)!important;border:1px solid rgba(240,201,79,.25)!important;color:var(--theme-gold)!important;border-radius:999px!important;
+}
+.alert,.flash{background:rgba(15,42,28,.96)!important;border-color:rgba(240,201,79,.25)!important;color:var(--theme-text)!important;}
+pre,code,.ai-output,.mini-output{background:#030806!important;color:#eaf5ea!important;border:1px solid var(--theme-line)!important;}
+.value-income,.income,.success{color:#45e08a!important;}
+.value-expense,.expense,.danger,.link-danger{color:var(--theme-red)!important;}
+
+/* Correções específicas do Prompt Profissional */
+.choice,.start-option,.guide-steps div,.file-pill,.api-clean .checkline{
+  background:rgba(6,20,13,.88)!important;border-color:var(--theme-line)!important;color:var(--theme-text)!important;
+}
+.choice:hover,.start-option:hover{background:rgba(240,201,79,.10)!important;}
+.choice input:checked+span,.choice:hover span{color:var(--theme-gold)!important;}
+.copy-panel{background:rgba(5,16,11,.97)!important;}
+
+/* Correções específicas do curso de inglês */
+.bg-orb.orb-a{background:rgba(240,201,79,.35)!important;}
+.bg-orb.orb-b{background:rgba(42,174,102,.28)!important;}
+.module-banner,.module-art,.gradient-card{filter:saturate(.95) brightness(.82)!important;}
+.flashcards .flashcard,.flashcard,.answer-option,.quiz-option,.option,.vocab-grid .chip{
+  background:rgba(12,31,22,.92)!important;border-color:rgba(240,201,79,.24)!important;color:var(--theme-text)!important;
+}
+.answer-option:hover,.quiz-option:hover,.option:hover{border-color:var(--theme-gold)!important;background:rgba(240,201,79,.10)!important;}
+
+/* Correções específicas do curso de português: troca papel claro por painel escuro */
+.page-noise,.page-grid{opacity:.06!important;mix-blend-mode:normal!important;}
+.site-header,.internal-hero,.dashboard-hero,.lesson-hero,.reader-card,.progress-card,.access-card,.level-card,.lesson-card,.quick-card,.search-panel,.home-hero,.login-card,.exam-panel,.practice-panel,.final-panel,.study-map,.grammar-card,.library-card{
+  background:linear-gradient(180deg,rgba(12,31,22,.95),rgba(7,18,13,.94))!important;
+  border:1px solid var(--theme-line)!important;
+  color:var(--theme-text)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+.book-cover,.cover-card{background:linear-gradient(135deg,rgba(240,201,79,.18),rgba(42,174,102,.13))!important;border-color:rgba(240,201,79,.24)!important;}
+.progress-ring,.stat-number{color:var(--theme-gold)!important;}
+
+/* Correções específicas do financeiro */
+.user-pill{background:rgba(12,31,22,.92)!important;color:var(--theme-text)!important;}
+.topbar{position:sticky;top:0;z-index:20;}
+.stat strong{font-size:clamp(22px,2vw,30px)!important;}
+.import-card{border-left-color:var(--theme-green)!important;}
+.ai-card{border-left-color:var(--theme-gold)!important;}
+.section-head{border-color:var(--theme-line)!important;}
+
+@media(max-width:1180px){
+  .topbar{background:rgba(4,10,7,.92)!important;}
+  .sidebar nav a{background:rgba(255,255,255,.045)!important;white-space:nowrap!important;}
+}
+@media(max-width:760px){
+  .card,.panel,.hero,.guide,.start-card,.guide-card{border-radius:20px!important;padding:18px!important;}
+  .btn,.button,button,input[type="submit"]{width:auto;max-width:100%;}
+}
+/* ===================== FIM TEMA FINAL ===================== */
+
+/* Card da página nova protegida por admin */
+.admin-page-card{
+  background:linear-gradient(180deg,rgba(15,42,28,.94),rgba(8,21,15,.96))!important;
+  border-color:rgba(240,201,79,.22)!important;
+}
+.admin-page-card .icon{
+  background:linear-gradient(135deg,rgba(240,201,79,.22),rgba(42,174,102,.20))!important;
+  border-color:rgba(240,201,79,.30)!important;
+}

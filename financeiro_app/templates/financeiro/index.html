@@ -1,0 +1,15 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Gestão financeira pessoal" %}
+{% set page_subtitle = "Uma base profissional para organizar contas, gastos e investimentos." %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <h2>Controle seu dinheiro com visão clara</h2>
+    <p>Registre contas, receitas, despesas fixas, comprovantes e acompanhe gráficos financeiros.</p>
+    <div class="actions">
+      <a class="btn primary" href="{{ url_for('financeiro_auth.register') }}">Começar agora</a>
+      <a class="btn" href="{{ url_for('financeiro_auth.login') }}">Entrar</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

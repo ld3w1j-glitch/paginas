@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or "Financeiro Pessoal" }}</title>
+  <link rel="stylesheet" href="{{ url_for('financeiro.static', filename='css/styles.css') }}?v=encaixe-financeiro-20260528">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">F</div>
+        <div>
+          <strong>Financeiro</strong>
+          <span>Gestão pessoal</span>
+        </div>
+      </div>
+      <nav>
+        <a class="central-link" href="/">← Voltar para central</a>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('financeiro.dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('financeiro.accounts') }}">Contas</a>
+          <a href="{{ url_for('financeiro.transactions') }}">Receitas e despesas</a>
+          <a href="{{ url_for('financeiro.reports') }}">Relatórios</a>
+          {% if current_user.is_admin %}<a href="{{ url_for('financeiro.admin_ai') }}">Admin IA</a>{% endif %}
+          <a href="{{ url_for('financeiro_auth.logout') }}">Sair</a>
+        {% else %}
+          <a href="{{ url_for('financeiro_auth.login') }}">Entrar</a>
+          <a href="{{ url_for('financeiro_auth.register') }}">Criar conta</a>
+        {% endif %}
+      </nav>
+    </aside>
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>{{ page_title or "Plataforma Financeira" }}</h1>
+          <p>{{ page_subtitle or "Controle suas contas com clareza." }}</p>
+        </div>
+        {% if current_user.is_authenticated %}<span class="user-pill">{{ current_user.name }}</span>{% endif %}
+      </header>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alerts">
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="{{ url_for('financeiro.static', filename='js/app.js') }}"></script>
+</body>
+</html>

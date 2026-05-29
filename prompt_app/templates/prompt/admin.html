@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel Admin — API IA</title>
+  <link rel="stylesheet" href="{{ url_for('prompt.static', filename='css/style.css') }}?v=tema-final-20260528">
+</head>
+<body>
+<header class="topbar admin-topbar">
+  <div>
+    <span class="eyebrow">Acesso administrativo</span>
+    <h1>Painel Admin</h1>
+    <p>Conecte a API do Google Gemini para liberar os recursos de IA nas páginas do sistema sem expor a chave para usuários comuns.</p>
+  </div>
+  <div class="top-actions">
+    <a href="{{ url_for('prompt.index') }}" class="btn ghost">Abrir sistema</a>
+    <a href="/" class="btn ghost">Central</a>
+    <a href="{{ url_for('prompt.logout') }}" class="btn ghost">Sair</a>
+  </div>
+</header>
+
+<main class="layout admin-layout">
+  <aside class="sidebar" aria-label="Menu admin">
+    <div class="side-hint">Administrador</div>
+    <a class="nav-link active" href="#resumo"><span>0</span>Resumo</a>
+    <a class="nav-link" href="#config-api"><span>1</span>Conectar IA</a>
+    <a class="nav-link" href="#seguranca"><span>2</span>Segurança</a>
+  </aside>
+
+  <section class="content">
+    {% with messages=get_flashed_messages(with_categories=true) %}
+      {% for cat,msg in messages %}<div class="alert {{cat}}">{{msg}}</div>{% endfor %}
+    {% endwith %}
+
+    <section id="resumo" class="start-card admin-hero">
+      <div class="start-head">
+        <span class="eyebrow">Login ativo</span>
+        <h2>Admin: {{ admin_username }}</h2>
+        <p>Quando a chave estiver salva aqui, o Chat Executor e os botões de IA das páginas passam a usar essa conexão.</p>
+      </div>
+      <div class="start-grid">
+        <a class="start-option primary" href="#config-api"><b>API</b><span>Conectar Google Gemini</span><small>Salvar chave, escolher modelo e testar conexão.</small></a>
+        <a class="start-option" href="{{ url_for('prompt.index') }}#chat"><b>IA</b><span>Testar no Chat Executor</span><small>Depois de salvar a chave, use o chat do sistema.</small></a>
+        <a class="start-option" href="/"><b>APP</b><span>Voltar para central</span><small>Escolher entre as páginas/programas do portal.</small></a>
+      </div>
+    </section>
+
+    <section id="config-api" class="card api-card admin-card">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Configuração restrita</span>
+          <h2>Conectar API Google Gemini</h2>
+          <p>A chave fica salva no banco local ou no banco do Railway. Ela não aparece na tela depois de salva.</p>
+        </div>
+        <div class="progress-pill {{ 'ok' if gemini_configured else 'warn' }}">{{ 'API configurada' if gemini_configured else 'API não configurada' }}</div>
+      </div>
+
+      <form method="post" action="{{ url_for('prompt.save_api_settings') }}" class="grid-form">
+        <label class="field full">Google API Key
+          <input type="password" name="google_api_key" placeholder="Cole sua chave aqui. Ex: AIza...">
+          <small>{% if gemini_configured %}Existe uma chave salva. Por segurança, ela não é exibida.{% else %}Sem chave salva. Cole a chave e clique em salvar.{% endif %}</small>
+        </label>
+        <label class="field">Modelo Gemini
+          <select name="gemini_model">
+            {% for model in ['gemini-2.5-flash','gemini-2.5-flash-lite','gemini-2.5-pro','gemini-2.0-flash'] %}
+              <option value="{{model}}" {% if gemini_model==model %}selected{% endif %}>{{model}}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="field api-clean">Remover chave
+          <span class="checkline"><input type="checkbox" name="clear_google_api_key"> Limpar chave salva</span>
+          <small>Use isso se for trocar de chave ou remover o acesso da IA.</small>
+        </label>
+        <div class="wizard-actions left full">
+          <button class="btn primary" type="submit">Salvar configuração da API</button>
+          <button class="btn" type="button" id="testGemini">Testar conexão</button>
+          <button class="btn" type="button" id="loadGeminiModels">Buscar modelos disponíveis</button>
+        </div>
+      </form>
+      <pre id="geminiTestOutput" class="mini-output" style="display:none"></pre>
+      <div id="geminiModelsBox" class="mini-output" style="display:none"></div>
+      <p class="muted small-note">Se aparecer erro 404 de modelo, clique em <b>Buscar modelos disponíveis</b> e salve um modelo que suporte <code>generateContent</code>.</p>
+    </section>
+
+    <section id="seguranca" class="card admin-card">
+      <div class="section-head"><div><span class="eyebrow">Segurança</span><h2>Como trocar o login no Railway</h2></div></div>
+      
+      <p class="muted">Também é recomendado configurar <code>SECRET_KEY</code> para uma chave longa e diferente em produção.</p>
+    </section>
+  </section>
+</main>
+<script src="{{ url_for('prompt.static', filename='js/app.js') }}"></script>
+</body>
+</html>

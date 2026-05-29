@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Profissional v6 Workspace Executor</title>
+  <link rel="stylesheet" href="{{ url_for('prompt.static', filename='css/style.css') }}?v=tema-final-20260528">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <span class="eyebrow">Modo guiado ativado</span>
+    <h1>Prompt Profissional v6</h1>
+    <p>Fluxo guiado com Workspace Executor: gera prompts, conversa com IA, extrai arquivos, aplica em ZIP original e mantém backup.</p>
+  </div>
+  <div class="top-actions">
+    <a href="/" class="btn ghost">Central</a>
+    {% if is_admin %}<a href="{{ url_for('prompt.admin_panel') }}" class="btn ghost">Admin/API</a>{% endif %}
+    <a href="#guia" class="btn ghost">Guia</a>
+    <a href="{{ url_for('prompt.logout') }}" class="btn ghost">Sair</a>
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="sidebar" aria-label="Navegação principal">
+    <div class="side-hint">Siga esta ordem</div>
+    <a class="nav-link active" href="#inicio"><span>0</span>Início guiado</a>
+    <a class="nav-link" href="#gerador"><span>1</span>Gerar prompt</a>
+    <a class="nav-link" href="#chat"><span>2</span>Chat executor</a>
+    <a class="nav-link" href="#erros"><span>3</span>Corrigir erro</a>
+    <a class="nav-link" href="#projetos"><span>4</span>Projetos</a>
+    <a class="nav-link" href="#historico"><span>5</span>Histórico</a>
+    {% if is_admin %}<a class="nav-link" href="{{ url_for('prompt.admin_panel') }}"><span>ADM</span>Painel API</a>{% endif %}
+    <a class="nav-link" href="#modelos"><span>+</span>Avançado</a>
+  </aside>
+
+  <section class="content">
+    {% with messages=get_flashed_messages(with_categories=true) %}
+      {% for cat,msg in messages %}<div class="alert {{cat}}">{{msg}}</div>{% endfor %}
+    {% endwith %}
+
+    <section id="inicio" class="start-card">
+      <div class="start-head">
+        <span class="eyebrow">Comece por aqui</span>
+        <h2>Qual caminho você quer seguir?</h2>
+        <p>Escolha uma ação principal. A tela foi organizada para você não precisar olhar todos os recursos ao mesmo tempo.</p>
+      </div>
+      <div class="start-grid">
+        <a class="start-option primary" href="#gerador">
+          <b>1</b><span>Gerar um prompt organizado</span><small>Para pedir código, correção, ZIP ou arquitetura para uma IA.</small>
+        </a>
+        <a class="start-option" href="#chat">
+          <b>2</b><span>Criar arquivos com IA</span><small>Use quando quiser que o sistema converse, extraia arquivos e gere ZIP.</small>
+        </a>
+        <a class="start-option" href="#erros">
+          <b>3</b><span>Corrigir um erro</span><small>Cole traceback, erro do Railway, pip, Flask ou Gemini.</small>
+        </a>
+      </div>
+      <div class="next-hint"><strong>Ordem ideal:</strong> escolha um caminho → preencha só o essencial → revise → copie ou baixe o resultado.</div>
+    </section>
+
+    <section id="guia" class="guide-card">
+      <div>
+        <span class="eyebrow">Ordem recomendada</span>
+        <h2>Use em 3 passos</h2>
+        <p>A tela segue uma ordem: início guiado, gerador, chat, erro e só depois recursos avançados. Use um caminho por vez para manter o foco.</p>
+      </div>
+      <div class="guide-steps">
+        <div><b>1</b><span>Escolha o modo</span></div>
+        <div><b>2</b><span>Escreva o pedido</span></div>
+        <div><b>3</b><span>Gere e copie</span></div>
+      </div>
+    </section>
+
+    <section id="gerador" class="card primary-card">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Principal</span>
+          <h2>Gerador guiado</h2>
+          <p>Preencha apenas o necessário. O restante fica escondido em “Opções avançadas”.</p>
+        </div>
+        <div class="progress-pill"><span id="progressText">Passo 1 de 3</span></div>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" id="promptForm">
+        <div class="wizard" data-step="1">
+          <div class="step-panel active" data-panel="1">
+            <h3>1. O que você quer fazer?</h3>
+            <p class="muted">Escolha uma opção. Isso já configura boa parte do prompt sozinho.</p>
+            <div class="choice-grid">
+              <label class="choice"><input type="radio" name="modo" value="novo" checked><span>Criar projeto do zero</span><small>Arquitetura + código + execução</small></label>
+              <label class="choice"><input type="radio" name="modo" value="erro"><span>Corrigir erro</span><small>Traceback, pip, Flask, Railway</small></label>
+              <label class="choice"><input type="radio" name="modo" value="funcionalidade"><span>Adicionar função</span><small>Sem quebrar o existente</small></label>
+              <label class="choice"><input type="radio" name="modo" value="visual"><span>Melhorar visual</span><small>Responsivo e mais claro</small></label>
+              <label class="choice"><input type="radio" name="modo" value="railway"><span>Preparar Railway</span><small>Deploy, PORT, gunicorn</small></label>
+              <label class="choice"><input type="radio" name="modo" value="continuidade"><span>Continuar projeto</span><small>Usa contexto salvo</small></label>
+            </div>
+            <div class="wizard-actions"><button type="button" class="btn primary next-step">Continuar</button></div>
+          </div>
+
+          <div class="step-panel" data-panel="2">
+            <h3>2. Descreva seu pedido</h3>
+            <p class="muted">Escreva como você falaria comigo. O sistema transforma em pedido técnico.</p>
+            <label class="field full">Pedido principal
+              <textarea name="pedido" id="pedido" rows="7" required placeholder="Ex: Crie um sistema Flask para cliente pedir gás e entregador acompanhar entrega..."></textarea>
+            </label>
+            <div class="two-col compact">
+              <label class="field">Projeto salvo
+                <select name="project_id" id="projectSelect">
+                  <option value="">Sem projeto / avulso</option>
+                  {% for p in projects %}<option value="{{p.id}}" data-context="{{p.fixed_context|e}}" data-files="{{p.file_structure|e}}">{{p.name}}</option>{% endfor %}
+                </select>
+              </label>
+              <label class="field">O que quer receber?
+                <select name="resultado">
+                  <option value="zip">ZIP final</option>
+                  <option value="arquivo">Arquivo corrigido</option>
+                  <option value="codigo">Código completo</option>
+                  <option value="arquitetura">Arquitetura</option>
+                  <option value="passo">Passo a passo</option>
+                  <option value="explicacao">Explicação</option>
+                </select>
+              </label>
+            </div>
+            <div class="wizard-actions"><button type="button" class="btn ghost prev-step">Voltar</button><button type="button" class="btn primary next-step">Continuar</button></div>
+          </div>
+
+          <div class="step-panel" data-panel="3">
+            <h3>3. Revisão rápida</h3>
+            <p class="muted">Essas opções já vêm marcadas para evitar retrabalho e preservar seus projetos.</p>
+            <div class="safe-options">
+              <label><input type="checkbox" name="preservar" checked> Preservar projeto existente</label>
+              <label><input type="checkbox" name="railway" checked> Preparar para Railway quando fizer sentido</label>
+              <label><input type="checkbox" name="economico"> Modo econômico</label>
+              <label><input type="checkbox" name="equipe"> Modo equipe técnica</label>
+            </div>
+
+            <details class="advanced">
+              <summary>Opções avançadas, contexto e arquivos</summary>
+              <div class="two-col">
+                <label class="field">Destino do prompt
+                  <select name="destino"><option value="chatgpt">ChatGPT</option><option value="claude">Claude</option><option value="gemini">Gemini</option><option value="cursor">Cursor/Copilot</option><option value="generico">Genérico</option></select>
+                </label>
+                <label class="field">Modelo personalizado
+                  <select name="template_id"><option value="">Nenhum</option>{% for t in templates %}<option value="{{t.id}}">{{t.name}} — {{t.category}}</option>{% endfor %}</select>
+                </label>
+              </div>
+              <label class="field full">Contexto do projeto
+                <textarea name="contexto" id="contexto" rows="4" placeholder="Ex: Flask, SQLite local, Railway em produção, preservar login..."></textarea>
+              </label>
+              <label class="field full">Arquivos existentes / estrutura
+                <textarea name="arquivos" id="arquivos" rows="4" placeholder="Cole a árvore do projeto ou arquivos principais..."></textarea>
+              </label>
+              <label class="field full">Erro, traceback, log ou código
+                <textarea name="erro_codigo" id="erro_codigo" rows="5" placeholder="Cole aqui erros do terminal, traceback ou código importante..."></textarea>
+                <button type="button" class="btn small" id="analisarErro">Analisar erro</button>
+                <pre id="erroResultado" class="mini-output"></pre>
+              </label>
+              <label class="field full">Analisar ZIP do projeto
+                <input type="file" name="zip_file" accept=".zip">
+                <small>O sistema lê a estrutura do ZIP e adiciona ao prompt. Não executa código.</small>
+              </label>
+              <input type="hidden" name="zip_analysis" id="zip_analysis">
+            </details>
+            <div class="wizard-actions"><button type="button" class="btn ghost prev-step">Voltar</button><button class="btn primary big">Gerar prompt profissional</button></div>
+          </div>
+        </div>
+      </form>
+
+      {% if result %}
+      <div class="result focus-result">
+        <div class="section-head">
+          <div><span class="eyebrow">Pronto</span><h3>Resultado gerado</h3></div>
+          <div class="score">Qualidade: {{result.score}}/100</div>
+        </div>
+        <div class="copy-panel">
+          <button class="btn primary" data-copy="promptFinal">Copiar prompt principal</button>
+          <button class="btn" data-copy="msgCurta">Copiar mensagem curta</button>
+          <button class="btn" id="melhorarGemini">Melhorar com Gemini</button>
+          <button class="btn" id="reduzirGemini">Reduzir</button>
+        </div>
+        <label class="field full">Prompt principal<textarea id="promptFinal" rows="16">{{result.prompt}}</textarea></label>
+        <details open><summary>Mensagem curta</summary><textarea id="msgCurta" rows="5">{{result.short}}</textarea></details>
+        <details><summary>Checklist</summary><pre>{{result.checklist}}</pre></details>
+        <details><summary>Registro para HISTORICO_DO_PROJETO.md</summary><pre>{{result.history_entry}}</pre></details>
+        <details><summary>Resposta Gemini</summary><pre id="geminiOutput" class="mini-output"></pre></details>
+      </div>
+      {% endif %}
+    </section>
+
+
+
+
+
+    <section id="chat" class="card chat-card">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Novo</span>
+          <h2>Chat Executor</h2>
+          <p>Converse com a IA como você conversa comigo: ela organiza o pedido, pensa no plano e pode gerar arquivos em formato baixável.</p>
+        </div>
+        <div class="progress-pill">Guia: pedir → revisar → baixar</div>
+      </div>
+
+
+      {% if not gemini_configured %}
+      <div class="alert error">A chave Google ainda não foi configurada. Entre como administrador e acesse <b>Painel API</b> para conectar a IA ao sistema.</div>
+      {% endif %}
+
+      <div class="workspace-panel">
+        <div class="workspace-title">Workspace guiado da conversa</div>
+        <div class="chat-guide">
+          <div><b>1</b><span>Escolha projeto e tipo de resposta</span></div>
+          <div><b>2</b><span>Peça o que quer gerar/corrigir</span></div>
+          <div><b>3</b><span>Revise arquivos e baixe o ZIP</span></div>
+        </div>
+        <div id="chatStatus" class="status-steps">
+          <span class="active">Pronto para receber pedido</span>
+        </div>
+      </div>
+
+      <div class="two-col compact">
+        <label class="field">Projeto para contexto
+          <select id="chatProject">
+            <option value="">Sem projeto / avulso</option>
+            {% for p in projects %}<option value="{{p.id}}">{{p.name}}</option>{% endfor %}
+          </select>
+        </label>
+        <label class="field">Sessões recentes
+          <select id="chatSession">
+            <option value="">Nova conversa</option>
+            {% for c in chats %}<option value="{{c.id}}">{{c.title}} — {{c.updated_at.strftime('%d/%m %H:%M')}}</option>{% endfor %}
+          </select>
+        </label>
+      </div>
+      <div class="two-col compact">
+        <label class="field">Tipo de resposta do executor
+          <select id="chatResponseType">
+            <option value="gerar_arquivos">Gerar arquivos organizados</option>
+            <option value="aplicar_projeto">Aplicar em projeto existente</option>
+            <option value="corrigir_codigo">Corrigir código</option>
+            <option value="analisar_erro">Analisar erro</option>
+            <option value="preparar_zip">Preparar ZIP final</option>
+            <option value="explicacao">Apenas explicar</option>
+          </select>
+        </label>
+        <label class="field">Backup e segurança
+          <a class="btn" href="{{url_for('prompt.export_backup')}}">Exportar backup completo</a>
+          <small>Guarde projetos, histórico, conversas e arquivos gerados.</small>
+        </label>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="chat-empty">
+          <h3>Como usar</h3>
+          <p>Exemplo: <b>Crie um sistema Flask de pedidos de gás com cliente, entregador, admin, SQLite local e Railway.</b></p>
+          <p>Para gerar arquivos, você só precisa pedir normalmente. O sistema orienta a IA a usar o formato correto e extrai os arquivos automaticamente.</p>
+        </div>
+      </div>
+
+      <label class="field full">Sua mensagem para o executor
+        <textarea id="chatInput" rows="5" placeholder="Peça aqui o que quer gerar. Ex: Melhore este projeto sem quebrar nada e gere os arquivos alterados..."></textarea>
+      </label>
+      <div class="wizard-actions left">
+        <button class="btn primary big" id="sendChat" type="button">Enviar para o Chat Executor</button>
+        <a class="btn" id="downloadChatZip" href="#" style="display:none">Baixar workspace ZIP</a>
+      </div>
+      <div id="chatFiles" class="generated-files"></div>
+      <div id="filePreview" class="file-preview" style="display:none">
+        <div class="section-head"><div><span class="eyebrow">Prévia</span><h3 id="filePreviewTitle">Arquivo</h3></div><button class="btn small" type="button" id="closeFilePreview">Fechar</button></div>
+        <pre id="filePreviewContent"></pre>
+      </div>
+      <form id="applyZipForm" class="apply-zip" method="post" enctype="multipart/form-data" target="_blank" style="display:none">
+        <h3>Aplicar arquivos gerados em um ZIP original</h3>
+        <p class="muted">Envie o ZIP do projeto original. O sistema substituirá/adicionará os arquivos gerados e devolverá um novo ZIP atualizado.</p>
+        <label class="field full">ZIP original do projeto
+          <input type="file" name="base_zip" accept=".zip" required>
+        </label>
+        <button class="btn primary">Baixar ZIP final atualizado</button>
+      </form>
+    </section>
+
+    <section id="projetos" class="card">
+      <div class="section-head"><div><span class="eyebrow">Contexto salvo</span><h2>Projetos</h2><p>Use esta parte quando for continuar um sistema em várias etapas.</p></div></div>
+      <details class="advanced" open><summary>Criar ou atualizar projeto</summary>
+        <form method="post" action="{{url_for('prompt.save_project')}}" class="grid-form">
+          <label class="field">Nome<input name="name" required placeholder="Ex: Sistema pedidos de gás"></label>
+          <label class="field">Tecnologia<input name="tech_stack" placeholder="Flask, Tkinter, Railway..."></label>
+          <label class="field full">Descrição<textarea name="description" rows="2"></textarea></label>
+          <label class="field full">Contexto fixo<textarea name="fixed_context" rows="4" placeholder="O que a IA precisa lembrar sobre esse projeto?"></textarea></label>
+          <label class="field full">Estrutura/arquivos<textarea name="file_structure" rows="4"></textarea></label>
+          <label class="field full">Regras de preservação<textarea name="preserve_rules" rows="2">Preservar funcionalidades existentes. Alterar apenas o necessário.</textarea></label>
+          <button class="btn primary">Salvar projeto</button>
+        </form>
+      </details>
+      <div class="cards-list">{% for p in projects %}<article><h3>{{p.name}}</h3><p>{{p.description}}</p><small>{{p.tech_stack}} • atualizado {{p.updated_at.strftime('%d/%m/%Y %H:%M')}}</small><details><summary>Ver contexto</summary><pre>{{p.fixed_context}}</pre><pre>{{p.file_structure}}</pre></details><form method="post" action="{{url_for('prompt.delete_project', project_id=p.id)}}"><button class="btn danger small">Remover</button></form></article>{% else %}<p class="empty">Nenhum projeto salvo ainda. Crie um projeto para reutilizar contexto.</p>{% endfor %}</div>
+    </section>
+
+    <section id="erros" class="card">
+      <div class="section-head"><div><span class="eyebrow">Atalho</span><h2>Corrigir erro</h2><p>Cole o erro aqui quando quiser entender a causa antes de gerar o prompt.</p></div></div>
+      <textarea id="erroLivre" rows="8" placeholder="Cole o traceback aqui..."></textarea>
+      <div class="wizard-actions left"><button class="btn primary" id="analisarErroLivre">Analisar erro</button></div>
+      <pre id="erroLivreResultado" class="mini-output"></pre>
+    </section>
+
+    <section id="historico" class="card">
+      <div class="section-head"><div><span class="eyebrow">Continuidade</span><h2>Histórico</h2><p>Reutilize prompts antigos sem começar do zero.</p></div></div>
+      <input id="buscaHistorico" placeholder="Buscar no histórico..." class="search">
+      <div class="cards-list" id="histList">{% for h in histories %}<article class="hist-item"><h3>{{h.title}}</h3><small>{{h.created_at.strftime('%d/%m/%Y %H:%M')}} • qualidade {{h.quality_score}}/100 {% if h.project %}• {{h.project.name}}{% endif %}</small><details><summary>Ver prompt</summary><pre>{{h.prompt_text}}</pre></details><div class="actions"><a class="btn small" href="{{url_for('prompt.export_history', history_id=h.id, fmt='txt')}}">TXT</a><a class="btn small" href="{{url_for('prompt.export_history', history_id=h.id, fmt='md')}}">MD</a><a class="btn small" href="{{url_for('prompt.export_history', history_id=h.id, fmt='json')}}">JSON</a><a class="btn small primary" href="{{url_for('prompt.export_package', history_id=h.id)}}">Pacote ZIP</a><form method="post" action="{{url_for('prompt.delete_history', history_id=h.id)}}"><button class="btn danger small">Remover</button></form></div></article>{% else %}<p class="empty">Nenhum prompt gerado ainda.</p>{% endfor %}</div>
+    </section>
+
+    <section id="modelos" class="card">
+      <div class="section-head"><div><span class="eyebrow">Avançado</span><h2>Modelos personalizados</h2><p>Opcional. Use para salvar seus padrões preferidos.</p></div></div>
+      <details class="advanced"><summary>Criar modelo personalizado</summary>
+        <form method="post" action="{{url_for('prompt.save_template')}}" class="grid-form"><label class="field">Nome<input name="name" required></label><label class="field">Categoria<input name="category" value="geral"></label><label class="field full">Conteúdo do modelo<textarea name="content" rows="6" required placeholder="Ex: Meu padrão Flask Railway..."></textarea></label><button class="btn primary">Salvar modelo</button></form>
+      </details>
+      <div class="cards-list">{% for t in templates %}<article><h3>{{t.name}}</h3><small>{{t.category}}</small><pre>{{t.content}}</pre><form method="post" action="{{url_for('prompt.delete_template', template_id=t.id)}}"><button class="btn danger small">Remover</button></form></article>{% else %}<p class="empty">Nenhum modelo personalizado salvo.</p>{% endfor %}</div>
+    </section>
+  </section>
+</main>
+<script src="{{ url_for('prompt.static', filename='js/app.js') }}"></script>
+</body>
+</html>

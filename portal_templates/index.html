@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Central de Programas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}?v=tema-final-20260528">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <span class="badge">Central única</span>
+        <h1>Escolha qual programa deseja abrir</h1>
+        <p>Esta plataforma reúne seus sistemas em um único deploy. Cada programa abre em uma página própria, mantendo organização e evitando vários links soltos.</p>
+      </div>
+    </section>
+    <section class="grid">
+      <article class="card highlight">
+        <div class="icon">🧠</div>
+        <h2>Prompt Profissional</h2>
+        <p>Gerador de prompts, projetos, histórico, Chat Executor e integração com Google Gemini.</p>
+        <a class="btn primary" href="/prompt/">Abrir Prompt Profissional</a>
+      </article>
+      <article class="card">
+        <div class="icon">💰</div>
+        <h2>Financeiro Pessoal</h2>
+        <p>Controle de contas, receitas, despesas, comprovantes e relatórios financeiros.</p>
+        <a class="btn" href="/financeiro/">Abrir Financeiro</a>
+      </article>
+
+      <article class="card admin-page-card">
+        <div class="icon">🎨</div>
+        <h2>Editor Visual Admin</h2>
+        <p>Página nova protegida por senha do administrador. Abra somente quando precisar editar ou montar layouts visuais.</p>
+        <a class="btn" href="/editor-admin/">Abrir área admin</a>
+      </article>
+      <article class="card portal-card">
+        <div class="icon logo-icon">
+          <img src="/curso-ingles/static/img/brasao-completo.png" alt="Logo do portal">
+        </div>
+        <h2>Portal de Cursos</h2>
+        <p>Abra a página inicial do portal para acessar a área interna, curso de português, curso de inglês, documentos e administração.</p>
+        <a class="btn" href="/curso-ingles/">Abrir Portal</a>
+      </article>
+    </section>
+    <section class="guide">
+      <h3>Como usar</h3>
+      <ol>
+        <li>Abra a Central.</li>
+        <li>Escolha o programa.</li>
+        <li>Faça login/cadastro dentro do programa escolhido.</li>
+        <li>Use o botão “Voltar para central” dentro de cada programa para trocar de página.</li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

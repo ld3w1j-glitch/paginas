@@ -1,0 +1,8 @@
+Migrações Alembic/Flask-Migrate do portal.
+
+Comandos:
+  flask --app migration_app:app db init      # só se esta pasta for removida
+  flask --app migration_app:app db migrate -m "mensagem"
+  flask --app migration_app:app db upgrade
+
+Nesta fase a pasta foi preparada para substituir o padrão db.create_all() + ALTER TABLE manual.

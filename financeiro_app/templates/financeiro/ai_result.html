@@ -1,0 +1,20 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Resultado da IA financeira" %}
+{% set page_subtitle = "Análise gerada com base nos dados cadastrados no financeiro." %}
+{% block content %}
+<section class="card ai-result-card">
+  <div class="section-head">
+    <div>
+      <h2>Análise da IA</h2>
+      <p class="muted">Pedido usado: {{ prompt }}</p>
+    </div>
+    <span class="tag-soft">IA Financeira</span>
+  </div>
+  <pre class="ai-output">{{ ai_text }}</pre>
+  <div class="actions compact">
+    <a class="btn primary" href="{{ url_for('financeiro.dashboard') }}">Voltar ao dashboard</a>
+    <a class="btn" href="{{ url_for('financeiro.transactions') }}">Ir para transações</a>
+    <a class="btn" href="{{ url_for('financeiro.reports') }}">Ir para relatórios</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "financeiro/base.html" %}
+{% set page_title = "Criar conta" %}
+{% block content %}
+<form class="card form" method="post">
+  <label>Nome<input type="text" name="name" required></label>
+  <label>E-mail<input type="email" name="email" required></label>
+  <label>Senha<input type="password" name="password" minlength="6" required></label>
+  <button class="btn primary" type="submit">Criar conta</button>
+</form>
+{% endblock %}
