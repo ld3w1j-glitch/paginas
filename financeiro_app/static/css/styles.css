@@ -671,3 +671,90 @@ th:last-child{border-top-right-radius:18px !important;}
   }
   .responsive-transactions .account-chip{justify-self:start !important;}
 }
+
+/* =========================================================
+   Correção final: paleta de cores das contas bancárias
+   - impede que o tema global sobrescreva os botões de cor
+   - mostra a cor escolhida na barra, chip e card da conta
+   ========================================================= */
+.color-input,
+input[type="color"].color-input{
+  width:100% !important;
+  min-height:46px !important;
+  padding:4px !important;
+  background:rgba(3,8,6,.72) !important;
+  border:1px solid rgba(236,243,233,.18) !important;
+  border-radius:16px !important;
+  cursor:pointer !important;
+}
+input[type="color"].color-input::-webkit-color-swatch-wrapper{
+  padding:0 !important;
+}
+input[type="color"].color-input::-webkit-color-swatch{
+  border:0 !important;
+  border-radius:12px !important;
+}
+input[type="color"].color-input::-moz-color-swatch{
+  border:0 !important;
+  border-radius:12px !important;
+}
+.color-presets{
+  display:flex !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  margin-top:-4px !important;
+}
+.color-presets .color-dot,
+button.color-dot{
+  width:32px !important;
+  min-width:32px !important;
+  max-width:32px !important;
+  height:32px !important;
+  min-height:32px !important;
+  max-height:32px !important;
+  padding:0 !important;
+  display:inline-block !important;
+  flex:0 0 32px !important;
+  border-radius:999px !important;
+  background:var(--account-color) !important;
+  border:2px solid rgba(236,243,233,.72) !important;
+  box-shadow:0 0 0 2px rgba(0,0,0,.28),0 8px 20px rgba(0,0,0,.26) !important;
+  cursor:pointer !important;
+  font-size:0 !important;
+  line-height:0 !important;
+  color:transparent !important;
+}
+.color-presets .color-dot:hover,
+button.color-dot:hover,
+.color-presets .color-dot:focus,
+button.color-dot:focus{
+  background:var(--account-color) !important;
+  border-color:var(--theme-gold) !important;
+  outline:2px solid rgba(240,201,79,.38) !important;
+  outline-offset:3px !important;
+  transform:translateY(-1px) !important;
+}
+.account-card{
+  border-left:0 !important;
+}
+.account-color-bar,
+.account-card .account-color-bar,
+.account-chip::before,
+.account-card::before{
+  background:var(--account-color) !important;
+}
+.account-color-bar{
+  width:8px !important;
+  min-height:100% !important;
+  border-radius:999px !important;
+  box-shadow:0 0 22px color-mix(in srgb,var(--account-color) 48%,transparent) !important;
+}
+.account-card .account-main strong:first-child,
+.account-chip{
+  color:var(--theme-text) !important;
+}
+.account-chip{
+  background:color-mix(in srgb,var(--account-color) 16%,rgba(7,18,13,.96)) !important;
+  border-color:color-mix(in srgb,var(--account-color) 58%,rgba(236,243,233,.14)) !important;
+}
