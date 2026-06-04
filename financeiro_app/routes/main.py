@@ -9,6 +9,7 @@ from financeiro_app.models import BankAccount, Transaction, AppSetting
 from financeiro_app.forms import parse_float, parse_date
 from financeiro_app.market import get_market_snapshot
 from financeiro_app.pdf_importer import parse_financial_receipt, build_transaction_from_receipt
+from financeiro_app.schema_utils import ensure_finance_schema
 from ai_service import call_ai
 
 
@@ -285,44 +286,59 @@ def transactions():
             db.session.commit()
             flash("Transação registrada.", "success")
             return redirect(url_for("financeiro.transactions"))
-    transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.occurrence_date.desc()).all()
+    try:
+        transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.occurrence_date.desc()).all()
+    except Exception:
+        db.session.rollback()
+        ensure_finance_schema()
+        transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.occurrence_date.desc()).all()
     return render_template("financeiro/transactions.html", accounts=accounts, transactions=transactions, editing_tx=None)
 
 
 @main_bp.route("/transactions/import-comprovante", methods=["POST"])
 @login_required
 def import_receipt_transaction():
-    accounts = BankAccount.query.filter_by(user_id=current_user.id).all()
-    if not accounts:
-        flash("Cadastre uma conta bancária antes de importar comprovantes.", "warning")
-        return redirect(url_for("financeiro.accounts"))
+    """Importa comprovante PDF sem derrubar a aplicação em caso de erro.
 
-    account_id = request.form.get("account_id")
-    account = BankAccount.query.filter_by(id=account_id, user_id=current_user.id).first()
-    if not account:
-        flash("Selecione a conta onde a transação será registrada.", "danger")
-        return redirect(url_for("financeiro.transactions"))
-
-    receipt = request.files.get("receipt_pdf")
-    if not receipt or not receipt.filename:
-        flash("Selecione um PDF de comprovante Pix/transferência.", "danger")
-        return redirect(url_for("financeiro.transactions"))
-    if not receipt.filename.lower().endswith(".pdf"):
-        flash("Para importação automática, envie um arquivo PDF. Imagens/prints ainda devem ser lançados manualmente.", "danger")
-        return redirect(url_for("financeiro.transactions"))
-
-    safe = secure_filename(receipt.filename)
-    filename = f"{uuid4().hex}_{safe}"
-    upload_dir = Path(current_app.config["UPLOAD_FOLDER"])
-    upload_dir.mkdir(parents=True, exist_ok=True)
-    saved_path = upload_dir / filename
-
+    A função agora envolve todo o fluxo em try/except. Antes, alguns erros
+    fora do bloco principal ainda podiam aparecer como página branca
+    "Internal Server Error".
+    """
+    saved_path = None
+    parsed = None
     try:
+        # Garante colunas novas no banco antes de gravar a transação.
+        ensure_finance_schema()
+
+        accounts = BankAccount.query.filter_by(user_id=current_user.id).all()
+        if not accounts:
+            flash("Cadastre uma conta bancária antes de importar comprovantes.", "warning")
+            return redirect(url_for("financeiro.accounts"))
+
+        account_id = request.form.get("account_id")
+        account = BankAccount.query.filter_by(id=account_id, user_id=current_user.id).first()
+        if not account:
+            flash("Selecione a conta onde a transação será registrada.", "danger")
+            return redirect(url_for("financeiro.transactions"))
+
+        receipt = request.files.get("receipt_pdf")
+        if not receipt or not receipt.filename:
+            flash("Selecione um PDF de comprovante Pix/transferência.", "danger")
+            return redirect(url_for("financeiro.transactions"))
+        if not receipt.filename.lower().endswith(".pdf"):
+            flash("Para importação automática, envie um arquivo PDF. Imagens/prints ainda devem ser lançados manualmente.", "danger")
+            return redirect(url_for("financeiro.transactions"))
+
+        safe = secure_filename(receipt.filename)
+        filename = f"{uuid4().hex}_{safe}"
+        upload_dir = Path(current_app.config["UPLOAD_FOLDER"])
+        upload_dir.mkdir(parents=True, exist_ok=True)
+        saved_path = upload_dir / filename
         receipt.save(saved_path)
+
         parsed = parse_financial_receipt(saved_path)
         tx_data = build_transaction_from_receipt(parsed)
 
-        # Evita duplicar o mesmo comprovante quando o ID da transação já foi importado.
         if parsed.transaction_id:
             existing = Transaction.query.filter(
                 Transaction.user_id == current_user.id,
@@ -347,15 +363,16 @@ def import_receipt_transaction():
         )
         db.session.add(tx)
         db.session.commit()
+        flash(f"Comprovante {parsed.source} importado: R$ {parsed.amount:.2f} para {parsed.receiver_name}.", "success")
+        return redirect(url_for("financeiro.transactions"))
+
     except Exception as exc:
         db.session.rollback()
-        saved_path.unlink(missing_ok=True)
+        if saved_path:
+            saved_path.unlink(missing_ok=True)
         current_app.logger.exception("Falha ao importar comprovante financeiro")
         flash(f"Não consegui ler/registrar esse comprovante automaticamente: {exc}", "danger")
         return redirect(url_for("financeiro.transactions"))
-
-    flash(f"Comprovante {parsed.source} importado: R$ {parsed.amount:.2f} para {parsed.receiver_name}.", "success")
-    return redirect(url_for("financeiro.transactions"))
 
 
 # Mantém compatibilidade com versões antigas e formulários salvos.

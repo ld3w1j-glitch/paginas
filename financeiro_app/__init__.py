@@ -1,11 +1,10 @@
 from pathlib import Path
 
 from flask import Flask
-from sqlalchemy import inspect, text
-
 from .config import Config
 from .extensions import db, login_manager
 from .models import User
+from .schema_utils import ensure_finance_schema
 
 
 _routes_registered = False
@@ -42,7 +41,7 @@ def init_financeiro_app(app: Flask, *, create_tables: bool = True) -> Flask:
     if create_tables:
         with app.app_context():
             db.create_all()
-            _ensure_light_migrations()
+            ensure_finance_schema()
             User.ensure_admin()
 
     return app
@@ -54,44 +53,4 @@ def create_app():
     return app
 
 
-def _ensure_light_migrations():
-    """Pequenas migrações automáticas para bancos já existentes.
-
-    Mantida como ponte de compatibilidade até todas as alterações de schema
-    estarem versionadas no Alembic.
-    """
-    inspector = inspect(db.engine)
-    tables = inspector.get_table_names()
-    table_name = "finance_bank_account"
-    if table_name in tables:
-        existing_columns = {column["name"] for column in inspector.get_columns(table_name)}
-        if "color" not in existing_columns:
-            with db.engine.begin() as connection:
-                connection.execute(text("ALTER TABLE finance_bank_account ADD COLUMN color VARCHAR(20) DEFAULT '#2563eb' NOT NULL"))
-
-    user_table = "finance_user"
-    if user_table in tables:
-        user_columns = {column["name"] for column in inspector.get_columns(user_table)}
-        with db.engine.begin() as connection:
-            if "username" not in user_columns:
-                connection.execute(text("ALTER TABLE finance_user ADD COLUMN username VARCHAR(80)"))
-            if "role" not in user_columns:
-                connection.execute(text("ALTER TABLE finance_user ADD COLUMN role VARCHAR(30) DEFAULT 'user'"))
-
-    transaction_table = "finance_transaction"
-    if transaction_table in tables:
-        transaction_columns = {column["name"] for column in inspector.get_columns(transaction_table)}
-        with db.engine.begin() as connection:
-            # Correções leves para bancos já criados no Railway/local.
-            # Sem isso, ao importar PDF o SQLAlchemy tenta gravar campos novos
-            # e o app cai em Internal Server Error.
-            if "category" not in transaction_columns:
-                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN category VARCHAR(120) DEFAULT 'Geral' NOT NULL"))
-            if "is_fixed" not in transaction_columns:
-                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN is_fixed BOOLEAN DEFAULT 0"))
-            if "periodicity" not in transaction_columns:
-                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN periodicity VARCHAR(40)"))
-            if "receipt_filename" not in transaction_columns:
-                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN receipt_filename VARCHAR(255)"))
-            if "created_at" not in transaction_columns:
-                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN created_at DATETIME"))
+# Migrações leves movidas para financeiro_app/schema_utils.py
