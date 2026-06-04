@@ -315,7 +315,13 @@ def import_receipt_transaction():
             flash("Cadastre uma conta bancária antes de importar comprovantes.", "warning")
             return redirect(url_for("financeiro.accounts"))
 
-        account_id = request.form.get("account_id")
+        raw_account_id = (request.form.get("account_id") or "").strip()
+        try:
+            account_id = int(raw_account_id)
+        except (TypeError, ValueError):
+            flash("Selecione uma conta válida para registrar o comprovante.", "danger")
+            return redirect(url_for("financeiro.transactions"))
+
         account = BankAccount.query.filter_by(id=account_id, user_id=current_user.id).first()
         if not account:
             flash("Selecione a conta onde a transação será registrada.", "danger")
