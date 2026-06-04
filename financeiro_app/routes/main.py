@@ -313,41 +313,47 @@ def import_receipt_transaction():
 
     safe = secure_filename(receipt.filename)
     filename = f"{uuid4().hex}_{safe}"
-    saved_path = Path(current_app.config["UPLOAD_FOLDER"]) / filename
-    receipt.save(saved_path)
+    upload_dir = Path(current_app.config["UPLOAD_FOLDER"])
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    saved_path = upload_dir / filename
 
     try:
+        receipt.save(saved_path)
         parsed = parse_financial_receipt(saved_path)
         tx_data = build_transaction_from_receipt(parsed)
+
+        # Evita duplicar o mesmo comprovante quando o ID da transação já foi importado.
+        if parsed.transaction_id:
+            existing = Transaction.query.filter(
+                Transaction.user_id == current_user.id,
+                Transaction.description.contains(parsed.transaction_id),
+            ).first()
+            if existing:
+                saved_path.unlink(missing_ok=True)
+                flash("Esse comprovante parece já ter sido importado antes.", "warning")
+                return redirect(url_for("financeiro.transactions"))
+
+        tx = Transaction(
+            user_id=current_user.id,
+            account_id=account.id,
+            description=f"{tx_data['description']} | ID {parsed.transaction_id}",
+            category=tx_data["category"],
+            amount=tx_data["amount"],
+            type=tx_data["type"],
+            occurrence_date=tx_data["occurrence_date"],
+            is_fixed=False,
+            periodicity=None,
+            receipt_filename=filename,
+        )
+        db.session.add(tx)
+        db.session.commit()
     except Exception as exc:
+        db.session.rollback()
         saved_path.unlink(missing_ok=True)
-        flash(f"Não consegui ler esse comprovante automaticamente: {exc}", "danger")
+        current_app.logger.exception("Falha ao importar comprovante financeiro")
+        flash(f"Não consegui ler/registrar esse comprovante automaticamente: {exc}", "danger")
         return redirect(url_for("financeiro.transactions"))
 
-    # Evita duplicar o mesmo comprovante quando o ID da transação já foi importado.
-    existing = Transaction.query.filter(
-        Transaction.user_id == current_user.id,
-        Transaction.description.contains(parsed.transaction_id),
-    ).first()
-    if existing:
-        saved_path.unlink(missing_ok=True)
-        flash("Esse comprovante parece já ter sido importado antes.", "warning")
-        return redirect(url_for("financeiro.transactions"))
-
-    tx = Transaction(
-        user_id=current_user.id,
-        account_id=account.id,
-        description=f"{tx_data['description']} | ID {parsed.transaction_id}",
-        category=tx_data["category"],
-        amount=tx_data["amount"],
-        type=tx_data["type"],
-        occurrence_date=tx_data["occurrence_date"],
-        is_fixed=False,
-        periodicity=None,
-        receipt_filename=filename,
-    )
-    db.session.add(tx)
-    db.session.commit()
     flash(f"Comprovante {parsed.source} importado: R$ {parsed.amount:.2f} para {parsed.receiver_name}.", "success")
     return redirect(url_for("financeiro.transactions"))
 

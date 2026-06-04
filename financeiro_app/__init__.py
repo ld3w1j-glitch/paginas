@@ -77,3 +77,21 @@ def _ensure_light_migrations():
                 connection.execute(text("ALTER TABLE finance_user ADD COLUMN username VARCHAR(80)"))
             if "role" not in user_columns:
                 connection.execute(text("ALTER TABLE finance_user ADD COLUMN role VARCHAR(30) DEFAULT 'user'"))
+
+    transaction_table = "finance_transaction"
+    if transaction_table in tables:
+        transaction_columns = {column["name"] for column in inspector.get_columns(transaction_table)}
+        with db.engine.begin() as connection:
+            # Correções leves para bancos já criados no Railway/local.
+            # Sem isso, ao importar PDF o SQLAlchemy tenta gravar campos novos
+            # e o app cai em Internal Server Error.
+            if "category" not in transaction_columns:
+                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN category VARCHAR(120) DEFAULT 'Geral' NOT NULL"))
+            if "is_fixed" not in transaction_columns:
+                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN is_fixed BOOLEAN DEFAULT 0"))
+            if "periodicity" not in transaction_columns:
+                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN periodicity VARCHAR(40)"))
+            if "receipt_filename" not in transaction_columns:
+                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN receipt_filename VARCHAR(255)"))
+            if "created_at" not in transaction_columns:
+                connection.execute(text("ALTER TABLE finance_transaction ADD COLUMN created_at DATETIME"))
