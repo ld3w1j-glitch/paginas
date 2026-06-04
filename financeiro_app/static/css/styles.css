@@ -758,3 +758,39 @@ button.color-dot:focus{
   background:color-mix(in srgb,var(--account-color) 16%,rgba(7,18,13,.96)) !important;
   border-color:color-mix(in srgb,var(--account-color) 58%,rgba(236,243,233,.14)) !important;
 }
+
+/* =========================================================
+   Ajuste solicitado: cabeçalho das tabelas quadrado
+   - remove o formato arredondado do histórico/últimas transações no desktop
+   ========================================================= */
+@media(min-width:761px){
+  .responsive-transactions .mobile-card-table,
+  .responsive-transactions .mobile-card-table thead,
+  .responsive-transactions .mobile-card-table thead tr,
+  .responsive-transactions .mobile-card-table th{
+    border-radius:0 !important;
+  }
+
+  .responsive-transactions .mobile-card-table th:first-child,
+  .responsive-transactions .mobile-card-table th:last-child,
+  .responsive-transactions .mobile-card-table thead tr:first-child th:first-child,
+  .responsive-transactions .mobile-card-table thead tr:first-child th:last-child{
+    border-top-left-radius:0 !important;
+    border-top-right-radius:0 !important;
+  }
+}
+
+/* =========================================================
+   Logo Financeiro: lobo no lugar da bolsinha/F
+   ========================================================= */
+.brand-icon.brand-logo{
+  padding:4px !important;
+  overflow:hidden !important;
+  background:linear-gradient(135deg,#128e4c,#23be5d) !important;
+}
+.brand-icon.brand-logo img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  display:block !important;
+}

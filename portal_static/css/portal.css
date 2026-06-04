@@ -206,3 +206,15 @@ pre,code,.ai-output,.mini-output{background:#030806!important;color:#eaf5ea!impo
   background:linear-gradient(135deg,rgba(240,201,79,.22),rgba(42,174,102,.20))!important;
   border-color:rgba(240,201,79,.30)!important;
 }
+
+/* Logo do Financeiro na central */
+.finance-logo-icon{
+  padding:5px !important;
+  background:linear-gradient(135deg,#128e4c,#23be5d) !important;
+}
+.finance-logo-icon img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  display:block !important;
+}
