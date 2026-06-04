@@ -34,18 +34,18 @@
 <section class="card">
   <h2>Últimas transações</h2>
   {% if transactions %}
-  <div class="table-wrap">
-    <table>
+  <div class="table-wrap responsive-transactions">
+    <table class="mobile-card-table">
       <thead><tr><th>Data</th><th>Conta</th><th>Descrição</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead>
       <tbody>
         {% for tx in transactions %}
         <tr>
-          <td>{{ tx.occurrence_date.strftime('%d/%m/%Y') }}</td>
-          <td><span class="account-chip" style="--account-color: {{ tx.account.color if tx.account else '#2563eb' }}">{{ tx.account.bank_name if tx.account else 'Conta' }}</span></td>
-          <td>{{ tx.description }}</td>
-          <td>{{ 'Receita' if tx.type == 'income' else 'Despesa' }}</td>
-          <td><strong class="{{ 'value-income' if tx.type == 'income' else 'value-expense' }}">R$ {{ '%.2f'|format(tx.amount) }}</strong></td>
-          <td><a class="btn small" href="{{ url_for('financeiro.edit_transaction', tx_id=tx.id) }}">Editar valor</a></td>
+          <td data-label="Data">{{ tx.occurrence_date.strftime('%d/%m/%Y') }}</td>
+          <td data-label="Conta"><span class="account-chip" style="--account-color: {{ tx.account.color if tx.account else '#2563eb' }}">{{ tx.account.bank_name if tx.account else 'Conta' }}</span></td>
+          <td data-label="Descrição">{{ tx.description }}</td>
+          <td data-label="Tipo">{{ 'Receita' if tx.type == 'income' else 'Despesa' }}</td>
+          <td data-label="Valor"><strong class="{{ 'value-income' if tx.type == 'income' else 'value-expense' }}">R$ {{ '%.2f'|format(tx.amount) }}</strong></td>
+          <td data-label="Ação"><a class="btn small" href="{{ url_for('financeiro.edit_transaction', tx_id=tx.id) }}">Editar valor</a></td>
         </tr>
         {% endfor %}
       </tbody>

@@ -518,3 +518,156 @@ th:last-child{border-top-right-radius:18px !important;}
   .topbar h1{font-size:24px !important;}
   .user-pill{margin-top:12px !important;display:inline-flex !important;}
 }
+
+
+/* =========================================================
+   Correção mobile: transações em cards
+   - evita corte da tabela em telas pequenas
+   - mantém tabela normal no computador
+   ========================================================= */
+.responsive-transactions{
+  max-width:100% !important;
+  overflow-x:visible !important;
+}
+.mobile-card-table{
+  width:100% !important;
+  table-layout:auto !important;
+}
+.mobile-card-table td,
+.mobile-card-table th{
+  vertical-align:middle !important;
+}
+@media(max-width:760px){
+  .stats-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:12px !important;
+  }
+  .stat.card{
+    min-height:132px !important;
+    padding:18px 16px !important;
+  }
+  .stat span{
+    font-size:15px !important;
+    line-height:1.25 !important;
+  }
+  .stat strong{
+    font-size:clamp(22px,7vw,30px) !important;
+    line-height:1.1 !important;
+    word-break:break-word !important;
+  }
+  .account-main span{
+    font-size:14px !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+  }
+  .account-main strong{
+    font-size:20px !important;
+  }
+  .responsive-transactions,
+  .responsive-transactions table,
+  .responsive-transactions thead,
+  .responsive-transactions tbody,
+  .responsive-transactions tr,
+  .responsive-transactions th,
+  .responsive-transactions td{
+    display:block !important;
+    width:100% !important;
+  }
+  .responsive-transactions{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    border-radius:0 !important;
+    overflow:visible !important;
+  }
+  .responsive-transactions table{
+    border:0 !important;
+    border-radius:0 !important;
+    overflow:visible !important;
+  }
+  .responsive-transactions thead{
+    position:absolute !important;
+    width:1px !important;
+    height:1px !important;
+    padding:0 !important;
+    margin:-1px !important;
+    overflow:hidden !important;
+    clip:rect(0,0,0,0) !important;
+    white-space:nowrap !important;
+    border:0 !important;
+  }
+  .responsive-transactions tbody{
+    display:grid !important;
+    gap:12px !important;
+  }
+  .responsive-transactions tr{
+    background:linear-gradient(180deg,rgba(12,31,22,.96),rgba(7,18,13,.96)) !important;
+    border:1px solid rgba(236,243,233,.14) !important;
+    border-radius:22px !important;
+    box-shadow:0 14px 34px rgba(0,0,0,.26) !important;
+    padding:14px !important;
+    overflow:hidden !important;
+  }
+  .responsive-transactions tr:hover td{
+    background:transparent !important;
+  }
+  .responsive-transactions td{
+    display:grid !important;
+    grid-template-columns:minmax(86px,34%) minmax(0,1fr) !important;
+    align-items:center !important;
+    gap:10px !important;
+    padding:9px 0 !important;
+    border:0 !important;
+    border-bottom:1px solid rgba(236,243,233,.10) !important;
+    text-align:right !important;
+    color:var(--theme-text) !important;
+    overflow-wrap:anywhere !important;
+  }
+  .responsive-transactions td:last-child{
+    border-bottom:0 !important;
+  }
+  .responsive-transactions td::before{
+    content:attr(data-label) !important;
+    color:var(--theme-gold) !important;
+    font-size:12px !important;
+    font-weight:900 !important;
+    letter-spacing:.05em !important;
+    text-transform:uppercase !important;
+    text-align:left !important;
+  }
+  .responsive-transactions .account-chip{
+    justify-self:end !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+    text-align:left !important;
+  }
+  .responsive-transactions td[data-label="Valor"] strong{
+    font-size:20px !important;
+  }
+  .responsive-transactions td[data-label="Ação"],
+  .responsive-transactions .row-actions{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    text-align:stretch !important;
+    gap:8px !important;
+  }
+  .responsive-transactions td[data-label="Ação"]::before{
+    margin-bottom:2px !important;
+  }
+  .responsive-transactions td[data-label="Ação"] .btn,
+  .responsive-transactions .row-actions .btn,
+  .responsive-transactions .row-actions button,
+  .responsive-transactions .row-actions form{
+    width:100% !important;
+    display:block !important;
+  }
+}
+@media(max-width:390px){
+  .stats-grid{grid-template-columns:1fr !important;}
+  .responsive-transactions td{
+    grid-template-columns:1fr !important;
+    text-align:left !important;
+  }
+  .responsive-transactions .account-chip{justify-self:start !important;}
+}
