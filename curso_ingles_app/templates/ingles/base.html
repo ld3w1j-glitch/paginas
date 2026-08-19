@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ overview.site_name }}{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='ingles/css/style.css') }}?v=sidebar-cursos-1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='ingles/css/style.css') }}?v=english-lab-4-1">
 </head>
 <body class="with-course-sidebar">
   <div class="bg-orb orb-a"></div>
@@ -32,6 +29,7 @@
       <a href="{{ url_for('dashboard') }}">Portal</a>
       <a href="{{ url_for('agent_chat_page') }}">Chat Agente</a>
       <a href="{{ url_for('ingles_home') }}">Início do inglês</a>
+      <a class="lab-nav-link" href="{{ url_for('ingles_lab') }}">Laboratório offline</a>
       <a href="{{ url_for('ingles_practice') }}">Prática</a>
       <a href="{{ url_for('ingles_phrasebook') }}">Frases</a>
       <a href="{{ url_for('ingles_vocabulary') }}">Vocabulário</a>
@@ -48,5 +46,6 @@
   <script src="{{ url_for('static', filename='ingles/js/main.js') }}"></script>
   {% include "partials/mcp_widget.html" %}
   <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

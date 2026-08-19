@@ -1,0 +1,37 @@
+RECONHECIMENTO DE VOZ OFFLINE - ENGLISH STUDY 4.1
+=================================================
+
+O curso, o tradutor e o Professor funcionam sem instalar nada nesta pasta.
+Este pacote opcional ativa a comparação de pronúncia pelo microfone.
+
+PREPARAÇÃO
+----------
+1. Extraia nesta pasta uma versão do whisper.cpp para Windows.
+   O programa procura automaticamente por:
+   - whisper-cli.exe (versões atuais), ou
+   - main.exe (versões anteriores).
+
+2. Mantenha junto do executável todas as DLLs fornecidas no pacote.
+
+3. Coloque aqui um modelo Whisper no formato GGML.
+   O nome precisa começar com ggml- e terminar com .bin.
+
+   Para este computador, use preferencialmente um modelo inglês pequeno,
+   como ggml-base.en.bin. Um modelo maior pode reconhecer melhor, mas demora mais.
+
+4. Feche e abra o Portal de Cursos.
+
+5. Entre no Curso de inglês, abra Laboratório offline e vá até Pronúncia.
+
+COMO FUNCIONA
+-------------
+- O navegador grava somente enquanto o botão estiver ativo.
+- O áudio é convertido para WAV mono de 16 kHz no próprio navegador.
+- O arquivo temporário é processado pelo whisper.cpp local.
+- O programa compara as palavras esperadas com as reconhecidas.
+- Nenhum áudio é enviado para a internet.
+
+LIMITAÇÃO
+---------
+A pontuação mede a correspondência do texto reconhecido. Ela é uma orientação
+de estudo e não equivale a uma avaliação fonética profissional.

@@ -1,19 +1,20 @@
-import io
 import json
 import os
 import re
-import uuid
-import zipfile
 import urllib.error
 import urllib.request
-from datetime import datetime
+import uuid
+import zipfile
+from datetime import date, datetime, timedelta
 from functools import lru_cache, wraps
+from pathlib import Path
+from urllib.parse import urlparse
 
 from flask import (
     Flask,
     flash,
-    jsonify,
     g,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -23,12 +24,29 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .data import DEFAULT_MODULES, DOCS_DATA, ROLES_DATA, SITE_DATA
-from security_config import get_admin_password, get_admin_user, get_database_url, get_secret_key
-from extensions import db
 from ai_service import call_ai
+from extensions import db
+from security_config import get_admin_password, get_admin_user, get_database_url, get_secret_key
 from storage_service import workspace_dir
 
+from .course_utils import search_collection
+from .data import DEFAULT_MODULES, DOCS_DATA, ROLES_DATA, SITE_DATA
+from .english_local_runtime import (
+    ai_status as english_ai_status,
+)
+from .english_local_runtime import (
+    discover_voice,
+    pronunciation_score,
+    transcribe_wav,
+)
+from .english_local_runtime import (
+    start_ai as start_english_ai,
+)
+from .english_local_runtime import (
+    stop_ai as stop_english_ai,
+)
+from .english_tutor import SCENARIOS as ENGLISH_SCENARIOS
+from .english_tutor import normalize_exercise_answer, tutor_response
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, "legiao.db")
@@ -41,6 +59,9 @@ INGLES_CONTENT_DIR = os.path.join(BASE_DIR, "content", "ingles")
 INGLES_COURSE_PATH = os.path.join(INGLES_CONTENT_DIR, "english_course.json")
 INGLES_ACTIVITY_PATH = os.path.join(INGLES_CONTENT_DIR, "activity_bank.json")
 AGENT_WORKSPACE_DIR = str(workspace_dir("curso_ingles_agent"))
+PROJECT_ROOT = Path(BASE_DIR).parent
+ENGLISH_AI_DIR = Path(os.getenv("ENGLISH_AI_DIR", PROJECT_ROOT / "ia_local"))
+ENGLISH_VOICE_DIR = Path(os.getenv("ENGLISH_VOICE_DIR", PROJECT_ROOT / "voz_local"))
 
 
 AGENT_TEAM = [
@@ -349,6 +370,113 @@ class ModuleAttempt(db.Model):
     module = db.relationship("StudyModule")
 
 
+class EnglishTutorPreference(db.Model):
+    __tablename__ = "curso_english_tutor_preference"
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), primary_key=True)
+    level = db.Column(db.String(10), default="A1", nullable=False)
+    objective = db.Column(db.String(300), default="Conversação e compreensão geral", nullable=False)
+    tutor_engine = db.Column(db.String(40), default="integrated", nullable=False)
+    scenario_key = db.Column(db.String(80), default="free", nullable=False)
+    local_ai_url = db.Column(db.String(500), default="http://127.0.0.1:8080/v1/chat/completions", nullable=False)
+    local_ai_model = db.Column(db.String(160), default="local-model", nullable=False)
+    local_ai_model_file = db.Column(db.String(500), default="", nullable=False)
+    voice_model_file = db.Column(db.String(500), default="", nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class EnglishTutorMessage(db.Model):
+    __tablename__ = "curso_english_tutor_message"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    role = db.Column(db.String(20), nullable=False)
+    content = db.Column(db.Text, default="", nullable=False)
+    corrected_text = db.Column(db.Text, default="", nullable=False)
+    explanations_json = db.Column(db.Text, default="[]", nullable=False)
+    engine = db.Column(db.String(160), default="Professor integrado offline", nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class EnglishTutorMistake(db.Model):
+    __tablename__ = "curso_english_tutor_mistake"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    rule_key = db.Column(db.String(80), nullable=False)
+    source_text = db.Column(db.Text, default="", nullable=False)
+    corrected_text = db.Column(db.Text, default="", nullable=False)
+    explanation = db.Column(db.Text, default="", nullable=False)
+    times_seen = db.Column(db.Integer, default=1, nullable=False)
+    times_correct = db.Column(db.Integer, default=0, nullable=False)
+    next_review = db.Column(db.Date, default=date.today, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("user_id", "rule_key", name="uq_english_mistake_user_rule"),)
+
+
+class EnglishTutorExercise(db.Model):
+    __tablename__ = "curso_english_tutor_exercise"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    mistake_rule_key = db.Column(db.String(80), default="", nullable=False)
+    prompt = db.Column(db.Text, nullable=False)
+    options_json = db.Column(db.Text, default="[]", nullable=False)
+    answer = db.Column(db.Text, nullable=False)
+    explanation = db.Column(db.Text, default="", nullable=False)
+    attempts = db.Column(db.Integer, default=0, nullable=False)
+    completed = db.Column(db.Boolean, default=False, nullable=False)
+    correct = db.Column(db.Boolean, default=False, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+
+class EnglishPronunciationAttempt(db.Model):
+    __tablename__ = "curso_english_pronunciation_attempt"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    target_text = db.Column(db.Text, nullable=False)
+    transcript = db.Column(db.Text, nullable=False)
+    score = db.Column(db.Integer, default=0, nullable=False)
+    missing_json = db.Column(db.Text, default="[]", nullable=False)
+    extra_json = db.Column(db.Text, default="[]", nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class EnglishTranslationMemory(db.Model):
+    __tablename__ = "curso_english_translation_memory"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    source_text = db.Column(db.Text, nullable=False)
+    normalized_source = db.Column(db.Text, nullable=False)
+    translation = db.Column(db.Text, nullable=False)
+    uses = db.Column(db.Integer, default=1, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("user_id", "normalized_source", name="uq_english_translation_user_source"),)
+
+
+class EnglishCourseProgress(db.Model):
+    __tablename__ = "curso_english_course_progress"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    item_type = db.Column(db.String(40), nullable=False)
+    item_key = db.Column(db.String(220), nullable=False)
+    completed = db.Column(db.Boolean, default=False, nullable=False)
+    score = db.Column(db.Integer, default=0, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("user_id", "item_type", "item_key", name="uq_english_progress_user_item"),)
+
+
+class EnglishStudyEvent(db.Model):
+    __tablename__ = "curso_english_study_event"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id"), nullable=False, index=True)
+    study_date = db.Column(db.Date, default=date.today, nullable=False, index=True)
+    event_type = db.Column(db.String(50), nullable=False)
+    item_key = db.Column(db.String(220), nullable=False)
+    xp = db.Column(db.Integer, default=0, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    __table_args__ = (db.UniqueConstraint("user_id", "event_type", "item_key", name="uq_english_event_user_item"),)
+
+
 @app.context_processor
 def inject_globals():
     current_user = get_current_user()
@@ -408,7 +536,7 @@ def get_current_user():
     user_id = session.get("user_id")
     if not user_id:
         return None
-    return User.query.get(user_id)
+    return db.session.get(User, user_id)
 
 
 
@@ -937,6 +1065,263 @@ def search_english_modules(query: str, modules: list[dict]) -> list[dict]:
         nested_text_fields=["title", "focus", "examples", "patterns"],
         nested_limit=4,
     )
+
+
+def _english_preference(user_id: int) -> EnglishTutorPreference:
+    preference = db.session.get(EnglishTutorPreference, user_id)
+    if preference is None:
+        preference = EnglishTutorPreference(user_id=user_id)
+        db.session.add(preference)
+        db.session.commit()
+    return preference
+
+
+def _english_preference_settings(preference: EnglishTutorPreference) -> dict[str, str]:
+    return {
+        "tutor_engine": preference.tutor_engine,
+        "tutor_scenario": preference.scenario_key,
+        "local_ai_url": preference.local_ai_url,
+        "local_ai_model": preference.local_ai_model,
+        "local_ai_model_file": preference.local_ai_model_file,
+        "voice_model_file": preference.voice_model_file,
+    }
+
+
+def _english_record_event(user_id: int, event_type: str, item_key: str, xp: int) -> int:
+    event = EnglishStudyEvent.query.filter_by(
+        user_id=user_id,
+        event_type=event_type[:50],
+        item_key=item_key[:220],
+    ).first()
+    if event is not None:
+        return 0
+    db.session.add(
+        EnglishStudyEvent(
+            user_id=user_id,
+            study_date=date.today(),
+            event_type=event_type[:50],
+            item_key=item_key[:220],
+            xp=max(0, int(xp)),
+        )
+    )
+    return max(0, int(xp))
+
+
+def _english_streak(user_id: int) -> int:
+    values = {
+        row[0]
+        for row in db.session.query(EnglishStudyEvent.study_date)
+        .filter_by(user_id=user_id)
+        .distinct()
+        .all()
+        if row[0]
+    }
+    if not values:
+        return 0
+    cursor = date.today()
+    if cursor not in values:
+        cursor -= timedelta(days=1)
+        if cursor not in values:
+            return 0
+    streak = 0
+    while cursor in values:
+        streak += 1
+        cursor -= timedelta(days=1)
+    return streak
+
+
+def _english_learning_metrics(user_id: int) -> dict:
+    xp = db.session.query(db.func.coalesce(db.func.sum(EnglishStudyEvent.xp), 0)).filter_by(user_id=user_id).scalar() or 0
+    completed_modules = EnglishCourseProgress.query.filter_by(user_id=user_id, item_type="module", completed=True).count()
+    completed_lessons = EnglishCourseProgress.query.filter_by(user_id=user_id, item_type="lesson", completed=True).count()
+    completed_exercises = EnglishTutorExercise.query.filter_by(user_id=user_id, completed=True).count()
+    correct_exercises = EnglishTutorExercise.query.filter_by(user_id=user_id, completed=True, correct=True).count()
+    return {
+        "xp": int(xp),
+        "streak": _english_streak(user_id),
+        "completed_modules": completed_modules,
+        "completed_lessons": completed_lessons,
+        "completed_exercises": completed_exercises,
+        "accuracy": round(correct_exercises / completed_exercises * 100) if completed_exercises else 0,
+    }
+
+
+def _english_tutor_stats(user_id: int) -> dict:
+    return {
+        "conversations": EnglishTutorMessage.query.filter_by(user_id=user_id, role="assistant").count(),
+        "mistakes": EnglishTutorMistake.query.filter_by(user_id=user_id).count(),
+        "mastered": EnglishTutorMistake.query.filter(
+            EnglishTutorMistake.user_id == user_id,
+            EnglishTutorMistake.times_correct >= 3,
+        ).count(),
+        "exercises": EnglishTutorExercise.query.filter_by(user_id=user_id, completed=True, correct=True).count(),
+    }
+
+
+def _english_student_context(user_id: int) -> dict:
+    mistakes = (
+        EnglishTutorMistake.query.filter_by(user_id=user_id)
+        .order_by(
+            (EnglishTutorMistake.times_seen - EnglishTutorMistake.times_correct).desc(),
+            EnglishTutorMistake.updated_at.desc(),
+        )
+        .limit(8)
+        .all()
+    )
+    progress = _english_learning_metrics(user_id)
+    return {
+        "frequent_difficulties": [
+            {
+                "rule": item.rule_key,
+                "explanation": item.explanation,
+                "seen": item.times_seen,
+                "correct": item.times_correct,
+            }
+            for item in mistakes
+        ],
+        "completed_lessons": progress["completed_lessons"],
+        "completed_modules": progress["completed_modules"],
+        "exercise_accuracy_percent": progress["accuracy"],
+        "study_streak": progress["streak"],
+    }
+
+
+def _serialize_english_exercise(exercise: EnglishTutorExercise | None) -> dict | None:
+    if exercise is None:
+        return None
+    try:
+        options = json.loads(exercise.options_json or "[]")
+    except json.JSONDecodeError:
+        options = []
+    return {
+        "id": exercise.id,
+        "rule_key": exercise.mistake_rule_key,
+        "prompt": exercise.prompt,
+        "options": options if isinstance(options, list) else [],
+        "answer": exercise.answer,
+        "explanation": exercise.explanation,
+        "attempts": exercise.attempts,
+    }
+
+
+def _store_english_tutor_result(user_id: int, source: str, result: dict) -> dict | None:
+    corrected = str(result.get("corrected_text", "")).strip()[:4000]
+    corrections = []
+    for item in result.get("corrections", [])[:20] if isinstance(result.get("corrections"), list) else []:
+        if not isinstance(item, dict):
+            continue
+        rule_key = re.sub(r"[^a-z0-9_-]+", "-", str(item.get("rule_key", "general")).lower()).strip("-")[:80]
+        explanation = str(item.get("explanation", "")).strip()[:1000]
+        if rule_key and explanation:
+            corrections.append({"rule_key": rule_key, "explanation": explanation})
+
+    db.session.add(EnglishTutorMessage(user_id=user_id, role="user", content=source[:4000], engine=""))
+    assistant = EnglishTutorMessage(
+        user_id=user_id,
+        role="assistant",
+        content=str(result.get("reply", ""))[:8000],
+        corrected_text=corrected,
+        explanations_json=json.dumps(corrections, ensure_ascii=False),
+        engine=str(result.get("engine", "Professor integrado offline"))[:160],
+    )
+    db.session.add(assistant)
+    db.session.flush()
+
+    for correction in corrections:
+        if correction["rule_key"] == "capitalization":
+            continue
+        mistake = EnglishTutorMistake.query.filter_by(user_id=user_id, rule_key=correction["rule_key"]).first()
+        if mistake is None:
+            mistake = EnglishTutorMistake(
+                user_id=user_id,
+                rule_key=correction["rule_key"],
+                source_text=source[:4000],
+                corrected_text=corrected,
+                explanation=correction["explanation"],
+                next_review=date.today(),
+            )
+            db.session.add(mistake)
+        else:
+            mistake.source_text = source[:4000]
+            mistake.corrected_text = corrected
+            mistake.explanation = correction["explanation"]
+            mistake.times_seen += 1
+            mistake.next_review = date.today()
+
+    stored_exercise = None
+    raw_exercise = result.get("exercise")
+    if isinstance(raw_exercise, dict):
+        prompt = str(raw_exercise.get("prompt", "")).strip()[:1000]
+        answer = str(raw_exercise.get("answer", "")).strip()[:1000]
+        options = [str(item).strip()[:1000] for item in raw_exercise.get("options", []) if str(item).strip()][:6]
+        options = list(dict.fromkeys(options))
+        if answer and answer not in options:
+            options.append(answer)
+        if prompt and answer and len(options) >= 2:
+            stored = EnglishTutorExercise(
+                user_id=user_id,
+                mistake_rule_key=re.sub(
+                    r"[^a-z0-9_-]+", "-", str(raw_exercise.get("rule_key", "general")).lower()
+                ).strip("-")[:80],
+                prompt=prompt,
+                options_json=json.dumps(options, ensure_ascii=False),
+                answer=answer,
+                explanation=str(raw_exercise.get("explanation", ""))[:1000],
+            )
+            db.session.add(stored)
+            db.session.flush()
+            stored_exercise = _serialize_english_exercise(stored)
+
+    _english_record_event(user_id, "tutor_message", f"message:{assistant.id}", 3)
+    db.session.commit()
+    return stored_exercise
+
+
+def _normalize_english_memory_source(value: str) -> str:
+    return re.sub(r"\s+", " ", value.strip().lower())
+
+
+def _english_sentence_units(value: str) -> list[str]:
+    return [
+        match.group(0).strip()
+        for match in re.finditer(r"[^.!?\n]+(?:[.!?]+|$)", value)
+        if match.group(0).strip()
+    ]
+
+
+def _store_english_translation_pair(user_id: int, source: str, translation: str) -> None:
+    normalized = _normalize_english_memory_source(source)
+    memory = EnglishTranslationMemory.query.filter_by(user_id=user_id, normalized_source=normalized).first()
+    if memory is None:
+        db.session.add(
+            EnglishTranslationMemory(
+                user_id=user_id,
+                source_text=source,
+                normalized_source=normalized,
+                translation=translation,
+            )
+        )
+    else:
+        memory.source_text = source
+        memory.translation = translation
+        memory.uses += 1
+
+
+def _english_memory_segments(user_id: int, source: str) -> list[dict]:
+    units = _english_sentence_units(source)[:80]
+    if not units:
+        return []
+    normalized = [_normalize_english_memory_source(item) for item in units]
+    rows = EnglishTranslationMemory.query.filter(
+        EnglishTranslationMemory.user_id == user_id,
+        EnglishTranslationMemory.normalized_source.in_(normalized),
+    ).all()
+    lookup = {row.normalized_source: row.translation for row in rows}
+    return [
+        {"source": item, "translation": lookup[_normalize_english_memory_source(item)]}
+        for item in units
+        if _normalize_english_memory_source(item) in lookup
+    ]
 
 
 def init_database() -> None:
@@ -2224,6 +2609,344 @@ def ingles_search():
         all_modules=course_data["modules"],
         phrasebook=course_data["phrasebook"],
     )
+
+
+@app.route("/area/ingles/laboratorio")
+@login_required
+def ingles_lab():
+    preference = _english_preference(g.user.id)
+    history_rows = (
+        EnglishTutorMessage.query.filter_by(user_id=g.user.id)
+        .order_by(EnglishTutorMessage.id.desc())
+        .limit(40)
+        .all()
+    )
+    history = []
+    for row in reversed(history_rows):
+        try:
+            explanations = json.loads(row.explanations_json or "[]")
+        except json.JSONDecodeError:
+            explanations = []
+        history.append({
+            "role": row.role,
+            "content": row.content,
+            "corrected_text": row.corrected_text,
+            "engine": row.engine,
+            "explanations": explanations if isinstance(explanations, list) else [],
+        })
+    pending = (
+        EnglishTutorExercise.query.filter_by(user_id=g.user.id, completed=False)
+        .order_by(EnglishTutorExercise.id.desc())
+        .first()
+    )
+    attempts = (
+        EnglishPronunciationAttempt.query.filter_by(user_id=g.user.id)
+        .order_by(EnglishPronunciationAttempt.id.desc())
+        .limit(8)
+        .all()
+    )
+    course_data = enrich_english_course_for_user(build_english_overview(), g.user)
+    phrases = [
+        "Learning a language takes time and practice.",
+        "Could you tell me where the station is?",
+        "I would like to improve my English pronunciation.",
+        "She works during the week and studies at night.",
+        "Yesterday I went to the store and bought some food.",
+    ]
+    return render_template(
+        "ingles/lab.html",
+        overview=course_data["overview"],
+        all_modules=course_data["modules"],
+        phrasebook=course_data["phrasebook"],
+        preference=preference,
+        history=history,
+        exercise=_serialize_english_exercise(pending),
+        stats=_english_tutor_stats(g.user.id),
+        metrics=_english_learning_metrics(g.user.id),
+        scenarios=ENGLISH_SCENARIOS,
+        active_scenario=ENGLISH_SCENARIOS.get(preference.scenario_key, ENGLISH_SCENARIOS["free"]),
+        active_scenario_key=preference.scenario_key,
+        ai_runtime=english_ai_status(ENGLISH_AI_DIR, preference.local_ai_url),
+        voice_runtime=discover_voice(ENGLISH_VOICE_DIR),
+        pronunciation_attempts=attempts,
+        pronunciation_phrases=phrases,
+    )
+
+
+@app.route("/api/ingles/preferencias", methods=["POST"])
+@login_required
+def ingles_preferences_api():
+    data = request.get_json(silent=True) or {}
+    preference = _english_preference(g.user.id)
+    level = str(data.get("level", preference.level)).upper()
+    if level not in {"A1", "A2", "B1", "B2"}:
+        return jsonify({"ok": False, "error": "Nível de inglês inválido."}), 400
+    engine = str(data.get("tutor_engine", preference.tutor_engine))
+    if engine not in {"integrated", "local_ai"}:
+        return jsonify({"ok": False, "error": "Motor do professor inválido."}), 400
+    local_url = str(data.get("local_ai_url", preference.local_ai_url)).strip()[:500]
+    if local_url:
+        try:
+            if urlparse(local_url).hostname not in {"127.0.0.1", "localhost", "::1"}:
+                return jsonify({"ok": False, "error": "A IA neural aceita somente um endereço local (localhost)."}), 400
+        except ValueError:
+            return jsonify({"ok": False, "error": "Endereço da IA local inválido."}), 400
+    preference.level = level
+    preference.objective = str(data.get("objective", preference.objective)).strip()[:300] or "Conversação e compreensão geral"
+    preference.tutor_engine = engine
+    preference.local_ai_url = local_url or "http://127.0.0.1:8080/v1/chat/completions"
+    preference.local_ai_model = str(data.get("local_ai_model", preference.local_ai_model)).strip()[:160] or "local-model"
+    db.session.commit()
+    return jsonify({"ok": True, "level": preference.level, "tutor_engine": preference.tutor_engine})
+
+
+@app.route("/api/ingles/professor/chat", methods=["POST"])
+@login_required
+def ingles_professor_chat_api():
+    data = request.get_json(silent=True) or {}
+    message = str(data.get("message", "")).strip()
+    if not message:
+        return jsonify({"ok": False, "error": "Escreva uma mensagem para o professor."}), 400
+    if len(message) > 4000:
+        return jsonify({"ok": False, "error": "Envie no máximo 4.000 caracteres."}), 400
+    preference = _english_preference(g.user.id)
+    rows = (
+        EnglishTutorMessage.query.filter_by(user_id=g.user.id)
+        .order_by(EnglishTutorMessage.id.desc())
+        .limit(6)
+        .all()
+    )
+    history = [{"role": row.role, "content": row.content} for row in reversed(rows)]
+    scenario_key = preference.scenario_key if preference.scenario_key in ENGLISH_SCENARIOS else "free"
+    try:
+        result = tutor_response(
+            message,
+            _english_preference_settings(preference),
+            preference.level or "A1",
+            preference.objective,
+            history,
+            _english_student_context(g.user.id),
+            scenario_key,
+        )
+    except ValueError as exc:
+        return jsonify({"ok": False, "error": str(exc)}), 400
+    exercise = _store_english_tutor_result(g.user.id, message, result)
+    return jsonify({
+        "ok": True,
+        "reply": result.get("reply", ""),
+        "corrected_text": result.get("corrected_text", ""),
+        "corrections": result.get("corrections", []),
+        "engine": result.get("engine", "Professor integrado offline"),
+        "notice": result.get("notice", ""),
+        "exercise": exercise,
+        "xp_earned": 3,
+    })
+
+
+@app.route("/api/ingles/professor/cenario", methods=["POST"])
+@login_required
+def ingles_professor_scenario_api():
+    data = request.get_json(silent=True) or {}
+    scenario_key = str(data.get("scenario", "free"))
+    scenario = ENGLISH_SCENARIOS.get(scenario_key)
+    if scenario is None:
+        return jsonify({"ok": False, "error": "Cenário não encontrado."}), 404
+    preference = _english_preference(g.user.id)
+    changed = preference.scenario_key != scenario_key
+    preference.scenario_key = scenario_key
+    if changed:
+        db.session.add(
+            EnglishTutorMessage(
+                user_id=g.user.id,
+                role="assistant",
+                content=scenario["opening"],
+                engine="Simulação offline",
+            )
+        )
+    db.session.commit()
+    return jsonify({"ok": True, "scenario": scenario_key, **scenario})
+
+
+@app.route("/api/ingles/professor/exercicio/<int:exercise_id>", methods=["POST"])
+@login_required
+def ingles_professor_exercise_api(exercise_id):
+    data = request.get_json(silent=True) or {}
+    response_text = str(data.get("response", "")).strip()[:1000]
+    exercise = EnglishTutorExercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+    if exercise is None:
+        return jsonify({"ok": False, "error": "Exercício não encontrado."}), 404
+    correct = normalize_exercise_answer(response_text) == normalize_exercise_answer(exercise.answer)
+    exercise.attempts += 1
+    if correct:
+        exercise.completed = True
+        exercise.correct = True
+    if exercise.mistake_rule_key:
+        mistake = EnglishTutorMistake.query.filter_by(
+            user_id=g.user.id,
+            rule_key=exercise.mistake_rule_key,
+        ).first()
+        if mistake is not None:
+            if correct:
+                mistake.times_correct += 1
+                intervals = (1, 3, 7, 14, 30)
+                interval = intervals[min(mistake.times_correct - 1, len(intervals) - 1)]
+                mistake.next_review = date.today() + timedelta(days=interval)
+            else:
+                mistake.next_review = date.today() + timedelta(days=1)
+    xp_earned = _english_record_event(g.user.id, "tutor_exercise", f"exercise:{exercise.id}", 5) if correct else 0
+    db.session.commit()
+    next_exercise = None
+    if correct:
+        next_exercise = _serialize_english_exercise(
+            EnglishTutorExercise.query.filter(
+                EnglishTutorExercise.user_id == g.user.id,
+                EnglishTutorExercise.completed.is_(False),
+                EnglishTutorExercise.id != exercise.id,
+            ).order_by(EnglishTutorExercise.id.desc()).first()
+        )
+    return jsonify({
+        "ok": True,
+        "correct": correct,
+        "answer": exercise.answer,
+        "explanation": exercise.explanation,
+        "xp_earned": xp_earned,
+        "next_exercise": next_exercise,
+    })
+
+
+@app.route("/api/ingles/local-ai/status")
+@login_required
+def ingles_local_ai_status_api():
+    preference = _english_preference(g.user.id)
+    return jsonify({
+        "ok": True,
+        **english_ai_status(ENGLISH_AI_DIR, preference.local_ai_url),
+        "selected_model": preference.local_ai_model_file,
+    })
+
+
+@app.route("/api/ingles/local-ai/iniciar", methods=["POST"])
+@login_required
+def ingles_local_ai_start_api():
+    data = request.get_json(silent=True) or {}
+    preference = _english_preference(g.user.id)
+    model = str(data.get("model", preference.local_ai_model_file))[:500]
+    try:
+        port = urlparse(preference.local_ai_url).port or 8080
+        result = start_english_ai(ENGLISH_AI_DIR, model, port=port)
+    except (ValueError, OSError) as exc:
+        return jsonify({"ok": False, "error": str(exc)}), 400
+    if model:
+        preference.local_ai_model_file = model
+        db.session.commit()
+    return jsonify({"ok": True, **result})
+
+
+@app.route("/api/ingles/local-ai/parar", methods=["POST"])
+@login_required
+def ingles_local_ai_stop_api():
+    return jsonify({"ok": True, **stop_english_ai()})
+
+
+@app.route("/api/ingles/pronuncia/status")
+@login_required
+def ingles_pronunciation_status_api():
+    preference = _english_preference(g.user.id)
+    return jsonify({
+        "ok": True,
+        **discover_voice(ENGLISH_VOICE_DIR),
+        "selected_model": preference.voice_model_file,
+    })
+
+
+@app.route("/api/ingles/pronuncia/analisar", methods=["POST"])
+@login_required
+def ingles_pronunciation_analyze_api():
+    target = request.form.get("target", "").strip()[:1000]
+    audio = request.files.get("audio")
+    if not target:
+        return jsonify({"ok": False, "error": "Informe a frase que será pronunciada."}), 400
+    if audio is None:
+        return jsonify({"ok": False, "error": "A gravação não foi recebida."}), 400
+    preference = _english_preference(g.user.id)
+    wav_bytes = audio.read(16 * 1024 * 1024 + 1)
+    try:
+        transcript = transcribe_wav(ENGLISH_VOICE_DIR, wav_bytes, preference.voice_model_file)
+    except (ValueError, RuntimeError, OSError, TimeoutError) as exc:
+        return jsonify({"ok": False, "error": str(exc)}), 400
+    result = pronunciation_score(target, transcript)
+    attempt = EnglishPronunciationAttempt(
+        user_id=g.user.id,
+        target_text=target,
+        transcript=transcript,
+        score=result["score"],
+        missing_json=json.dumps(result["missing"], ensure_ascii=False),
+        extra_json=json.dumps(result["extra"], ensure_ascii=False),
+    )
+    db.session.add(attempt)
+    db.session.flush()
+    xp_earned = _english_record_event(g.user.id, "pronunciation", f"attempt:{attempt.id}", 5)
+    db.session.commit()
+    return jsonify({"ok": True, **result, "xp_earned": xp_earned})
+
+
+@app.route("/api/ingles/traducao/memoria", methods=["GET", "POST"])
+@login_required
+def ingles_translation_memory_api():
+    if request.method == "GET":
+        source = request.args.get("text", "").strip()[:12000]
+        return jsonify({"ok": True, "segments": _english_memory_segments(g.user.id, source)})
+    data = request.get_json(silent=True) or {}
+    source = str(data.get("source", "")).strip()[:12000]
+    translation = str(data.get("translation", "")).strip()[:12000]
+    if not source or not translation:
+        return jsonify({"ok": False, "error": "Informe o texto em inglês e a tradução corrigida."}), 400
+    _store_english_translation_pair(g.user.id, source, translation)
+    source_units = _english_sentence_units(source)
+    translated_units = _english_sentence_units(translation)
+    if 1 < len(source_units) == len(translated_units) <= 80:
+        for source_unit, translated_unit in zip(source_units, translated_units, strict=True):
+            _store_english_translation_pair(g.user.id, source_unit, translated_unit)
+    db.session.commit()
+    return jsonify({"ok": True, "message": "Correção aprendida para este usuário."})
+
+
+@app.route("/api/ingles/progresso", methods=["GET", "POST"])
+@login_required
+def ingles_progress_api():
+    if request.method == "GET":
+        rows = EnglishCourseProgress.query.filter_by(user_id=g.user.id).all()
+        state = {}
+        for row in rows:
+            state.setdefault(row.item_type, {})[row.item_key] = {
+                "completed": bool(row.completed),
+                "score": row.score,
+            }
+        return jsonify({"ok": True, "progress": state, "metrics": _english_learning_metrics(g.user.id)})
+    data = request.get_json(silent=True) or {}
+    item_type = str(data.get("item_type", ""))[:40]
+    item_key = str(data.get("item_key", "")).strip()[:220]
+    if item_type not in {"module", "lesson", "quiz", "exam", "word"} or not item_key:
+        return jsonify({"ok": False, "error": "Item de progresso inválido."}), 400
+    completed = bool(data.get("completed", False))
+    try:
+        score = max(0, min(10000, int(data.get("score", 0))))
+    except (TypeError, ValueError):
+        score = 0
+    row = EnglishCourseProgress.query.filter_by(
+        user_id=g.user.id,
+        item_type=item_type,
+        item_key=item_key,
+    ).first()
+    if row is None:
+        row = EnglishCourseProgress(user_id=g.user.id, item_type=item_type, item_key=item_key)
+        db.session.add(row)
+    row.completed = completed
+    row.score = score
+    xp_map = {"module": 120, "lesson": 25, "quiz": 30, "exam": 180, "word": 3}
+    xp_earned = _english_record_event(g.user.id, f"progress_{item_type}", item_key, xp_map[item_type]) if completed else 0
+    db.session.commit()
+    return jsonify({"ok": True, "xp_earned": xp_earned, "metrics": _english_learning_metrics(g.user.id)})
 
 
 

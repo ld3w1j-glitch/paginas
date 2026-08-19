@@ -8,12 +8,49 @@ Versão independente do projeto, contendo somente o Portal de Cursos. Os módulo
 - login e administração de usuários;
 - curso de português;
 - curso de inglês;
+- laboratório complementar de inglês 4.1, com professor e tradução offline;
 - módulos, provas, notas e progressão de acesso;
 - documentos e páginas institucionais;
 - Chat Agente com Gemini, Ollama ou modo local;
 - banco SQLite para uso local e PostgreSQL para produção.
 
 O portal abre diretamente em `http://127.0.0.1:5000/`.
+
+## Complemento do curso de inglês · 4.1
+
+Depois de entrar no portal, abra **Curso de inglês → Laboratório offline**. A nova área compartilha o mesmo login do portal, mas mantém histórico, erros e progresso separados para cada usuário.
+
+O laboratório inclui:
+
+- professor integrado que corrige estruturas frequentes sem internet;
+- memória pedagógica individual com erros recorrentes e revisão espaçada;
+- exercícios adaptativos criados a partir das frases do próprio aluno;
+- oito cenários: conversa livre, entrevista, restaurante, aeroporto, hotel, compras, consulta simulada e direções;
+- tradutor neural inglês→português OPUS-MT já incluído no pacote e executado no navegador;
+- memória de correções do tradutor por usuário;
+- sincronização de módulos, lições, palavras, pontuação e XP no banco do portal;
+- integração opcional com Qwen/llama.cpp para conversação neural local;
+- integração opcional com whisper.cpp para gravar, transcrever e pontuar a correspondência da pronúncia.
+
+O professor integrado e o tradutor OPUS-MT funcionam assim que o portal é iniciado localmente. Nenhuma chave de API é necessária.
+
+### Qwen local opcional
+
+Coloque na pasta `ia_local`:
+
+- `llama-server.exe` (Windows) ou `llama-server` (Linux/macOS);
+- um modelo de instruções em formato `.gguf`, por exemplo um Qwen Instruct quantizado.
+
+Abra o Laboratório, selecione o modelo, pressione **Iniciar Qwen** e altere o motor do professor para **Qwen local opcional**. Se o servidor neural falhar, o professor integrado assume automaticamente.
+
+### Pronúncia com Whisper opcional
+
+Coloque na pasta `voz_local`:
+
+- `whisper-cli.exe`/`main.exe` ou o executável equivalente do whisper.cpp;
+- um modelo em inglês no formato `ggml-*.bin`.
+
+Reinicie o portal. A gravação será convertida em WAV de 16 kHz no navegador e processada localmente. Os pacotes Qwen e Whisper não estão incluídos no ZIP por causa do tamanho; as instruções também estão nas respectivas pastas.
 
 ## Executar no Windows
 

@@ -1,20 +1,5 @@
 {% extends "ingles/base.html" %}
-{% block title %}{{ overview.site_name }}
-<section class="pillars reveal">
-  <article class="panel feature-card">
-    <p class="panel-kicker">Seu cargo atual</p>
-    <p><strong>{{ current_user.role.name }}</strong><br>Você já tem <strong>{{ site_meta.accessible_modules }}</strong> módulos liberados neste curso interno.</p>
-  </article>
-  <article class="panel feature-card">
-    <p class="panel-kicker">Prática</p>
-    <p>{% if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level %}Seu cargo já libera quiz e flashcards do curso.{% else %}Quiz e flashcards completos liberam em <strong>{{ course_access.practice_min_role_name }}</strong>.{% endif %}</p>
-  </article>
-  <article class="panel feature-card">
-    <p class="panel-kicker">Próximo desbloqueio</p>
-    <p>{% if next_unlock %}<strong>{{ next_unlock.title }}</strong><br>Requer cargo <strong>{{ next_unlock.required_role_name }}</strong>.{% else %}Seu acesso já alcançou o topo da trilha de inglês.{% endif %}</p>
-  </article>
-</section>
-{% endblock %}
+{% block title %}{{ overview.site_name }}{% endblock %}
 {% block content %}
 <section class="hero reveal">
   <div class="hero-copy">
@@ -47,6 +32,35 @@
     </div>
     <div class="progress-panel" data-dashboard-summary></div>
   </div>
+</section>
+
+<section class="lab-callout panel reveal">
+  <div>
+    <p class="eyebrow">NOVO COMPLEMENTO · ENGLISH STUDY 4.1</p>
+    <h2>Agora o curso tem um laboratório offline completo.</h2>
+    <p>Professor particular com memória individual, correção explicada, exercícios adaptativos, 8 cenários de conversa, tradutor neural e prática opcional de pronúncia com Whisper.</p>
+  </div>
+  <div class="lab-callout-actions">
+    <span>Professor integrado sem internet</span>
+    <span>Qwen local opcional</span>
+    <span>Progresso por usuário</span>
+    <a class="btn btn-primary" href="{{ url_for('ingles_lab') }}">Abrir laboratório</a>
+  </div>
+</section>
+
+<section class="pillars reveal">
+  <article class="panel feature-card">
+    <p class="panel-kicker">Seu cargo atual</p>
+    <p><strong>{{ current_user.role.name }}</strong><br>Você já tem <strong>{{ site_meta.accessible_modules }}</strong> módulos liberados neste curso interno.</p>
+  </article>
+  <article class="panel feature-card">
+    <p class="panel-kicker">Prática</p>
+    <p>{% if current_user.is_admin or current_user.role.level >= course_access.practice_min_role_level %}Seu cargo já libera quiz e flashcards do curso.{% else %}Quiz e flashcards completos liberam em <strong>{{ course_access.practice_min_role_name }}</strong>.{% endif %}</p>
+  </article>
+  <article class="panel feature-card">
+    <p class="panel-kicker">Próximo desbloqueio</p>
+    <p>{% if next_unlock %}<strong>{{ next_unlock.title }}</strong><br>Requer cargo <strong>{{ next_unlock.required_role_name }}</strong>.{% else %}Seu acesso já alcançou o topo da trilha de inglês.{% endif %}</p>
+  </article>
 </section>
 
 <section class="pillars reveal">

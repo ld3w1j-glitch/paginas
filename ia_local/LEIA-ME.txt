@@ -1,0 +1,35 @@
+PROFESSOR NEURAL LOCAL - ENGLISH STUDY OFFLINE 4.1
+==================================================
+
+O Professor integrado já funciona sem colocar nada nesta pasta.
+Esta pasta serve para ativar conversação livre com um modelo GGUF local.
+
+PREPARAÇÃO
+----------
+1. Extraia aqui o pacote do llama.cpp para Windows.
+   O arquivo llama-server.exe e as DLLs que acompanham o pacote devem permanecer juntos.
+
+2. Copie um modelo de instruções GGUF para esta pasta.
+   Uma opção leve é Qwen2.5 1.5B Instruct em quantização Q4_K_M.
+
+3. O programa detecta automaticamente qualquer arquivo com final .gguf.
+   Voce pode manter o nome original ou usar modelo.gguf.
+
+4. Entre no Portal, abra Curso de inglês > Laboratório offline,
+   escolha o arquivo encontrado e clique em Iniciar Qwen.
+
+5. Selecione:
+   Motor do professor: Qwen/llama.cpp local
+
+CONFIGURAÇÃO ESPERADA
+---------------------
+Endereço: http://127.0.0.1:8080/v1/chat/completions
+Modelo: local-model
+
+SEGURANÇA E MODO OFFLINE
+------------------------
+- O programa só aceita endereços localhost/127.0.0.1.
+- Nenhuma frase é enviada para serviços externos.
+- Se o modelo estiver desligado, o Professor integrado assume automaticamente.
+- Cada usuário do Portal mantém sua própria memória pedagógica.
+- Depois que llama.cpp e o modelo GGUF estiverem no computador, não é necessária internet.

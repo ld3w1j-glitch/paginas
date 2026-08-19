@@ -1,0 +1,223 @@
+{% extends "ingles/base.html" %}
+{% block title %}Laboratório Offline · {{ overview.site_name }}{% endblock %}
+{% block content %}
+<section class="lab-hero panel reveal">
+  <div>
+    <p class="eyebrow">ENGLISH STUDY 4.1 · COMPLEMENTO DO CURSO</p>
+    <h1>Laboratório de inglês offline</h1>
+    <p class="lead">Converse, corrija seus erros, traduza textos e pratique pronúncia dentro do portal. O professor integrado funciona sem internet; Qwen e Whisper são pacotes locais opcionais.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#professor">Falar com o professor</a>
+      <a class="btn btn-ghost" href="#pronuncia">Praticar pronúncia</a>
+    </div>
+  </div>
+  <div class="lab-metrics">
+    <article><span>XP do inglês</span><strong>{{ metrics.xp }}</strong><small>progresso sincronizado</small></article>
+    <article><span>Sequência</span><strong>{{ metrics.streak }}</strong><small>dia(s) de estudo</small></article>
+    <article><span>Lições</span><strong>{{ metrics.completed_lessons }}</strong><small>concluídas</small></article>
+    <article><span>Precisão</span><strong>{{ metrics.accuracy }}%</strong><small>práticas adaptativas</small></article>
+  </div>
+</section>
+
+<section class="lab-settings panel reveal" data-preferences-root data-preferences-url="{{ url_for('ingles_preferences_api') }}">
+  <div>
+    <p class="eyebrow">PERFIL DE APRENDIZADO</p>
+    <h2>Como o professor deve ensinar você?</h2>
+    <p>O nível, o objetivo e os erros anteriores entram na memória pedagógica do seu usuário.</p>
+  </div>
+  <label>Nível atual
+    <select data-preference-level>
+      {% for level in ['A1', 'A2', 'B1', 'B2'] %}<option value="{{ level }}" {% if preference.level == level %}selected{% endif %}>{{ level }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Objetivo
+    <input data-preference-objective maxlength="300" value="{{ preference.objective }}" placeholder="Ex.: viajar e conversar com segurança">
+  </label>
+  <label>Motor do professor
+    <select data-preference-engine>
+      <option value="integrated" {% if preference.tutor_engine == 'integrated' %}selected{% endif %}>Integrado offline</option>
+      <option value="local_ai" {% if preference.tutor_engine == 'local_ai' %}selected{% endif %}>Qwen local opcional</option>
+    </select>
+  </label>
+  <button class="btn btn-primary" type="button" data-preferences-save>Salvar perfil</button>
+  <small data-preferences-status>As preferências são exclusivas deste usuário.</small>
+</section>
+
+<section id="professor" class="scenario-control panel reveal" data-scenario-control data-scenario-url="{{ url_for('ingles_professor_scenario_api') }}">
+  <div>
+    <p class="eyebrow">CENÁRIO ATUAL</p>
+    <strong data-scenario-title>{{ active_scenario.title }}</strong>
+    <small data-scenario-goal>{{ active_scenario.goal }}</small>
+  </div>
+  <label>Treinar uma situação
+    <select data-scenario-select>
+      {% for key, scenario in scenarios.items() %}<option value="{{ key }}" {% if active_scenario_key == key %}selected{% endif %}>{{ scenario.title }}</option>{% endfor %}
+    </select>
+  </label>
+  <button class="btn btn-ghost" type="button" data-scenario-start>Iniciar cenário</button>
+</section>
+
+<section class="tutor-stat-grid reveal">
+  <article class="panel"><span>Conversas</span><strong>{{ stats.conversations }}</strong><small>respostas recebidas</small></article>
+  <article class="panel"><span>Dificuldades</span><strong>{{ stats.mistakes }}</strong><small>pontos mapeados</small></article>
+  <article class="panel"><span>Práticas</span><strong>{{ stats.exercises }}</strong><small>exercícios corretos</small></article>
+  <article class="panel"><span>Dominados</span><strong>{{ stats.mastered }}</strong><small>acertados 3 vezes</small></article>
+</section>
+
+<section class="tutor-layout reveal" data-tutor-root
+  data-chat-url="{{ url_for('ingles_professor_chat_api') }}"
+  data-exercise-url="{{ url_for('ingles_professor_exercise_api', exercise_id=0) }}">
+  <article class="panel tutor-chat-panel">
+    <div class="lab-section-head">
+      <div><p class="eyebrow">CONVERSA E CORREÇÃO</p><h2>Professor particular</h2></div>
+      <span class="offline-badge">● FUNCIONA OFFLINE</span>
+    </div>
+    <div class="tutor-chat-log" data-tutor-log aria-live="polite">
+      {% if not history %}
+      <div class="tutor-message assistant">
+        <span>PROFESSOR</span>
+        <p>Escreva uma frase em inglês. Exemplo: <b>I have 27 years.</b> Eu explicarei a correção em português e criarei uma prática curta.</p>
+      </div>
+      {% endif %}
+      {% for message in history %}
+      <div class="tutor-message {{ message.role }}">
+        <span>{% if message.role == 'user' %}VOCÊ{% else %}PROFESSOR · {{ message.engine }}{% endif %}</span>
+        <p>{{ message.content }}</p>
+        {% if message.corrected_text %}
+        <div class="tutor-correction"><small>FORMA SUGERIDA</small><strong>{{ message.corrected_text }}</strong><button type="button" data-speak="{{ message.corrected_text }}">Ouvir</button></div>
+        {% endif %}
+        {% if message.explanations %}<ul>{% for item in message.explanations %}<li>{{ item.explanation }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <form class="tutor-form" data-tutor-form>
+      <label for="tutor-message">Sua mensagem em inglês
+        <textarea id="tutor-message" rows="3" maxlength="4000" lang="en" spellcheck="true" placeholder="Ex.: She work in Monday." required></textarea>
+      </label>
+      <div class="tutor-form-actions">
+        <small data-tutor-status>Seu histórico alimenta somente a sua memória pedagógica.</small>
+        <button class="btn btn-primary" type="submit">Enviar ao professor</button>
+      </div>
+    </form>
+  </article>
+
+  <aside class="tutor-side">
+    <section class="panel tutor-practice" data-tutor-exercise {% if exercise %}data-exercise-id="{{ exercise.id }}"{% endif %}>
+      <p class="eyebrow">PRÁTICA ADAPTATIVA</p>
+      <div data-exercise-content>
+        {% if exercise %}
+        <h2>Fixe sua correção</h2>
+        <p>{{ exercise.prompt }}</p>
+        <div class="tutor-options">{% for option in exercise.options %}<button type="button" data-exercise-option="{{ option }}">{{ option }}</button>{% endfor %}</div>
+        <small data-exercise-feedback>{{ exercise.attempts }} tentativa(s) anterior(es).</small>
+        {% else %}
+        <h2>Nenhuma prática pendente</h2>
+        <p>Quando o professor identificar um ponto importante, ele criará um exercício com a sua própria frase.</p>
+        {% endif %}
+      </div>
+    </section>
+    <section class="panel tutor-suggestions">
+      <p class="eyebrow">COMECE POR AQUI</p>
+      <h2>Sugestões</h2>
+      <button type="button" data-tutor-prompt="I have 27 years and I work in a store.">Apresentar minha rotina</button>
+      <button type="button" data-tutor-prompt="She work on Monday and she don't work on Sunday.">Treinar terceira pessoa</button>
+      <button type="button" data-tutor-prompt="Yesterday I didn't went to work.">Treinar passado</button>
+    </section>
+  </aside>
+</section>
+
+<section class="lab-section-head reveal">
+  <div><p class="eyebrow">MODELO NEURAL LOCAL</p><h2>Qwen com llama.cpp</h2></div>
+</section>
+<section class="runtime-card panel reveal {% if ai_runtime.responding %}is-ready{% endif %}" data-local-runtime
+  data-status-url="{{ url_for('ingles_local_ai_status_api') }}"
+  data-start-url="{{ url_for('ingles_local_ai_start_api') }}"
+  data-stop-url="{{ url_for('ingles_local_ai_stop_api') }}">
+  <div>
+    <span>ESTADO DO QWEN</span>
+    <strong data-runtime-status>{% if ai_runtime.responding %}IA pronta para conversar{% elif ai_runtime.running %}Iniciando o modelo{% elif ai_runtime.executable_ready and ai_runtime.models %}Pronto para iniciar{% else %}Pacote opcional ausente{% endif %}</strong>
+    <small data-runtime-detail>{% if ai_runtime.responding %}Servidor local respondendo.{% elif ai_runtime.models %}{{ ai_runtime.models|length }} modelo(s) GGUF encontrado(s).{% else %}Coloque llama-server e um modelo GGUF na pasta ia_local.{% endif %}</small>
+  </div>
+  <label>Modelo encontrado
+    <select data-local-model-select>
+      {% if not ai_runtime.models %}<option value="">Nenhum GGUF encontrado</option>{% endif %}
+      {% for model in ai_runtime.models %}<option value="{{ model.name }}" {% if preference.local_ai_model_file == model.name %}selected{% endif %}>{{ model.file_name }} · {{ model.size_mb }} MB</option>{% endfor %}
+    </select>
+  </label>
+  <div class="runtime-actions">
+    <button class="btn btn-primary" type="button" data-runtime-start {% if ai_runtime.running or not ai_runtime.executable_ready or not ai_runtime.models %}disabled{% endif %}>Iniciar Qwen</button>
+    <button class="btn btn-ghost" type="button" data-runtime-stop {% if not ai_runtime.managed %}disabled{% endif %}>Parar</button>
+  </div>
+</section>
+
+<section id="tradutor" class="lab-section-head reveal">
+  <div><p class="eyebrow">OPUS-MT NO NAVEGADOR</p><h2>Tradutor neural offline</h2></div>
+</section>
+<section class="translator-lab panel reveal" data-translator-root
+  data-worker-url="{{ url_for('static', filename='ingles/js/neural_worker.js') }}"
+  data-memory-url="{{ url_for('ingles_translation_memory_api') }}">
+  <div class="translator-column">
+    <label>Texto em inglês
+      <textarea rows="8" maxlength="12000" data-translation-source lang="en" placeholder="Cole ou escreva um texto em inglês..."></textarea>
+    </label>
+    <div class="translator-actions">
+      <button class="btn btn-primary" type="button" data-translate>Traduzir offline</button>
+      <button class="btn btn-ghost" type="button" data-translation-example>Usar exemplo</button>
+    </div>
+  </div>
+  <div class="translator-column">
+    <label>Tradução em português
+      <textarea rows="8" maxlength="12000" data-translation-result placeholder="A tradução aparecerá aqui e poderá ser corrigida."></textarea>
+    </label>
+    <div class="translator-actions">
+      <button class="btn btn-ghost" type="button" data-save-translation>Ensinar minha correção</button>
+      <small data-translation-status>O modelo incluído roda no navegador e não envia o texto para uma API.</small>
+    </div>
+  </div>
+</section>
+
+<section id="pronuncia" class="lab-section-head reveal">
+  <div><p class="eyebrow">WHISPER.CPP LOCAL</p><h2>Laboratório de pronúncia</h2></div>
+</section>
+<section class="voice-layout reveal" data-pronunciation-root
+  data-runtime-ready="{{ 'true' if voice_runtime.ready else 'false' }}"
+  data-analyze-url="{{ url_for('ingles_pronunciation_analyze_api') }}">
+  <article class="panel voice-lab">
+    <div class="voice-runtime-status {% if voice_runtime.ready %}is-ready{% endif %}">
+      <span>WHISPER LOCAL</span>
+      <strong>{% if voice_runtime.ready %}Pronto para gravar{% else %}Pacote opcional ausente{% endif %}</strong>
+      <small>{% if voice_runtime.ready %}{{ voice_runtime.models|length }} modelo(s) encontrado(s).{% else %}Adicione whisper.cpp e um modelo GGML na pasta voz_local. O restante funciona normalmente.{% endif %}</small>
+    </div>
+    <label>Frase em inglês
+      <textarea rows="3" maxlength="1000" data-voice-target lang="en">{{ pronunciation_phrases[0] }}</textarea>
+    </label>
+    <div class="voice-phrase-list">{% for phrase in pronunciation_phrases %}<button type="button" data-voice-phrase="{{ phrase }}">{{ phrase }}</button>{% endfor %}</div>
+    <div class="voice-controls">
+      <button class="btn btn-ghost" type="button" data-hear-target>Ouvir modelo</button>
+      <button class="btn btn-primary" type="button" data-record-voice {% if not voice_runtime.ready %}disabled{% endif %}>Iniciar gravação</button>
+    </div>
+    <div class="voice-live-status" data-voice-status>Grave uma frase de até 20 segundos.</div>
+  </article>
+  <aside class="panel voice-result" data-voice-result>
+    <p class="eyebrow">RESULTADO</p>
+    <div class="voice-score"><strong data-voice-score>—</strong><span>correspondência</span></div>
+    <dl>
+      <div><dt>Frase esperada</dt><dd data-result-target>Faça uma gravação para comparar.</dd></div>
+      <div><dt>Reconhecido</dt><dd data-result-transcript>—</dd></div>
+      <div><dt>Palavras ausentes</dt><dd data-result-missing>—</dd></div>
+      <div><dt>Palavras adicionais</dt><dd data-result-extra>—</dd></div>
+    </dl>
+    <small data-result-tip>A pontuação mede correspondência de palavras e serve como apoio de prática.</small>
+  </aside>
+</section>
+
+{% if pronunciation_attempts %}
+<section class="panel voice-history reveal">
+  <p class="eyebrow">ÚLTIMAS TENTATIVAS</p>
+  {% for attempt in pronunciation_attempts %}<article><strong>{{ attempt.score }}%</strong><div><span>{{ attempt.target_text }}</span><small>Reconhecido: {{ attempt.transcript }}</small></div></article>{% endfor %}
+</section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='ingles/js/lab.js') }}"></script>
+{% endblock %}

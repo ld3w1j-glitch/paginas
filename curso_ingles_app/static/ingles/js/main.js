@@ -20,6 +20,49 @@ function saveState(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+const englishProgressUrl = "/api/ingles/progresso";
+let serverLearningMetrics = null;
+
+async function loadServerProgress() {
+  try {
+    const response = await fetch(englishProgressUrl, {headers: {"Accept": "application/json"}});
+    const result = await response.json();
+    if (!response.ok || !result.ok) return;
+    const mappings = {
+      module: "english-track-completed",
+      lesson: "english-track-lessons",
+      word: "english-track-words",
+    };
+    Object.entries(mappings).forEach(([itemType, storageKey]) => {
+      const local = loadState(storageKey, {});
+      Object.entries(result.progress?.[itemType] || {}).forEach(([itemKey, state]) => {
+        local[itemKey] = Boolean(state.completed);
+      });
+      saveState(storageKey, local);
+    });
+    serverLearningMetrics = result.metrics || null;
+  } catch {
+    // O curso continua utilizável com o estado local se o servidor estiver indisponível.
+  }
+}
+
+async function saveServerProgress(itemType, itemKey, completed, score = 0) {
+  try {
+    const response = await fetch(englishProgressUrl, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({item_type: itemType, item_key: itemKey, completed, score}),
+    });
+    const result = await response.json();
+    if (response.ok && result.ok) {
+      serverLearningMetrics = result.metrics || serverLearningMetrics;
+      refreshDashboard();
+    }
+  } catch {
+    // A alteração permanece no navegador e será utilizável mesmo sem conexão.
+  }
+}
+
 function countCompleted(map) {
   return Object.keys(map).filter((key) => map[key]).length;
 }
@@ -32,7 +75,7 @@ function refreshDashboard() {
   const moduleTotal = countCompleted(modules);
   const lessonTotal = countCompleted(lessons);
   const wordsTotal = countCompleted(words);
-  const xp = moduleTotal * 120 + lessonTotal * 25 + wordsTotal * 3;
+  const xp = serverLearningMetrics?.xp ?? (moduleTotal * 120 + lessonTotal * 25 + wordsTotal * 3);
 
   const summary = document.querySelector("[data-progress-summary]");
   if (summary) {
@@ -41,7 +84,8 @@ function refreshDashboard() {
 
   const dashboard = document.querySelector("[data-dashboard-summary]");
   if (dashboard) {
-    dashboard.innerHTML = `<strong>${xp} XP</strong><br><span>${moduleTotal} módulos concluídos · ${lessonTotal} lições concluídas · ${wordsTotal} palavras dominadas</span>`;
+    const streak = serverLearningMetrics?.streak ? ` · ${serverLearningMetrics.streak} dia(s) seguidos` : "";
+    dashboard.innerHTML = `<strong>${xp} XP</strong><br><span>${moduleTotal} módulos concluídos · ${lessonTotal} lições concluídas · ${wordsTotal} palavras dominadas${streak}</span>`;
   }
 }
 
@@ -66,6 +110,7 @@ function initModuleProgress() {
       const slug = button.dataset.moduleToggle;
       completed[slug] = !completed[slug];
       saveState("english-track-completed", completed);
+      saveServerProgress("module", slug, completed[slug]);
       refreshButtons();
     });
   });
@@ -94,6 +139,7 @@ function initLessonProgress() {
       const key = button.dataset.lessonToggle;
       completed[key] = !completed[key];
       saveState("english-track-lessons", completed);
+      saveServerProgress("lesson", key, completed[key]);
       refresh();
     });
   });
@@ -118,6 +164,7 @@ function initWordBank() {
       const key = chip.dataset.wordChip;
       knownWords[key] = !knownWords[key];
       saveState("english-track-words", knownWords);
+      saveServerProgress("word", key, knownWords[key]);
       refresh();
     });
   });
@@ -155,6 +202,7 @@ function renderQuiz(root, items, storageKey) {
     if (index >= items.length) {
       const best = Math.max(loadState(storageKey, 0), score);
       saveState(storageKey, best);
+      saveServerProgress("quiz", storageKey, true, Math.round((score / items.length) * 100));
       root.innerHTML = `
         <div class="summary-box">
           <strong>Você concluiu este bloco.</strong><br>
@@ -232,6 +280,7 @@ function initFinalExam() {
       }).join("");
       const best = Math.max(loadState("english-track-final-exam-best", 0), score);
       saveState("english-track-final-exam-best", best);
+      saveServerProgress("exam", "final-exam", true, Math.round((score / items.length) * 100));
       root.innerHTML = `
         <div class="summary-box">
           <strong>Prova final concluída.</strong><br>
@@ -282,7 +331,8 @@ function initFinalExam() {
   render();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadServerProgress();
   revealOnScroll();
   initModuleProgress();
   initLessonProgress();
