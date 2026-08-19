@@ -38,6 +38,26 @@ def test_login_and_courses(client):
     assert client.get("/area/ingles").status_code == 200
 
 
+def test_compact_navigation_and_course_homes(client):
+    dashboard = client.get("/area").get_data(as_text=True)
+    assert "compact-dashboard" in dashboard
+    assert 'aria-current="page"' in dashboard
+    assert "mobile-bottom-nav" in dashboard
+
+    english = client.get("/area/ingles").get_data(as_text=True)
+    assert "course-command-card" in english
+    assert "phase-accordion" in english
+    assert "compact-layout.css" in english
+
+    portuguese = client.get("/area/portugues").get_data(as_text=True)
+    assert "portuguese-compact-home" in portuguese
+    assert "fonts.googleapis.com" not in portuguese
+
+    lab = client.get("/area/ingles/laboratorio").get_data(as_text=True)
+    assert 'data-lab-tab="professor"' in lab
+    assert 'data-lab-panel="configuracoes"' in lab
+
+
 @pytest.mark.parametrize("path", ["/prompt/", "/financeiro/", "/editor-admin/"])
 def test_removed_programs_are_not_available(client, path):
     assert client.get(path).status_code == 404

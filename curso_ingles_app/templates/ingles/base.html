@@ -5,38 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ overview.site_name }}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='ingles/css/style.css') }}?v=english-lab-4-1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}?v=compact-nav-1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/compact-layout.css') }}?v=compact-ui-1">
 </head>
 <body class="with-course-sidebar">
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
   <div class="bg-grid"></div>
 
-  <aside class="course-sidebar english-sidebar">
-    <a class="course-sidebar-brand" href="{{ url_for('ingles_home') }}">
-      <span class="brand-mark">EN</span>
-      <span>
-        <strong>{{ overview.site_name }}</strong>
-        <small>curso guiado de inglês</small>
-      </span>
-    </a>
-
-    <form class="course-sidebar-search" action="{{ url_for('ingles_search') }}" method="get">
-      <input type="search" name="q" placeholder="buscar módulo, estrutura...">
-      <button class="btn btn-ghost" type="submit">Buscar</button>
-    </form>
-
-    <nav class="course-sidebar-nav">
-      <a href="{{ url_for('dashboard') }}">Portal</a>
-      <a href="{{ url_for('agent_chat_page') }}">Chat Agente</a>
-      <a href="{{ url_for('ingles_home') }}">Início do inglês</a>
-      <a class="lab-nav-link" href="{{ url_for('ingles_lab') }}">Laboratório offline</a>
-      <a href="{{ url_for('ingles_practice') }}">Prática</a>
-      <a href="{{ url_for('ingles_phrasebook') }}">Frases</a>
-      <a href="{{ url_for('ingles_vocabulary') }}">Vocabulário</a>
-      <a href="{{ url_for('ingles_study_plan') }}">Plano</a>
-      <a href="{{ url_for('ingles_final_exam') }}">Prova final</a>
-    </nav>
-  </aside>
+  {% from "partials/navigation.html" import english_navigation with context %}
+  {{ english_navigation(overview) }}
 
   <div class="course-main-area shell">
     <main class="main">
@@ -44,6 +22,7 @@
     </main>
   </div>
   <script src="{{ url_for('static', filename='ingles/js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
   {% include "partials/mcp_widget.html" %}
   <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
   {% block scripts %}{% endblock %}

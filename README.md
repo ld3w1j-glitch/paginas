@@ -8,7 +8,7 @@ Versão independente do projeto, contendo somente o Portal de Cursos. Os módulo
 - login e administração de usuários;
 - curso de português;
 - curso de inglês;
-- laboratório complementar de inglês 4.1, com professor e tradução offline;
+- laboratório complementar de inglês 4.2, com professor, tradução e pronúncia offline;
 - módulos, provas, notas e progressão de acesso;
 - documentos e páginas institucionais;
 - Chat Agente com Gemini, Ollama ou modo local;
@@ -16,7 +16,13 @@ Versão independente do projeto, contendo somente o Portal de Cursos. Os módulo
 
 O portal abre diretamente em `http://127.0.0.1:5000/`.
 
-## Complemento do curso de inglês · 4.1
+## Navegação compacta · 4.2
+
+O portal, o curso de inglês e o curso de português usam o mesmo padrão de navegação lateral. A página atual fica destacada, as opções secundárias são agrupadas e, no celular, o menu vira uma barra inferior com as ações essenciais.
+
+As páginas iniciais foram condensadas em painéis de continuação, atalhos e etapas recolhíveis. No laboratório de inglês, Professor, Tradutor, Pronúncia e Configurações ficam em abas separadas para evitar uma página excessivamente longa.
+
+## Complemento do curso de inglês · 4.2
 
 Depois de entrar no portal, abra **Curso de inglês → Laboratório offline**. A nova área compartilha o mesmo login do portal, mas mantém histórico, erros e progresso separados para cada usuário.
 

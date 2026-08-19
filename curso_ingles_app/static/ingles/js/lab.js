@@ -1,4 +1,54 @@
 (() => {
+  const labTabs = document.querySelector("[data-lab-tabs]");
+  if (labTabs) {
+    const buttons = [...labTabs.querySelectorAll("[data-lab-tab]")];
+    const panels = [...document.querySelectorAll("[data-lab-panel]")];
+    const availableTabs = new Set(buttons.map((button) => button.dataset.labTab));
+
+    const activateLabTab = (tabName, focusTab = false) => {
+      const selected = availableTabs.has(tabName) ? tabName : "professor";
+      buttons.forEach((button) => {
+        const active = button.dataset.labTab === selected;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+        if (active && focusTab) button.focus();
+      });
+      panels.forEach((panel) => {
+        const active = panel.dataset.labPanel === selected;
+        panel.hidden = !active;
+        panel.classList.toggle("is-active", active);
+      });
+      if (window.history?.replaceState) {
+        window.history.replaceState(null, "", `#${selected}`);
+      }
+    };
+
+    labTabs.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-lab-tab]");
+      if (button) activateLabTab(button.dataset.labTab, true);
+    });
+
+    labTabs.addEventListener("keydown", (event) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      const currentIndex = buttons.findIndex((button) => button.classList.contains("is-active"));
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const nextIndex = (currentIndex + direction + buttons.length) % buttons.length;
+      event.preventDefault();
+      activateLabTab(buttons[nextIndex].dataset.labTab, true);
+    });
+
+    document.querySelectorAll("[data-lab-jump]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activateLabTab(button.dataset.labJump, true);
+        labTabs.scrollIntoView({behavior: "smooth", block: "start"});
+      });
+    });
+
+    const initialTab = window.location.hash.replace("#", "");
+    activateLabTab(availableTabs.has(initialTab) ? initialTab : "professor");
+  }
+
   const element = (tag, className = "", text = "") => {
     const node = document.createElement(tag);
     if (className) node.className = className;

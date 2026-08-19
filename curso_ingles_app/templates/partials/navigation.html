@@ -1,0 +1,172 @@
+{% macro item(endpoint, label, icon, active_endpoints=[]) -%}
+  {% set is_active = request.endpoint == endpoint or request.endpoint in active_endpoints %}
+  <a class="course-nav-link{{ ' active' if is_active else '' }}" href="{{ url_for(endpoint) }}"{% if is_active %} aria-current="page"{% endif %}>
+    <span class="course-nav-icon" aria-hidden="true">{{ icon }}</span>
+    <span class="course-nav-label">{{ label }}</span>
+  </a>
+{%- endmacro %}
+
+{% macro direct_item(href, label, icon, is_active=false) -%}
+  <a class="course-nav-link{{ ' active' if is_active else '' }}" href="{{ href }}"{% if is_active %} aria-current="page"{% endif %}>
+    <span class="course-nav-icon" aria-hidden="true">{{ icon }}</span>
+    <span class="course-nav-label">{{ label }}</span>
+  </a>
+{%- endmacro %}
+
+{% macro mobile_shell(primary_items, more_items) -%}
+  <nav class="mobile-bottom-nav" aria-label="Navegação principal no celular">
+    {% for entry in primary_items %}
+      <a class="mobile-nav-item{{ ' active' if entry.active else '' }}" href="{{ entry.href }}"{% if entry.active %} aria-current="page"{% endif %}>
+        <span aria-hidden="true">{{ entry.icon }}</span><small>{{ entry.label }}</small>
+      </a>
+    {% endfor %}
+    <button class="mobile-nav-item" type="button" data-mobile-menu-toggle aria-expanded="false">
+      <span aria-hidden="true">•••</span><small>Mais</small>
+    </button>
+  </nav>
+  <div class="mobile-nav-backdrop" data-mobile-menu-close hidden></div>
+  <section class="mobile-more-sheet" data-mobile-menu hidden aria-label="Mais opções">
+    <div class="mobile-sheet-head"><strong>Mais opções</strong><button type="button" data-mobile-menu-close aria-label="Fechar">×</button></div>
+    <div class="mobile-sheet-links">
+      {% for entry in more_items %}<a href="{{ entry.href }}"><span>{{ entry.icon }}</span>{{ entry.label }}</a>{% endfor %}
+    </div>
+  </section>
+{%- endmacro %}
+
+{% macro portal_navigation(site) -%}
+  {% set current = request.endpoint or '' %}
+  <aside class="course-sidebar compact-sidebar" aria-label="Navegação do portal">
+    <a href="{{ url_for('dashboard') if current_user else url_for('home') }}" class="course-sidebar-brand">
+      <img src="{{ url_for('static', filename='img/escudo.png') }}" alt="">
+      <span><strong>{{ site.nome }}</strong><small>{{ 'Portal de aprendizagem' if current_user else site.versao }}</small></span>
+    </a>
+    {% if current_user %}
+      <div class="compact-user-card"><span>{{ current_user.name[:1]|upper }}</span><div><strong>{{ current_user.name }}</strong><small>{{ current_user.role.name }}</small></div></div>
+      <nav class="course-sidebar-nav">
+        <div class="course-nav-group">
+          <span class="course-nav-heading">Aprender</span>
+          {{ item('dashboard', 'Painel', '⌂') }}
+          {{ item('portugues_home', 'Português', 'PT', ['portugues_search', 'portugues_lesson_detail', 'portugues_practice', 'portugues_final_exam']) }}
+          {{ item('ingles_home', 'Inglês', 'EN', ['ingles_module_detail', 'ingles_practice', 'ingles_phrasebook', 'ingles_vocabulary', 'ingles_study_plan', 'ingles_final_exam', 'ingles_search', 'ingles_lab']) }}
+          {{ item('agent_chat_page', 'Chat Agente', '✦') }}
+        </div>
+        <details class="course-nav-disclosure" {% if current in ['principios', 'admissao', 'hierarquia', 'regimento', 'documentos'] %}open{% endif %}>
+          <summary><span class="course-nav-icon">☷</span><span>Institucional</span><b>⌄</b></summary>
+          <div class="course-nav-submenu">
+            {{ item('principios', 'Princípios', '•') }}
+            {{ item('admissao', 'Admissão', '•') }}
+            {{ item('hierarquia', 'Hierarquia', '•') }}
+            {{ item('regimento', 'Regimento', '•') }}
+            {{ item('documentos', 'Documentos', '•') }}
+          </div>
+        </details>
+        {% if current_user.is_admin %}<div class="course-nav-group"><span class="course-nav-heading">Gestão</span>{{ item('admin_panel', 'Administração', '⚙') }}</div>{% endif %}
+      </nav>
+      <a class="sidebar-logout" href="{{ url_for('logout') }}"><span>↪</span>Sair</a>
+    {% else %}
+      <nav class="course-sidebar-nav">
+        <div class="course-nav-group">
+          {{ item('home', 'Início', '⌂') }}
+          {{ item('principios', 'Princípios', '◆') }}
+          {{ item('admissao', 'Admissão', '+') }}
+          {{ item('hierarquia', 'Hierarquia', '↗') }}
+          {{ item('regimento', 'Regimento', '☷') }}
+          {{ item('documentos', 'Documentos', '▣') }}
+          {{ item('login', 'Entrar', '→') }}
+        </div>
+      </nav>
+    {% endif %}
+  </aside>
+
+  {% if current_user %}
+    {% set primary = [
+      {'href': url_for('dashboard'), 'label': 'Painel', 'icon': '⌂', 'active': current == 'dashboard'},
+      {'href': url_for('portugues_home'), 'label': 'Português', 'icon': 'PT', 'active': current.startswith('portugues_')},
+      {'href': url_for('ingles_home'), 'label': 'Inglês', 'icon': 'EN', 'active': current.startswith('ingles_')}
+    ] %}
+    {% set more = [
+      {'href': url_for('agent_chat_page'), 'label': 'Chat Agente', 'icon': '✦'},
+      {'href': url_for('principios'), 'label': 'Institucional', 'icon': '☷'},
+      {'href': url_for('logout'), 'label': 'Sair', 'icon': '↪'}
+    ] %}
+    {{ mobile_shell(primary, more) }}
+  {% endif %}
+{%- endmacro %}
+
+{% macro english_navigation(overview) -%}
+  {% set current = request.endpoint or '' %}
+  <aside class="course-sidebar compact-sidebar" aria-label="Navegação do curso de inglês">
+    <a class="course-sidebar-brand" href="{{ url_for('ingles_home') }}">
+      <span class="brand-mark">EN</span><span><strong>{{ overview.site_name }}</strong><small>Curso guiado A1–B2</small></span>
+    </a>
+    <div class="compact-user-card"><span>{{ current_user.name[:1]|upper }}</span><div><strong>{{ current_user.name }}</strong><small>{{ current_user.role.name }}</small></div></div>
+    <nav class="course-sidebar-nav">
+      <div class="course-nav-group">
+        <span class="course-nav-heading">Curso</span>
+        {{ item('dashboard', 'Voltar ao portal', '←') }}
+        {{ item('ingles_home', 'Visão geral', '⌂') }}
+        {{ direct_item(url_for('ingles_home') ~ '#modulos', 'Módulos', '▦', current == 'ingles_module_detail') }}
+        {{ item('ingles_practice', 'Praticar', '✓') }}
+        {{ item('ingles_lab', 'Laboratório', '✦') }}
+        {{ item('ingles_final_exam', 'Prova final', '★') }}
+      </div>
+      <details class="course-nav-disclosure" {% if current in ['ingles_phrasebook', 'ingles_vocabulary', 'ingles_study_plan', 'ingles_search'] %}open{% endif %}>
+        <summary><span class="course-nav-icon">▣</span><span>Recursos</span><b>⌄</b></summary>
+        <div class="course-nav-submenu">
+          {{ item('ingles_vocabulary', 'Vocabulário', '•') }}
+          {{ item('ingles_phrasebook', 'Frases', '•') }}
+          {{ item('ingles_study_plan', 'Plano de estudo', '•') }}
+          {{ item('ingles_search', 'Buscar', '•') }}
+        </div>
+      </details>
+    </nav>
+    <a class="sidebar-logout" href="{{ url_for('logout') }}"><span>↪</span>Sair</a>
+  </aside>
+  {% set primary = [
+    {'href': url_for('ingles_home'), 'label': 'Início', 'icon': '⌂', 'active': current == 'ingles_home'},
+    {'href': url_for('ingles_home') ~ '#modulos', 'label': 'Módulos', 'icon': '▦', 'active': current == 'ingles_module_detail'},
+    {'href': url_for('ingles_practice'), 'label': 'Praticar', 'icon': '✓', 'active': current == 'ingles_practice'}
+  ] %}
+  {% set more = [
+    {'href': url_for('ingles_lab'), 'label': 'Laboratório', 'icon': '✦'},
+    {'href': url_for('ingles_vocabulary'), 'label': 'Vocabulário', 'icon': '▣'},
+    {'href': url_for('ingles_phrasebook'), 'label': 'Frases', 'icon': '“'},
+    {'href': url_for('ingles_study_plan'), 'label': 'Plano de estudo', 'icon': '☷'},
+    {'href': url_for('ingles_final_exam'), 'label': 'Prova final', 'icon': '★'},
+    {'href': url_for('dashboard'), 'label': 'Voltar ao portal', 'icon': '←'}
+  ] %}
+  {{ mobile_shell(primary, more) }}
+{%- endmacro %}
+
+{% macro portuguese_navigation(site_overview) -%}
+  {% set current = request.endpoint or '' %}
+  <aside class="course-sidebar compact-sidebar" aria-label="Navegação do curso de português">
+    <a class="course-sidebar-brand" href="{{ url_for('portugues_home') }}">
+      <span class="brand-mark">PT</span><span><strong>{{ site_overview.course_title }}</strong><small>Leitura e prática guiada</small></span>
+    </a>
+    <div class="compact-user-card"><span>{{ current_user.name[:1]|upper }}</span><div><strong>{{ current_user.name }}</strong><small>{{ current_user.role.name }}</small></div></div>
+    <nav class="course-sidebar-nav">
+      <div class="course-nav-group">
+        <span class="course-nav-heading">Curso</span>
+        {{ item('dashboard', 'Voltar ao portal', '←') }}
+        {{ item('portugues_home', 'Visão geral', '⌂') }}
+        {{ direct_item(url_for('portugues_home') ~ '#licoes', 'Lições', '▦', current == 'portugues_lesson_detail') }}
+        {{ item('portugues_practice', 'Praticar', '✓') }}
+        {{ item('portugues_final_exam', 'Prova final', '★') }}
+        {{ item('portugues_search', 'Buscar', '⌕') }}
+      </div>
+    </nav>
+    <a class="sidebar-logout" href="{{ url_for('logout') }}"><span>↪</span>Sair</a>
+  </aside>
+  {% set primary = [
+    {'href': url_for('portugues_home'), 'label': 'Início', 'icon': '⌂', 'active': current == 'portugues_home'},
+    {'href': url_for('portugues_home') ~ '#licoes', 'label': 'Lições', 'icon': '▦', 'active': current == 'portugues_lesson_detail'},
+    {'href': url_for('portugues_practice'), 'label': 'Praticar', 'icon': '✓', 'active': current == 'portugues_practice'}
+  ] %}
+  {% set more = [
+    {'href': url_for('portugues_search'), 'label': 'Buscar', 'icon': '⌕'},
+    {'href': url_for('portugues_final_exam'), 'label': 'Prova final', 'icon': '★'},
+    {'href': url_for('dashboard'), 'label': 'Voltar ao portal', 'icon': '←'}
+  ] %}
+  {{ mobile_shell(primary, more) }}
+{%- endmacro %}

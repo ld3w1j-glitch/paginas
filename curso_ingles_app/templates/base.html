@@ -6,38 +6,13 @@
     <title>{{ site.nome }}</title>
     <meta name="description" content="{{ site.subtitulo }} - {{ site.nome }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=sidebar-cursos-1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}?v=compact-nav-1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/compact-layout.css') }}?v=compact-ui-1">
 </head>
 <body class="with-course-sidebar">
     <div class="page-glow"></div>
-
-    <aside class="course-sidebar">
-        <a href="{{ url_for('home') }}" class="course-sidebar-brand">
-            <img src="{{ url_for('static', filename='img/escudo.png') }}" alt="Escudo da Legião">
-            <span>
-                <strong>{{ site.nome }}</strong>
-                <small>{{ site.versao }}</small>
-            </span>
-        </a>
-
-        <nav class="course-sidebar-nav">
-            <a href="{{ url_for('home') }}">Início</a>
-            <a href="{{ url_for('principios') }}">Princípios</a>
-            <a href="{{ url_for('admissao') }}">Admissão</a>
-            <a href="{{ url_for('hierarquia') }}">Hierarquia</a>
-            <a href="{{ url_for('regimento') }}">Regimento</a>
-            <a href="{{ url_for('documentos') }}">Documentos</a>
-            {% if current_user %}
-            <a href="{{ url_for('dashboard') }}">Área interna</a>
-            <a href="{{ url_for('agent_chat_page') }}">Chat Agente</a>
-            {% if current_user.is_admin %}
-            <a href="{{ url_for('admin_panel') }}">Admin</a>
-            {% endif %}
-            <a href="{{ url_for('logout') }}">Sair</a>
-            {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-            {% endif %}
-        </nav>
-    </aside>
+    {% from "partials/navigation.html" import portal_navigation with context %}
+    {{ portal_navigation(site) }}
 
     <div class="course-main-area">
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -72,6 +47,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
   {% include "partials/mcp_widget.html" %}
   <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
 </body>

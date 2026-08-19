@@ -3,12 +3,12 @@
 {% block content %}
 <section class="lab-hero panel reveal">
   <div>
-    <p class="eyebrow">ENGLISH STUDY 4.1 · COMPLEMENTO DO CURSO</p>
+    <p class="eyebrow">ENGLISH STUDY 4.2 · COMPLEMENTO DO CURSO</p>
     <h1>Laboratório de inglês offline</h1>
     <p class="lead">Converse, corrija seus erros, traduza textos e pratique pronúncia dentro do portal. O professor integrado funciona sem internet; Qwen e Whisper são pacotes locais opcionais.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#professor">Falar com o professor</a>
-      <a class="btn btn-ghost" href="#pronuncia">Praticar pronúncia</a>
+      <button class="btn btn-primary" type="button" data-lab-jump="professor">Falar com o professor</button>
+      <button class="btn btn-ghost" type="button" data-lab-jump="pronuncia">Praticar pronúncia</button>
     </div>
   </div>
   <div class="lab-metrics">
@@ -19,6 +19,14 @@
   </div>
 </section>
 
+<nav class="lab-tabs panel reveal" data-lab-tabs aria-label="Ferramentas do laboratório">
+  <button class="is-active" type="button" data-lab-tab="professor" aria-selected="true">Professor</button>
+  <button type="button" data-lab-tab="tradutor" aria-selected="false">Tradutor</button>
+  <button type="button" data-lab-tab="pronuncia" aria-selected="false">Pronúncia</button>
+  <button type="button" data-lab-tab="configuracoes" aria-selected="false">Configurações</button>
+</nav>
+
+<div class="lab-tab-panel" data-lab-panel="configuracoes" hidden>
 <section class="lab-settings panel reveal" data-preferences-root data-preferences-url="{{ url_for('ingles_preferences_api') }}">
   <div>
     <p class="eyebrow">PERFIL DE APRENDIZADO</p>
@@ -42,7 +50,9 @@
   <button class="btn btn-primary" type="button" data-preferences-save>Salvar perfil</button>
   <small data-preferences-status>As preferências são exclusivas deste usuário.</small>
 </section>
+</div>
 
+<div class="lab-tab-panel is-active" data-lab-panel="professor">
 <section id="professor" class="scenario-control panel reveal" data-scenario-control data-scenario-url="{{ url_for('ingles_professor_scenario_api') }}">
   <div>
     <p class="eyebrow">CENÁRIO ATUAL</p>
@@ -125,7 +135,9 @@
     </section>
   </aside>
 </section>
+</div>
 
+<div class="lab-tab-panel" data-lab-panel="configuracoes" hidden>
 <section class="lab-section-head reveal">
   <div><p class="eyebrow">MODELO NEURAL LOCAL</p><h2>Qwen com llama.cpp</h2></div>
 </section>
@@ -149,7 +161,9 @@
     <button class="btn btn-ghost" type="button" data-runtime-stop {% if not ai_runtime.managed %}disabled{% endif %}>Parar</button>
   </div>
 </section>
+</div>
 
+<div class="lab-tab-panel" data-lab-panel="tradutor" hidden>
 <section id="tradutor" class="lab-section-head reveal">
   <div><p class="eyebrow">OPUS-MT NO NAVEGADOR</p><h2>Tradutor neural offline</h2></div>
 </section>
@@ -175,7 +189,9 @@
     </div>
   </div>
 </section>
+</div>
 
+<div class="lab-tab-panel" data-lab-panel="pronuncia" hidden>
 <section id="pronuncia" class="lab-section-head reveal">
   <div><p class="eyebrow">WHISPER.CPP LOCAL</p><h2>Laboratório de pronúncia</h2></div>
 </section>
@@ -217,6 +233,7 @@
   {% for attempt in pronunciation_attempts %}<article><strong>{{ attempt.score }}%</strong><div><span>{{ attempt.target_text }}</span><small>Reconhecido: {{ attempt.transcript }}</small></div></article>{% endfor %}
 </section>
 {% endif %}
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='ingles/js/lab.js') }}"></script>

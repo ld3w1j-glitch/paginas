@@ -5,42 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{{ site_overview.course_title }}{% endblock %}</title>
   <meta name="description" content="Área interna do curso de português com lições, prática, revisão e progressão visual por etapas.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='portugues/css/style.css') }}?v=sidebar-cursos-1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}?v=compact-nav-1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/compact-layout.css') }}?v=compact-ui-1">
 </head>
 <body class="with-course-sidebar">
   <div class="page-noise"></div>
   <div class="page-grid"></div>
   <div class="top-progress" id="topProgress"></div>
 
-  <aside class="course-sidebar portugues-sidebar">
-    <a href="{{ url_for('portugues_home') }}" class="course-sidebar-brand">
-      <span class="brand-mark">✒</span>
-      <span>
-        <strong>{{ site_overview.course_title }}</strong>
-        <small>Área interna · Curso exclusivo</small>
-      </span>
-    </a>
-
-    <div class="course-sidebar-user">
-      <span class="eyebrow">Membro conectado</span>
-      <strong>{{ current_user.name }}</strong>
-      <small>{{ current_user.role.name }}</small>
-    </div>
-
-    <nav class="course-sidebar-nav">
-      <a href="{{ url_for('dashboard') }}">Portal interno</a>
-      <a href="{{ url_for('agent_chat_page') }}">Chat Agente</a>
-      <a href="{{ url_for('portugues_home') }}">Início</a>
-      <a href="{{ url_for('portugues_search') }}">Buscar</a>
-      <a href="{{ url_for('portugues_practice') }}">Praticar</a>
-      <a href="{{ url_for('portugues_final_exam') }}">Prova final</a>
-      <a href="{{ url_for('portugues_home') }}#licoes">Lições</a>
-      <a href="{{ url_for('logout') }}">Sair</a>
-    </nav>
-  </aside>
+  {% from "partials/navigation.html" import portuguese_navigation with context %}
+  {{ portuguese_navigation(site_overview) }}
 
   <div class="course-main-area">
     {% block content %}{% endblock %}
@@ -58,12 +33,14 @@
   </div>
 
   <script>
-    window.__LESSONS__ = {{ all_lessons | tojson }};
-    window.__COURSE_OVERVIEW__ = {{ site_overview | tojson }};
+    window.__LESSONS__ = [
+      {% for lesson in all_lessons %}{"slug": {{ lesson.slug | tojson }}, "label": {{ lesson.label | tojson }}}{% if not loop.last %},{% endif %}{% endfor %}
+    ];
     window.__SITE_META__ = {{ site_meta | tojson }};
   </script>
   {% block page_data %}{% endblock %}
   <script src="{{ url_for('static', filename='portugues/js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
   {% include "partials/mcp_widget.html" %}
   <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
 </body>
