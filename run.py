@@ -1,13 +1,13 @@
-from portal import application
+"""Inicialização local compatível com versões anteriores do projeto."""
+
+from app import application
+
 
 if __name__ == "__main__":
     import os
-    from werkzeug.serving import run_simple
 
-    run_simple(
-        "0.0.0.0",
-        int(os.getenv("PORT", "5000")),
-        application,
-        use_debugger=os.getenv("FLASK_DEBUG", "0") == "1",
-        use_reloader=False,
+    application.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", "5000")),
+        debug=os.environ.get("FLASK_DEBUG", "0") == "1",
     )

@@ -1,4 +1,4 @@
-"""Caminhos de armazenamento centralizados.
+"""Caminhos de armazenamento do Portal de Cursos.
 
 No Railway o disco do container é efêmero. Para produção, configure
 PERSISTENT_STORAGE_DIR apontando para um volume persistente. Em ambiente local,

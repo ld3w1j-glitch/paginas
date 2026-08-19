@@ -1,4 +1,4 @@
-"""Configuração central de segurança para todos os apps do portal.
+"""Configuração de segurança do Portal de Cursos.
 
 Objetivo:
 - não deixar senha real ou chave fraca gravada no código;

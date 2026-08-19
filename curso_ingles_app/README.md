@@ -1,38 +1,5 @@
-# Portal de Cursos · Flask
+# Aplicação do Portal de Cursos
 
-Módulo integrado ao portal principal em `/curso-ingles/`.
+Este diretório contém as rotas, telas, conteúdos e arquivos estáticos do portal. A aplicação agora é executada diretamente na raiz do projeto por `app.py`, sem a antiga Central de Programas.
 
-## Instalação local
-
-```bash
-pip install -r ../requirements.txt
-python ../run.py
-```
-
-## Acesso administrador
-
-O login administrador vem das variáveis de ambiente do portal:
-
-```text
-ADMIN_USER=seu_usuario_admin
-ADMIN_PASSWORD=sua_senha_admin_forte
-SECRET_KEY=uma_chave_longa
-```
-
-Não deixe senha real escrita no código, README ou histórico.
-
-## Banco de dados
-
-Em produção/Railway, configure um banco persistente:
-
-```text
-DATABASE_URL=postgresql://...
-```
-
-Ou, caso queira separar somente o curso:
-
-```text
-CURSO_INGLES_DATABASE_URL=postgresql://...
-```
-
-Se `CURSO_INGLES_DATABASE_URL` não existir, o curso usa `DATABASE_URL`. SQLite local é apenas fallback de desenvolvimento.
+Use o `requirements.txt` e o `README.md` da raiz para instalar, configurar e testar o sistema.

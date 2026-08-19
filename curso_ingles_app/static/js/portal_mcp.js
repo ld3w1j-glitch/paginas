@@ -12,8 +12,6 @@
   function getMcpEndpoint() {
     const fromTemplate = root.getAttribute('data-mcp-endpoint');
     if (fromTemplate && fromTemplate.trim()) return fromTemplate.trim();
-    const path = window.location.pathname || '';
-    if (path.startsWith('/curso-ingles')) return '/curso-ingles/mcp/portal';
     return '/mcp/portal';
   }
 
@@ -87,13 +85,13 @@
 
       loading.classList.remove('loading');
       if (!response.ok) {
-        loading.innerHTML = formatAnswer(data.answer || 'O MCP respondeu com erro HTTP ' + response.status + '. Verifique a rota /curso-ingles/mcp/portal.');
+        loading.innerHTML = formatAnswer(data.answer || 'O MCP respondeu com erro HTTP ' + response.status + '. Verifique a rota /mcp/portal.');
         return;
       }
       loading.innerHTML = formatAnswer(data.answer || 'Não consegui gerar resposta agora.');
     } catch (error) {
       loading.classList.remove('loading');
-      loading.innerHTML = formatAnswer('Não consegui conectar ao MCP agora. Verifique se o Flask foi reiniciado e se esta rota abre: /curso-ingles/mcp/portal.');
+      loading.innerHTML = formatAnswer('Não consegui conectar ao MCP agora. Verifique se o Flask foi reiniciado e se esta rota abre: /mcp/portal.');
     }
     messages.scrollTop = messages.scrollHeight;
   });

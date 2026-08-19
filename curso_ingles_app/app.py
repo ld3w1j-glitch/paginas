@@ -1266,7 +1266,7 @@ def _local_agent_answer(question: str, context: dict | None = None) -> str:
         f"**Pergunta:** {question}",
         "",
         "**Resposta prática:**",
-        "- Verifique primeiro em qual página do portal você está: Central, Área interna, Português, Inglês, Admin ou Documentos.",
+        "- Verifique primeiro em qual página do portal você está: Início, Área interna, Português, Inglês, Admin ou Documentos.",
         "- Se a dúvida for sobre liberação de conteúdo, confira o cargo mínimo exigido e o cargo atual do usuário.",
         "- Se a dúvida for sobre alteração visual, normalmente os arquivos envolvidos são o template HTML da página e o CSS correspondente.",
         "- Se a dúvida for sobre IA, confirme se a Google API Key foi salva no painel Admin e se o modelo selecionado está disponível.",
@@ -1504,6 +1504,11 @@ def home():
         .all()
     )
     return render_template("home.html", featured_modules=featured_modules)
+
+
+@app.route("/health")
+def health():
+    return jsonify({"ok": True, "service": "portal-de-cursos"})
 
 
 @app.route("/regimento")

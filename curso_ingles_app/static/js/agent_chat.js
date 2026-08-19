@@ -63,7 +63,7 @@
   async function refreshConversations(){
     if(!list) return;
     try{
-      const res = await fetch('/curso-ingles/agent-chat/conversations');
+      const res = await fetch('/agent-chat/conversations');
       const data = await res.json();
       const convs = data.conversations || [];
       if(!convs.length){
@@ -96,7 +96,7 @@
     const ok = confirm('Deseja excluir esta conversa salva? Essa ação não poderá ser desfeita.');
     if(!ok) return;
     try{
-      const res = await fetch('/curso-ingles/agent-chat/conversations/' + id, { method: 'DELETE' });
+      const res = await fetch('/agent-chat/conversations/' + id, { method: 'DELETE' });
       const data = await res.json().catch(() => ({}));
       if(!res.ok || !data.ok){ throw new Error('Falha ao excluir'); }
       if(String(conversationId) === String(id)){
@@ -113,7 +113,7 @@
     const ok = confirm('Deseja excluir TODAS as conversas salvas deste usuário? Essa ação não poderá ser desfeita.');
     if(!ok) return;
     try{
-      const res = await fetch('/curso-ingles/agent-chat/conversations', { method: 'DELETE' });
+      const res = await fetch('/agent-chat/conversations', { method: 'DELETE' });
       const data = await res.json().catch(() => ({}));
       if(!res.ok || !data.ok){ throw new Error('Falha ao excluir tudo'); }
       conversationId = null;
@@ -126,7 +126,7 @@
 
   async function loadConversation(id){
     try{
-      const res = await fetch('/curso-ingles/agent-chat/conversations/' + id);
+      const res = await fetch('/agent-chat/conversations/' + id);
       const data = await res.json();
       if(!data.ok) return;
       conversationId = data.conversation.id;
@@ -153,7 +153,7 @@
     }
     const loading = addMessage('bot', '', true);
     try{
-      const response = await fetch('/curso-ingles/agent-chat/api', {
+      const response = await fetch('/agent-chat/api', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({

@@ -1,4 +1,6 @@
-"""Entrada WSGI alternativa para deploy."""
-from portal import application
+"""Entrada WSGI alternativa para hospedagem."""
+
+from app import application
+
 
 app = application
