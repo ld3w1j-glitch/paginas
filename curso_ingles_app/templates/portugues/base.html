@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{% block title %}{{ site_overview.course_title }}{% endblock %}</title>
   <meta name="description" content="Área interna do curso de português com lições, prática, revisão e progressão visual por etapas.">
   <link rel="stylesheet" href="{{ url_for('static', filename='portugues/css/style.css') }}?v=sidebar-cursos-1">
@@ -39,6 +40,7 @@
     window.__SITE_META__ = {{ site_meta | tojson }};
   </script>
   {% block page_data %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/security.js') }}?v=level6-1"></script>
   <script src="{{ url_for('static', filename='portugues/js/main.js') }}"></script>
   <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
   {% include "partials/mcp_widget.html" %}

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{% block title %}{{ overview.site_name }}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='ingles/css/style.css') }}?v=english-lab-4-1">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}?v=compact-nav-1">
@@ -21,6 +22,7 @@
       {% block content %}{% endblock %}
     </main>
   </div>
+  <script src="{{ url_for('static', filename='js/security.js') }}?v=level6-1"></script>
   <script src="{{ url_for('static', filename='ingles/js/main.js') }}"></script>
   <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
   {% include "partials/mcp_widget.html" %}

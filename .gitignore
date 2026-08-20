@@ -7,3 +7,6 @@ __pycache__/
 instance/
 .pytest_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+backups/

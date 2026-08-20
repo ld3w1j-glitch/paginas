@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ site.nome }}</title>
     <meta name="description" content="{{ site.subtitulo }} - {{ site.nome }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=sidebar-cursos-1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css') }}?v=compact-nav-1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/compact-layout.css') }}?v=compact-ui-1">
@@ -46,9 +47,12 @@
         </footer>
     </div>
 
+    <script src="{{ url_for('static', filename='js/security.js') }}?v=level6-1"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/navigation.js') }}?v=compact-nav-1"></script>
+  {% if current_user %}
   {% include "partials/mcp_widget.html" %}
-  <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-lobo-2"></script>
+  <script src="{{ url_for('static', filename='js/portal_mcp.js') }}?v=mcp-level6-1"></script>
+  {% endif %}
 </body>
 </html>

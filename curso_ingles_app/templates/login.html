@@ -12,6 +12,9 @@
 <section class="section">
     <div class="container narrow">
         <article class="card form-card">
+            {% if rate_limited %}
+            <div class="flash flash-warning">Muitas tentativas de login. Tente novamente em aproximadamente {{ retry_after }} segundos.</div>
+            {% endif %}
             <form method="post" class="form-grid">
                 <label>
                     <span>Usuário ou e-mail</span>

@@ -5,6 +5,7 @@ if not exist venv (
 )
 venv\Scripts\python.exe -m pip install --upgrade pip
 venv\Scripts\python.exe -m pip install -r requirements.txt
+venv\Scripts\python.exe -m flask --app app:application db upgrade
 start http://127.0.0.1:5000
 venv\Scripts\python.exe app.py
 pause

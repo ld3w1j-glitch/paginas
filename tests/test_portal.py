@@ -155,3 +155,80 @@ def test_english_learning_data_is_isolated_by_user(client):
         assert state["progress"] == {}
         lab = second_client.get("/area/ingles/laboratorio").get_data(as_text=True)
         assert "I am 27 years old." not in lab
+
+
+def test_external_next_redirect_is_blocked(client):
+    from app import application
+
+    with application.test_client() as isolated:
+        isolated.get("/logout")
+        response = isolated.post(
+            "/login?next=https://example.com/phishing",
+            data={"email": "admin", "password": "admin-local-change-me"},
+            follow_redirects=False,
+        )
+        assert response.status_code == 302
+        assert response.headers["Location"].endswith("/area")
+        assert "example.com" not in response.headers["Location"]
+
+
+def test_non_admin_cannot_control_shared_ai_runtime(client):
+    from app import application
+    from curso_ingles_app.app import Role, User, db
+
+    with application.app_context():
+        role = Role.query.filter_by(level=1).first()
+        user = User.query.filter_by(email="runtime-student@example.com").first()
+        if user is None:
+            user = User(name="Aluno runtime", email="runtime-student@example.com", is_admin=False, role_id=role.id)
+            user.set_password("student-password")
+            db.session.add(user)
+            db.session.commit()
+
+    with application.test_client() as isolated:
+        isolated.post("/login", data={"email": "runtime-student@example.com", "password": "student-password"})
+        response = isolated.post("/api/ingles/local-ai/iniciar", json={"model": "qualquer.gguf"})
+        assert response.status_code == 403
+        assert response.get_json()["ok"] is False
+
+
+def test_admin_delete_user_removes_related_learning_and_agent_data(client):
+    from app import application
+    from curso_ingles_app.app import (
+        AgentConversation,
+        AgentMessage,
+        EnglishCourseProgress,
+        EnglishTutorMessage,
+        EnglishTutorPreference,
+        Role,
+        User,
+        db,
+    )
+
+    with application.app_context():
+        role = Role.query.filter_by(level=1).first()
+        user = User(name="Excluir teste", email="delete-me@example.com", is_admin=False, role_id=role.id)
+        user.set_password("password")
+        db.session.add(user)
+        db.session.flush()
+        user_id = user.id
+        db.session.add(EnglishTutorPreference(user_id=user_id))
+        db.session.add(EnglishTutorMessage(user_id=user_id, role="user", content="hello"))
+        db.session.add(EnglishCourseProgress(user_id=user_id, item_type="lesson", item_key="x", completed=True))
+        conversation = AgentConversation(user_id=user_id, title="teste")
+        db.session.add(conversation)
+        db.session.flush()
+        db.session.add(AgentMessage(conversation_id=conversation.id, role="user", content="teste"))
+        db.session.commit()
+
+    with application.test_client() as isolated:
+        isolated.post("/login", data={"email": "admin", "password": "admin-local-change-me"})
+        response = isolated.post("/admin", data={"action": "delete_user", "user_id": str(user_id)})
+        assert response.status_code == 302
+
+    with application.app_context():
+        assert db.session.get(User, user_id) is None
+        assert EnglishTutorPreference.query.filter_by(user_id=user_id).count() == 0
+        assert EnglishTutorMessage.query.filter_by(user_id=user_id).count() == 0
+        assert EnglishCourseProgress.query.filter_by(user_id=user_id).count() == 0
+        assert AgentConversation.query.filter_by(user_id=user_id).count() == 0

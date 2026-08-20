@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="page-hero compact">
+  <div class="container narrow">
+    <span class="eyebrow">Portal de Cursos</span>
+    <h1>Erro {{ code }}</h1>
+    <p class="lead">{{ message }}</p>
+    <a class="btn btn-primary" href="{{ url_for('home') }}">Voltar ao início</a>
+  </div>
+</section>
+{% endblock %}

@@ -16,6 +16,13 @@ Versão independente do projeto, contendo somente o Portal de Cursos. Os módulo
 
 O portal abre diretamente em `http://127.0.0.1:5000/`.
 
+
+## Engenharia Level 6 · 5.0
+
+Esta versão recebeu uma camada de engenharia e segurança sem alterar o objetivo principal do Portal. Foram adicionados CSRF, sessão endurecida, rate limit, redirect seguro, audit log, logs com Request ID, workspace do agente por usuário, Flask-Migrate/Alembic, testes de segurança, coverage, CI, backup/restore e uma primeira separação de Services/Blueprints.
+
+A documentação completa está em [`LEVEL_6_IMPLEMENTADO.md`](LEVEL_6_IMPLEMENTADO.md), com arquitetura, decisões de compatibilidade e próximos passos.
+
 ## Navegação compacta · 4.2
 
 O portal, o curso de inglês e o curso de português usam o mesmo padrão de navegação lateral. A página atual fica destacada, as opções secundárias são agrupadas e, no celular, o menu vira uma barra inferior com as ações essenciais.
@@ -96,7 +103,7 @@ Também é aceita a variável `CURSO_INGLES_DATABASE_URL` no lugar de `DATABASE_
 
 Para o Chat Agente, escolha uma opção:
 
-- Gemini: defina `GOOGLE_API_KEY` e `GEMINI_MODEL`;
+- Gemini: defina `GOOGLE_API_KEY` e `GEMINI_MODEL`. Em produção, a chave é lida exclusivamente do ambiente e não é persistida pela interface administrativa;
 - Ollama local: defina `AI_PROVIDER=ollama`, `OLLAMA_BASE_URL` e `OLLAMA_MODEL`;
 - sem IA externa: o portal continua funcionando no modo local de orientação.
 
@@ -106,13 +113,17 @@ O pacote já contém `Procfile`, `railway.json`, `nixpacks.toml` e `start.sh`. O
 
 Para não perder banco e arquivos entre deploys, use PostgreSQL e, se utilizar arquivos gerados pelo Chat Agente, configure `PERSISTENT_STORAGE_DIR` apontando para um volume persistente.
 
-## Testes
+## Testes e qualidade
+
+As ferramentas de desenvolvimento ficam separadas das dependências de produção:
 
 ```bat
-venv\Scripts\python.exe -m pytest -q
+venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+venv\Scripts\python.exe -m ruff check config.py extensions.py portal_core scripts tests
+venv\Scripts\python.exe -m pytest -q --cov=curso_ingles_app --cov=portal_core --cov-report=term-missing
 ```
 
-Os testes confirmam que o portal abre, o login funciona, os cursos carregam e as rotas dos sistemas removidos retornam 404.
+A suíte cobre o fluxo principal do portal e ganhou testes de autorização, CSRF, política de caminhos do agente, isolamento entre usuários e exclusão de dados relacionados.
 
 ## Estrutura principal
 
@@ -124,9 +135,18 @@ Portal-de-Cursos/
 │   ├── static/
 │   ├── templates/
 │   └── app.py
+├── portal_core/
+│   ├── blueprints/
+│   └── services/
+├── migrations/
+├── docs/
+├── scripts/
 ├── ai_service.py
+├── config.py
 ├── security_config.py
 ├── storage_service.py
+├── LEVEL_6_IMPLEMENTADO.md
 ├── requirements.txt
+├── requirements-dev.txt
 └── INICIAR_LOCAL.bat
 ```

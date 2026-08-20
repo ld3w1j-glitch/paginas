@@ -337,6 +337,42 @@
         </div>
     </div>
 </section>
+<section class="section">
+    <div class="container">
+        <div class="section-head left">
+            <span class="eyebrow">Auditoria</span>
+            <h2>Ações sensíveis recentes</h2>
+            <p class="lead">Registro técnico para rastrear login, administração e controle do runtime de IA.</p>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Ação</th>
+                        <th>Alvo</th>
+                        <th>IP</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in audit_logs %}
+                    <tr>
+                        <td>{{ log.user.name if log.user else 'Sistema/usuário removido' }}</td>
+                        <td><code>{{ log.action }}</code></td>
+                        <td>{{ log.target or '-' }}</td>
+                        <td>{{ log.ip_address or '-' }}</td>
+                        <td>{{ log.created_at|datetime_br }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">Nenhuma ação auditada ainda.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
 <script>
 (function(){
   const scanBtn = document.getElementById('scanOllamaModelsBtn');

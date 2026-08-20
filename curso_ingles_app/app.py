@@ -22,12 +22,21 @@ from flask import (
     session,
     url_for,
 )
+from sqlalchemy import text as sql_text
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ai_service import call_ai
-from extensions import db
-from security_config import get_admin_password, get_admin_user, get_database_url, get_secret_key
-from storage_service import workspace_dir
+from config import configure_app
+from extensions import db, migrate
+from portal_core.logging_config import after_request_logging, before_request_logging, configure_logging
+from portal_core.rate_limit import check_rate_limit
+from portal_core.security import csrf_protect_request, get_csrf_token, permission_required, safe_next_url
+from portal_core.services.agent_policy import validate_relative_agent_path
+from portal_core.services.audit_service import write_audit
+from portal_core.services.user_service import delete_user_and_related_data
+from portal_core.services.workspace_service import agent_workspace, safe_join
+from portal_core.blueprints.system import system_bp
+from security_config import get_admin_password, get_admin_user, get_database_url, get_secret_key, is_production
 
 from .course_utils import search_collection
 from .data import DEFAULT_MODULES, DOCS_DATA, ROLES_DATA, SITE_DATA
@@ -58,7 +67,6 @@ PORTUGUES_ACTIVITY_PATH = os.path.join(PORTUGUES_CONTENT_DIR, "activity_bank.jso
 INGLES_CONTENT_DIR = os.path.join(BASE_DIR, "content", "ingles")
 INGLES_COURSE_PATH = os.path.join(INGLES_CONTENT_DIR, "english_course.json")
 INGLES_ACTIVITY_PATH = os.path.join(INGLES_CONTENT_DIR, "activity_bank.json")
-AGENT_WORKSPACE_DIR = str(workspace_dir("curso_ingles_agent"))
 PROJECT_ROOT = Path(BASE_DIR).parent
 ENGLISH_AI_DIR = Path(os.getenv("ENGLISH_AI_DIR", PROJECT_ROOT / "ia_local"))
 ENGLISH_VOICE_DIR = Path(os.getenv("ENGLISH_VOICE_DIR", PROJECT_ROOT / "voz_local"))
@@ -189,9 +197,12 @@ def _build_multi_agent_block(chain: list[dict]) -> str:
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = get_secret_key()
 app.config["SQLALCHEMY_DATABASE_URI"] = get_database_url(f"sqlite:///{DB_PATH}", env_name="CURSO_INGLES_DATABASE_URL")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+configure_app(app)
 
 db.init_app(app)
+migrate.init_app(app, db)
+app.register_blueprint(system_bp)
+configure_logging(app)
 
 
 class Role(db.Model):
@@ -255,6 +266,19 @@ class AgentMessage(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
+class AuditLog(db.Model):
+    __tablename__ = "curso_audit_log"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("curso_user.id", ondelete="SET NULL"), nullable=True, index=True)
+    action = db.Column(db.String(120), nullable=False, index=True)
+    target = db.Column(db.String(255), default="", nullable=False)
+    ip_address = db.Column(db.String(64), default="", nullable=False)
+    metadata_json = db.Column(db.Text, default="{}", nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+    user = db.relationship("User")
+
+
 def get_portal_setting(key: str, default: str = "") -> str:
     setting = PortalSetting.query.filter_by(key=key).first()
     if setting and setting.value is not None:
@@ -273,9 +297,14 @@ def set_portal_setting(key: str, value: str) -> None:
 
 
 def get_portal_ai_config() -> dict:
+    # Em produção, segredos devem vir do ambiente e nunca do banco em texto puro.
+    # No modo local/desenvolvimento mantemos a opção de salvar a chave pela UI por
+    # conveniência, sem mudar o fluxo atual do usuário.
+    env_api_key = os.getenv("GOOGLE_API_KEY", "").strip()
+    stored_api_key = "" if is_production() else get_portal_setting("mcp_google_api_key", "")
     return {
         "provider": get_portal_setting("ai_provider", os.getenv("AI_PROVIDER", "gemini")),
-        "api_key": get_portal_setting("mcp_google_api_key", os.getenv("GOOGLE_API_KEY", "")),
+        "api_key": env_api_key or stored_api_key,
         "model": get_portal_setting("mcp_gemini_model", os.getenv("GEMINI_MODEL", "gemini-2.5-flash")),
         "ollama_base_url": get_portal_setting("ollama_base_url", os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")),
         "ollama_model": get_portal_setting("ollama_model", os.getenv("OLLAMA_MODEL", "llama3.1")),
@@ -479,18 +508,33 @@ class EnglishStudyEvent(db.Model):
 
 @app.context_processor
 def inject_globals():
-    current_user = get_current_user()
-    roles = Role.query.order_by(Role.level.asc()).all()
+    current_user = getattr(g, "user", None)
+    try:
+        roles = Role.query.order_by(Role.level.asc()).all()
+    except Exception:
+        roles = []
     return {
         "site": SITE_DATA,
         "current_user": current_user,
         "all_roles": roles,
+        "csrf_token": get_csrf_token,
     }
 
 
 @app.before_request
 def load_user_into_context():
-    g.user = get_current_user()
+    before_request_logging()
+    try:
+        g.user = get_current_user()
+    except Exception:
+        g.user = None
+        db.session.rollback()
+    csrf_protect_request()
+
+
+@app.after_request
+def add_runtime_headers_and_log(response):
+    return after_request_logging(response)
 
 
 @app.template_filter("datetime_br")
@@ -1432,13 +1476,17 @@ Regras da resposta:
 
 def _safe_agent_path(raw_path: str) -> str:
     """Normaliza caminho criado pelo agente sem permitir sair do workspace."""
-    cleaned = (raw_path or "").strip().replace("\\", "/")
-    cleaned = cleaned.strip("/ ")
-    cleaned = re.sub(r"[^A-Za-z0-9_./\- ]+", "_", cleaned)
+    raw = (raw_path or "").strip().replace("\\", "/")
+    if not raw:
+        return "resposta_do_agente.md"
+    # Rejeita a intenção de acessar caminho absoluto, sensível ou com traversal antes
+    # de qualquer sanitização visual do nome.
+    validate_relative_agent_path(raw)
+    cleaned = re.sub(r"[^A-Za-z0-9_./\- ]+", "_", raw)
     parts = []
     for part in cleaned.split("/"):
         part = part.strip()
-        if not part or part in {".", ".."}:
+        if not part or part == ".":
             continue
         parts.append(part[:80])
     if not parts:
@@ -1446,7 +1494,8 @@ def _safe_agent_path(raw_path: str) -> str:
     path = "/".join(parts)
     if "." not in os.path.basename(path):
         path = f"{path}.txt"
-    return path[:220]
+    path = path[:220]
+    return validate_relative_agent_path(path)
 
 
 def _extract_agent_files(text: str) -> list[dict]:
@@ -1454,7 +1503,10 @@ def _extract_agent_files(text: str) -> list[dict]:
     files = []
     pattern = re.compile(r"\[\[FILE:(.*?)\]\](.*?)\[\[/FILE\]\]", re.DOTALL | re.IGNORECASE)
     for match in pattern.finditer(text or ""):
-        name = _safe_agent_path(match.group(1))
+        try:
+            name = _safe_agent_path(match.group(1))
+        except ValueError:
+            continue
         content = match.group(2).strip("\n")
         if content:
             files.append({"path": name, "content": content})
@@ -1493,30 +1545,41 @@ def _default_agent_files(question: str, answer: str) -> list[dict]:
 
 
 def _save_agent_zip(files: list[dict], question: str) -> tuple[str, list[str]]:
-    os.makedirs(AGENT_WORKSPACE_DIR, exist_ok=True)
+    user_workspace = agent_workspace(g.user.id)
     job_id = datetime.utcnow().strftime("%Y%m%d%H%M%S") + "_" + uuid.uuid4().hex[:8]
-    job_dir = os.path.join(AGENT_WORKSPACE_DIR, job_id)
-    os.makedirs(job_dir, exist_ok=True)
+    job_dir = safe_join(user_workspace, job_id)
+    job_dir.mkdir(parents=True, exist_ok=True)
 
     written = []
+    total_bytes = 0
+    max_file_bytes = int(app.config.get("AGENT_MAX_FILE_BYTES", 2 * 1024 * 1024))
+    max_total_bytes = int(app.config.get("AGENT_MAX_TOTAL_BYTES", 10 * 1024 * 1024))
     for item in files[:80]:
-        rel_path = _safe_agent_path(item.get("path") or "arquivo.txt")
-        content = item.get("content") or ""
-        target = os.path.abspath(os.path.join(job_dir, rel_path))
-        if not target.startswith(os.path.abspath(job_dir) + os.sep):
+        try:
+            rel_path = _safe_agent_path(item.get("path") or "arquivo.txt")
+        except ValueError:
             continue
-        os.makedirs(os.path.dirname(target), exist_ok=True)
+        content = item.get("content") or ""
+        encoded_size = len(content.encode("utf-8"))
+        if encoded_size > max_file_bytes or total_bytes + encoded_size > max_total_bytes:
+            continue
+        try:
+            target = safe_join(job_dir, rel_path)
+        except ValueError:
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
         with open(target, "w", encoding="utf-8", newline="") as fh:
             fh.write(content)
+        total_bytes += encoded_size
         written.append(rel_path)
 
     if not written:
-        target = os.path.join(job_dir, "README.md")
+        target = safe_join(job_dir, "README.md")
         with open(target, "w", encoding="utf-8") as fh:
             fh.write("# Resposta do Chat Agente\n\n" + (question or "Sem pedido."))
         written.append("README.md")
 
-    zip_path = os.path.join(AGENT_WORKSPACE_DIR, f"{job_id}.zip")
+    zip_path = safe_join(user_workspace, f"{job_id}.zip")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for root, _, filenames in os.walk(job_dir):
             for filename in filenames:
@@ -1769,6 +1832,9 @@ def agent_chat_conversation_detail(conversation_id):
 @app.route("/agent-chat/api", methods=["POST"])
 @login_required
 def agent_chat_api():
+    allowed, retry_after = check_rate_limit("agent", app.config.get("AGENT_RATE_LIMIT", "30/minute"))
+    if not allowed:
+        return jsonify({"ok": False, "answer": "Limite temporário do Chat Agente atingido.", "retry_after": retry_after}), 429
     payload = request.get_json(silent=True) or {}
     question = (payload.get("message") or payload.get("question") or "").strip()
     context = payload.get("context") or {}
@@ -1847,15 +1913,22 @@ def agent_chat_api():
 @login_required
 def agent_chat_download(job_id):
     safe_id = re.sub(r"[^A-Za-z0-9_\-]", "", job_id or "")
-    zip_path = os.path.abspath(os.path.join(AGENT_WORKSPACE_DIR, f"{safe_id}.zip"))
-    base = os.path.abspath(AGENT_WORKSPACE_DIR)
-    if not zip_path.startswith(base + os.sep) or not os.path.exists(zip_path):
+    user_workspace = agent_workspace(g.user.id)
+    try:
+        zip_path = safe_join(user_workspace, f"{safe_id}.zip")
+    except ValueError:
+        return "Arquivo não encontrado.", 404
+    if not zip_path.exists():
         return "Arquivo não encontrado.", 404
     return send_file(zip_path, as_attachment=True, download_name=f"chat_agente_{safe_id}.zip")
 
 
 @app.route("/mcp/portal", methods=["POST"])
+@login_required
 def portal_mcp_chat():
+    allowed, retry_after = check_rate_limit("mcp", app.config.get("MCP_RATE_LIMIT", "20/minute"))
+    if not allowed:
+        return jsonify({"ok": False, "answer": "Limite temporário de uso do MCP atingido.", "retry_after": retry_after}), 429
     payload = request.get_json(silent=True) or {}
     question = (payload.get("question") or "").strip()
     context = payload.get("context") or {}
@@ -1891,10 +1964,6 @@ def home():
     return render_template("home.html", featured_modules=featured_modules)
 
 
-@app.route("/health")
-def health():
-    return jsonify({"ok": True, "service": "portal-de-cursos"})
-
 
 @app.route("/regimento")
 def regimento():
@@ -1927,6 +1996,10 @@ def login():
         return redirect(url_for("dashboard"))
 
     if request.method == "POST":
+        allowed, retry_after = check_rate_limit("login", app.config.get("LOGIN_RATE_LIMIT", "5/minute"))
+        if not allowed:
+            return render_template("login.html", rate_limited=True, retry_after=retry_after), 429
+
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         user = User.query.filter_by(email=email).first()
@@ -1936,16 +2009,22 @@ def login():
         elif not user.is_active:
             flash("Seu acesso está desativado no momento.", "warning")
         else:
+            session.clear()
             session["user_id"] = user.id
+            session.permanent = True
+            write_audit(db, AuditLog, actor=user, action="auth.login", target=f"user:{user.id}")
+            db.session.commit()
             flash(f"Bem-vindo, {user.name}.", "success")
-            destination = request.args.get("next") or url_for("dashboard")
-            return redirect(destination)
+            return redirect(safe_next_url(request.args.get("next"), "dashboard"))
 
     return render_template("login.html")
 
 
 @app.route("/logout")
 def logout():
+    if g.user:
+        write_audit(db, AuditLog, actor=g.user, action="auth.logout", target=f"user:{g.user.id}")
+        db.session.commit()
     session.clear()
     flash("Você saiu da área interna.", "success")
     return redirect(url_for("home"))
@@ -2104,6 +2183,8 @@ def admin_ollama_use_model():
     set_portal_setting("ai_provider", "ollama")
     set_portal_setting("ollama_base_url", base_url)
     set_portal_setting("ollama_model", model)
+    write_audit(db, AuditLog, actor=g.user, action="admin.ai.ollama.select", target=model, metadata={"base_url": base_url})
+    db.session.commit()
     return jsonify({"ok": True, "message": f"Modelo {model} conectado ao Chat Agente e ao MCP.", "model": model, "base_url": base_url})
 
 
@@ -2126,22 +2207,35 @@ def admin_panel():
             set_portal_setting("ollama_base_url", ollama_base_url)
             set_portal_setting("ollama_model", ollama_model)
 
-            if clear_key:
+            if is_production():
+                # Em produção, GOOGLE_API_KEY deve ser configurada no ambiente do deploy.
+                # Nunca persistimos a chave submetida pela interface no banco.
+                if clear_key:
+                    set_portal_setting("mcp_google_api_key", "")
+                if provider == "gemini" and not os.getenv("GOOGLE_API_KEY", "").strip():
+                    flash("Configurações salvas. Em produção, defina GOOGLE_API_KEY nas variáveis de ambiente do servidor.", "warning")
+                else:
+                    flash("Configurações de IA salvas. Segredos de produção são lidos somente das variáveis de ambiente.", "success")
+            elif clear_key:
                 set_portal_setting("mcp_google_api_key", "")
                 flash("Chave Gemini removida. Configurações do provedor foram salvas.", "success")
             else:
                 current_key = get_portal_setting("mcp_google_api_key", "")
                 if api_key:
                     set_portal_setting("mcp_google_api_key", api_key)
-                    flash("Configuração de IA salva com segurança.", "success")
+                    flash("Configuração de IA salva para uso local.", "success")
                 elif current_key or provider == "ollama":
-                    flash("Configuração de IA salva. A chave Gemini existente foi mantida, se houver.", "success")
+                    flash("Configuração de IA salva. A chave Gemini local existente foi mantida, se houver.", "success")
                 else:
                     flash("Configuração salva. Para usar Gemini, cole uma Google API Key; para Ollama, mantenha o Ollama aberto localmente.", "warning")
 
         elif action == "test_mcp_api":
             provider = request.form.get("ai_provider", get_portal_setting("ai_provider", "gemini")).strip() or "gemini"
-            api_key = request.form.get("mcp_google_api_key", "").strip() or get_portal_setting("mcp_google_api_key", "")
+            submitted_key = request.form.get("mcp_google_api_key", "").strip()
+            if is_production():
+                api_key = os.getenv("GOOGLE_API_KEY", "").strip()
+            else:
+                api_key = submitted_key or get_portal_setting("mcp_google_api_key", "")
             model = request.form.get("mcp_gemini_model", "gemini-2.5-flash").strip() or "gemini-2.5-flash"
             ollama_base_url = request.form.get("ollama_base_url", get_portal_setting("ollama_base_url", "http://localhost:11434")).strip() or "http://localhost:11434"
             ollama_model = request.form.get("ollama_model", get_portal_setting("ollama_model", "llama3.1")).strip() or "llama3.1"
@@ -2179,6 +2273,8 @@ def admin_panel():
                 user = User(name=name, email=email, role_id=role.id, is_admin=False)
                 user.set_password(password)
                 db.session.add(user)
+                db.session.flush()
+                write_audit(db, AuditLog, actor=g.user, action="admin.user.create", target=f"user:{user.id}:{user.email}")
                 db.session.commit()
                 flash("Novo login criado com sucesso.", "success")
 
@@ -2213,6 +2309,7 @@ def admin_panel():
                 user.is_active = is_active
                 if password:
                     user.set_password(password)
+                write_audit(db, AuditLog, actor=g.user, action="admin.user.update", target=f"user:{user.id}:{user.email}")
                 db.session.commit()
                 flash("Usuário atualizado com sucesso.", "success")
 
@@ -2225,10 +2322,21 @@ def admin_panel():
             elif user.is_admin and User.query.filter_by(is_admin=True).count() <= 1:
                 flash("Não é possível remover o último administrador do sistema.", "warning")
             else:
-                ModuleAttempt.query.filter_by(user_id=user.id).delete()
-                db.session.delete(user)
-                db.session.commit()
-                flash("Usuário removido com sucesso.", "success")
+                target_label = f"user:{user.id}:{user.email}"
+                write_audit(db, AuditLog, actor=g.user, action="admin.user.delete", target=target_label)
+                delete_user_and_related_data(db, {
+                    "AgentConversation": AgentConversation,
+                    "ModuleAttempt": ModuleAttempt,
+                    "EnglishTutorPreference": EnglishTutorPreference,
+                    "EnglishTutorMessage": EnglishTutorMessage,
+                    "EnglishTutorMistake": EnglishTutorMistake,
+                    "EnglishTutorExercise": EnglishTutorExercise,
+                    "EnglishPronunciationAttempt": EnglishPronunciationAttempt,
+                    "EnglishTranslationMemory": EnglishTranslationMemory,
+                    "EnglishCourseProgress": EnglishCourseProgress,
+                    "EnglishStudyEvent": EnglishStudyEvent,
+                }, user)
+                flash("Usuário e dados relacionados removidos com sucesso.", "success")
 
         elif action == "update_user_role":
             # Compatibilidade com versões antigas do formulário.
@@ -2312,6 +2420,7 @@ def admin_panel():
     users = User.query.order_by(User.is_admin.desc(), User.created_at.asc()).all()
     modules = StudyModule.query.order_by(StudyModule.sort_order.asc(), StudyModule.id.asc()).all()
     attempts = ModuleAttempt.query.order_by(ModuleAttempt.created_at.desc()).limit(12).all()
+    audit_logs = AuditLog.query.order_by(AuditLog.created_at.desc()).limit(30).all()
     mcp_config = get_portal_ai_config()
     mcp_has_key = bool((mcp_config.get("api_key") or "").strip())
     return render_template(
@@ -2319,6 +2428,7 @@ def admin_panel():
         users=users,
         modules=modules,
         attempts=attempts,
+        audit_logs=audit_logs,
         mcp_config=mcp_config,
         mcp_has_key=mcp_has_key,
     )
@@ -2827,6 +2937,7 @@ def ingles_local_ai_status_api():
 
 @app.route("/api/ingles/local-ai/iniciar", methods=["POST"])
 @login_required
+@permission_required("manage_ai_runtime")
 def ingles_local_ai_start_api():
     data = request.get_json(silent=True) or {}
     preference = _english_preference(g.user.id)
@@ -2838,14 +2949,19 @@ def ingles_local_ai_start_api():
         return jsonify({"ok": False, "error": str(exc)}), 400
     if model:
         preference.local_ai_model_file = model
-        db.session.commit()
+    write_audit(db, AuditLog, actor=g.user, action="ai.runtime.start", target=model or "default")
+    db.session.commit()
     return jsonify({"ok": True, **result})
 
 
 @app.route("/api/ingles/local-ai/parar", methods=["POST"])
 @login_required
+@permission_required("manage_ai_runtime")
 def ingles_local_ai_stop_api():
-    return jsonify({"ok": True, **stop_english_ai()})
+    result = stop_english_ai()
+    write_audit(db, AuditLog, actor=g.user, action="ai.runtime.stop", target="english-local-ai")
+    db.session.commit()
+    return jsonify({"ok": True, **result})
 
 
 @app.route("/api/ingles/pronuncia/status")
@@ -2950,8 +3066,57 @@ def ingles_progress_api():
 
 
 
+@app.route("/health/details")
+@admin_required
+def health_details():
+    database_ok = True
+    try:
+        db.session.execute(sql_text("SELECT 1"))
+    except Exception:
+        database_ok = False
+        db.session.rollback()
+    preference = db.session.get(EnglishTutorPreference, g.user.id) if database_ok else None
+    local_ai_url = preference.local_ai_url if preference else "http://127.0.0.1:8080/v1/chat/completions"
+    return jsonify({
+        "ok": database_ok,
+        "service": "portal-de-cursos",
+        "database": "ok" if database_ok else "error",
+        "ai_runtime": english_ai_status(ENGLISH_AI_DIR, local_ai_url),
+    }), 200 if database_ok else 503
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    if request.path.startswith(("/api/", "/mcp/", "/agent-chat/")) or request.is_json:
+        return jsonify({"ok": False, "error": getattr(error, "description", "Requisição inválida.")}), 400
+    return render_template("error.html", code=400, message=getattr(error, "description", "Requisição inválida.")), 400
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    if request.path.startswith(("/api/", "/mcp/", "/agent-chat/")) or request.is_json:
+        return jsonify({"ok": False, "error": getattr(error, "description", "Acesso negado.")}), 403
+    return render_template("error.html", code=403, message=getattr(error, "description", "Acesso negado.")), 403
+
+
+@app.errorhandler(404)
+def not_found(error):
+    if request.path.startswith("/api/") or request.is_json:
+        return jsonify({"ok": False, "error": "Recurso não encontrado."}), 404
+    return render_template("error.html", code=404, message="Página não encontrada."), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    app.logger.exception("request_id=%s unhandled_error", getattr(g, "request_id", "-"))
+    if request.path.startswith(("/api/", "/mcp/", "/agent-chat/")) or request.is_json:
+        return jsonify({"ok": False, "error": "Ocorreu um erro interno. Consulte o log usando o Request ID."}), 500
+    return render_template("error.html", code=500, message="Ocorreu um erro interno. Tente novamente."), 500
+
+
 def create_app():
-    """Factory do curso. Evita rodar seed/create_all automaticamente só por importar o módulo."""
+    """Factory de compatibilidade; inicializa banco/seed uma única vez por processo."""
     if not app.config.get("_CURSO_DB_INITIALIZED"):
         init_database()
         app.config["_CURSO_DB_INITIALIZED"] = True
